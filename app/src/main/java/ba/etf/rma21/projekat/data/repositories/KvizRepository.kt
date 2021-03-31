@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.quizzes
 
 class KvizRepository {
 
@@ -17,7 +18,7 @@ class KvizRepository {
 
         fun getAll(): List<Kviz> {
             // TODO: Implementirati
-            return emptyList()
+            return quizzes()
         }
 
         fun getDone(): List<Kviz> {
