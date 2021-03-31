@@ -4,7 +4,7 @@
     android:layout_width="128dp"
     android:layout_height="110dp"
     android:layout_marginEnd="8dp"
-    app:cardBackgroundColor="@color/teal_700"
+    app:cardBackgroundColor="#99B6BA"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,21 +15,23 @@
             android:id="@+id/nazivPredmeta"
             android:layout_width="130dp"
             android:layout_height="25dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
             android:text="IM"
             android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/status"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginStart="102dp"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/nazivPredmeta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,32 +44,35 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="#D5DDDF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="5dp"
-                android:background="@color/design_default_color_surface"
+                android:layout_height="match_parent"
+                android:background="#D5DDDF"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/naziv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="Kviz 0"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textColor="#1B1A1A" />
 
                 <TextView
                     android:id="@+id/datumRada"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="10.04.2021"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textColor="#1B1A1A" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -78,17 +83,25 @@
                         android:id="@+id/trajanje"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
                         android:text="5 min"
-                        android:textAlignment="viewStart" />
+                        android:textAlignment="textStart"
+                        android:textColor="#1B1A1A" />
+
 
                     <TextView
                         android:id="@+id/osvojeniBodovi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
                         android:text="2.5"
-                        android:textAlignment="viewEnd" />
+                        android:textAlignment="textEnd"
+                        android:textColor="#1B1A1A" />
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
