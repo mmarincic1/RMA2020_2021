@@ -11,8 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import java.text.Collator
 import java.time.LocalTime
 import java.util.*
+import java.util.stream.Collector
+import java.util.stream.Collectors
 
 
 class KvizListAdapter(
@@ -34,12 +37,14 @@ class KvizListAdapter(
     override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
 
         holder.quizName.text = quizzes[position].naziv
+        // nije radio kviz
         if(quizzes[position].datumRada == null){
-            // nije radio kviz
+            // nije aktivan kviz onda datum pocetka inace datum kraja
             if(uporediSaTrenutnimDatumom(quizzes[position].datumPocetka) == 1)
-                holder.quizDate.text = dajDatum(quizzes[position].datumKraj)
-            else holder.quizDate.text = dajDatum(quizzes[position].datumPocetka)
+                holder.quizDate.text = dajDatum(quizzes[position].datumPocetka)
+            else holder.quizDate.text = dajDatum(quizzes[position].datumKraj)
         }
+        else holder.quizDate.text = quizzes[position].datumRada?.let { dajDatum(it) }
         holder.quizSubjectName.text = quizzes[position].nazivPredmeta
         holder.quizTime.text = quizzes[position].trajanje.toString() + " min"
         val context: Context = holder.quizStatus.getContext()
@@ -104,9 +109,23 @@ class KvizListAdapter(
     }
 
 
-    fun updateMovies(quizzes: List<Kviz>) {
+    fun updateQuizes(quizzes: List<Kviz>) {
         this.quizzes = quizzes
+        // sortiranje kvizova
+        this.quizzes = this.quizzes.stream().sorted { o1, o2 -> uporediDatume(o1, o2)}.collect(
+            Collectors.toList())
+        //
         notifyDataSetChanged()
+    }
+
+    private fun uporediDatume(o1: Kviz, o2: Kviz): Int {
+        if(o1.datumPocetka.getYear() > o2.datumPocetka.getYear()) return 1
+        else if(o2.datumPocetka.getYear() > o1.datumPocetka.getYear()) return -1;
+        else if(o1.datumPocetka.getMonth() > o2.datumPocetka.getMonth()) return 1;
+        else if(o2.datumPocetka.getMonth() > o1.datumPocetka.getMonth()) return -1;
+        else if(o1.datumPocetka.getDate() > o2.datumPocetka.getDate()) return 1;
+        else if(o2.datumPocetka.getDate() > o1.datumPocetka.getDate()) return -1;
+        return 0;
     }
 
     inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

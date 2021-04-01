@@ -8,7 +8,6 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
@@ -19,8 +18,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var quizzes: RecyclerView
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -43,16 +40,12 @@ class MainActivity : AppCompatActivity() {
             spinner.adapter = adapter
         }
         quizzes = findViewById(R.id.listaKvizova)
-//        quizzes.layoutManager = LinearLayoutManager(
-//            this,
-//            LinearLayoutManager.HORIZONTAL,
-//            false
-//        )
+
         quizzes.setLayoutManager( GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false))
         quizzesAdapter = KvizListAdapter(arrayListOf())
 
         quizzes.adapter = quizzesAdapter
-        quizzesAdapter.updateMovies(quizListViewModel.getQuizzes())
+        quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
     }
 }
 
