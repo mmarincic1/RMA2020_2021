@@ -17,7 +17,10 @@ fun quizzes(): List<Kviz>{
         Date(2021, 3, 22), 7, "G3", 1F
     ),
         Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
-        null, 7, "G3", null
-    )
+        null, 7, "G4", null
+    ),
+        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 7),
+            null, 13, "G5", null
+        )
     );
 }
