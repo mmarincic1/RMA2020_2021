@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.Collator
 import java.time.LocalTime
 import java.util.*
@@ -20,6 +21,7 @@ import java.util.stream.Collectors
 
 class KvizListAdapter(
     private var quizzes: List<Kviz>
+    //private val onItemClicked: () -> Unit
 ): RecyclerView.Adapter<KvizListAdapter.QuizViewHolder>(){
 
     override fun onCreateViewHolder(
@@ -35,7 +37,7 @@ class KvizListAdapter(
     override fun getItemCount(): Int = quizzes.size
 
     override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
-
+        //holder.newAction.setOnClickListener{onItemClicked()}
         holder.quizName.text = quizzes[position].naziv
         // nije radio kviz
         if(quizzes[position].datumRada == null){
@@ -135,5 +137,6 @@ class KvizListAdapter(
         val quizSubjectName: TextView = itemView.findViewById(R.id.nazivPredmeta)
         val quizTime: TextView = itemView.findViewById(R.id.trajanje)
         val quizStatus: ImageView = itemView.findViewById(R.id.status)
+        //val newAction: FloatingActionButton = itemView.findViewById(R.id.upisDugme)
     }
 }
