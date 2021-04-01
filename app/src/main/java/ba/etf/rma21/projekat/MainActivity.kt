@@ -4,6 +4,7 @@ package ba.etf.rma21.projekat
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
     private lateinit var newAction: FloatingActionButton
+    private lateinit var filterKvizova: Spinner
+    //private lateinit var filterKvizova: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val spinner: Spinner = findViewById(R.id.filterKvizova)
+        filterKvizova = findViewById(R.id.filterKvizova)
 
         ArrayAdapter.createFromResource(
             this,
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            spinner.adapter = adapter
+            filterKvizova.adapter = adapter
         }
         quizzes = findViewById(R.id.listaKvizova)
 
@@ -51,12 +54,35 @@ class MainActivity : AppCompatActivity() {
         //}
 
         quizzes.adapter = quizzesAdapter
-        quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
 
+        filterKvizova.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                updateQuizzes()
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                updateQuizzes()
+            }
+
+        }
         newAction = findViewById(R.id.upisDugme)
-        newAction.setOnClickListener{showUpisPredmet()}
+        newAction.setOnClickListener{
+            showUpisPredmet()
+        }
+
     }
 
+    private fun updateQuizzes(): Unit{
+        if(filterKvizova.selectedItem.toString() == "Svi kvizovi")
+            quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
+        else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
+            quizzesAdapter.updateQuizes(quizListViewModel.getMyQuizzes())
+        else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
+            quizzesAdapter.updateQuizes(quizListViewModel.getDoneQuizzes())
+        else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")
+            quizzesAdapter.updateQuizes(quizListViewModel.getFutureQuizzes())
+        else quizzesAdapter.updateQuizes(quizListViewModel.getPastQuizzes())
+    }
 
     private fun showUpisPredmet() {
         val intent = Intent(this, UpisPredmet::class.java)

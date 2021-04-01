@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".upis_predmet_activity">
+    tools:context=".UpisPredmet">
 
     <TextView
         android:id="@+id/textView"
@@ -80,9 +80,16 @@
         android:layout_marginTop="70dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="50dp"
+        android:background="#FF99B6BA"
+        android:backgroundTint="#FF99B6BA"
+        android:backgroundTintMode="add"
+        android:clickable="true"
+        android:shadowColor="#FF99B6BA"
         android:text="Upiši me"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/odabirGrupa" />
+        app:layout_constraintTop_toBottomOf="@+id/odabirGrupa"
+        app:rippleColor="#FF99B6BA"
+        app:strokeColor="#FF99B6BA" />
 </androidx.constraintlayout.widget.ConstraintLayout>

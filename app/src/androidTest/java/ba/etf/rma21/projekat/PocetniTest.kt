@@ -58,14 +58,14 @@ class PocetniTest {
 
     }
 
-//    @Test
-//    fun godineTest() {
-//        onView(withId(R.id.upisDugme)).perform(click())
-//        var listaOdabira = listOf<String>("1", "2", "3", "4", "5")
-//        for (odabir in listaOdabira) {
-//            onView(withId(R.id.odabirGodina)).perform(click())
-//            onData(allOf(Is(instanceOf(String::class.java)), Is(odabir))).perform(click())
-//        }
-//    }
+    @Test
+    fun godineTest() {
+        onView(withId(R.id.upisDugme)).perform(click())
+        var listaOdabira = listOf<String>("1", "2", "3", "4", "5")
+        for (odabir in listaOdabira) {
+            onView(withId(R.id.odabirGodina)).perform(click())
+            onData(allOf(Is(instanceOf(String::class.java)), Is(odabir))).perform(click())
+        }
+    }
 
 }

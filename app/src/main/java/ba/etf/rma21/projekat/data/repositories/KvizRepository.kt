@@ -2,39 +2,89 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.quizzes
+import java.util.*
+import java.util.stream.Collectors
 
 class KvizRepository {
 
     companion object {
-        // TODO: Implementirati
+        private lateinit var mojiKvizovi: MutableList<Kviz>
+
+        fun addMojiKvizovi(predmet: String, grupa: String): Unit{
+            mojiKvizovi.add(getAll().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get())
+        }
+
         init {
-            // TODO: Implementirati
+            mojiKvizovi = mutableListOf()
         }
 
         fun getMyKvizes(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            if(mojiKvizovi.size == 0)
+                return emptyList()
+            return mojiKvizovi
         }
 
         fun getAll(): List<Kviz> {
-            // TODO: Implementirati
             return quizzes()
         }
 
         fun getDone(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "plava" }.collect(
+                Collectors.toList())
+            if(pom.size == 0)
+                return emptyList()
+            return pom
         }
 
         fun getFuture(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "zuta" }.collect(
+                Collectors.toList())
+            if(pom.size == 0)
+                return emptyList()
+            return pom
         }
 
         fun getNotTaken(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "crvena" }.collect(
+                Collectors.toList())
+            if(pom.size == 0)
+                return emptyList()
+            return pom
         }
-        // TODO: Implementirati i ostale potrebne metode
+
+        private fun dajStatus(kviz: Kviz): String {
+            // kviz nije uradjen
+            if(kviz.datumRada == null){
+                var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
+                var datumKraja = uporediSaTrenutnimDatumom(kviz.datumKraj)
+                // kviz nije otvoren
+                if(datumPocetka == 1){
+                    return "zuta"
+                }
+                // kviz aktivan
+                else if(datumPocetka == 2 && datumKraja == 1){
+                    return "zelena"
+                }
+                // kviz nije uradjen i nije aktivan
+                else if(datumPocetka == 2 && datumKraja == 2){
+                    return "crvena"
+                }
+            }
+            return "plava"
+        }
+
+        private fun uporediSaTrenutnimDatumom(datum1: Date): Int{
+            var godina = Calendar.getInstance().get(Calendar.YEAR)
+            var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
+            var dan = Calendar.getInstance().get(Calendar.DATE)
+            if(datum1.getYear() > godina) return 1
+            else if(godina > datum1.getYear()) return 2;
+            else if(datum1.getMonth() > mjesec) return 1;
+            else if(mjesec > datum1.getMonth()) return 2;
+            else if(datum1.getDate() > dan) return 1;
+            else if(dan > datum1.getDate()) return 2;
+            return 0;
+        }
+
     }
 }

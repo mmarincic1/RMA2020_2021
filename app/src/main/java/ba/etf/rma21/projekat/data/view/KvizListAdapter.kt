@@ -21,7 +21,6 @@ import java.util.stream.Collectors
 
 class KvizListAdapter(
     private var quizzes: List<Kviz>
-    //private val onItemClicked: () -> Unit
 ): RecyclerView.Adapter<KvizListAdapter.QuizViewHolder>(){
 
     override fun onCreateViewHolder(

@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">rma21projekat</string>
     <string-array name="izbor_za_spinner">
-        <item>Svi moji kvizovi</item>
         <item>Svi kvizovi</item>
+        <item>Svi moji kvizovi</item>
         <item>Urađeni kvizovi</item>
         <item>Budući kvizovi</item>
         <item>Prošli kvizovi</item>
+    </string-array>
+    <string-array name="izbor_za_godine">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 </resources>
