@@ -23,6 +23,8 @@ class UpisPredmet : AppCompatActivity() {
     private lateinit var upisiMe: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //var godina = intent.getIntExtra("godina", 0)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upis_predmet)
 
@@ -41,10 +43,13 @@ class UpisPredmet : AppCompatActivity() {
             odabirGodine.adapter = adapter
         }
 
+        odabirGodine.setSelection(MainActivity.godina)
+
         odabirGodine.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
                 updatePredmete(odabirPredmeta)
                 updateGrupe(odabirGrupe)
+                MainActivity.godina = odabirGodine.selectedItemPosition
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
@@ -66,6 +71,7 @@ class UpisPredmet : AppCompatActivity() {
         upisiMe.setOnClickListener {
             KvizRepository.addMojiKvizovi(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
             PredmetRepository.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
+            //MainActivity.godina = odabirGodine.selectedItemPosition
             this.finish()
         }
 

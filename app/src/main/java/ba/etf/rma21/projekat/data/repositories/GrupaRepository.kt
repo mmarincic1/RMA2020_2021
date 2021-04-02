@@ -7,7 +7,6 @@ import java.util.stream.Collectors
 class GrupaRepository {
     companion object {
         init {
-            // TODO: Implementirati
         }
 
         fun getGroupsByPredmet(nazivPredmeta: String): List<String> {

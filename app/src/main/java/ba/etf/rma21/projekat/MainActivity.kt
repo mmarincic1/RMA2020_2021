@@ -1,7 +1,7 @@
 package ba.etf.rma21.projekat
 
 
-import android.app.Activity
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,12 +18,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
+    companion object{
+        var godina: Int = 0
+    }
 
     private lateinit var quizzes: RecyclerView
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
     private lateinit var newAction: FloatingActionButton
     private lateinit var filterKvizova: Spinner
+    private var godina = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -94,7 +98,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showUpisPredmet() {
         val intent = Intent(this, UpisPredmet::class.java)
+        //intent.putExtra("godina", godina)
             startActivity(intent)
+
     }
 
     override fun onResume() {
