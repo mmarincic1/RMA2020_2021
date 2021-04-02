@@ -1,6 +1,8 @@
 package ba.etf.rma21.projekat
 
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -61,7 +63,6 @@ class UpisPredmet : AppCompatActivity() {
             }
         }
         upisiMe = findViewById(R.id.dodajPredmetDugme)
-
         upisiMe.setOnClickListener {
             KvizRepository.addMojiKvizovi(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
             PredmetRepository.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
@@ -82,6 +83,8 @@ class UpisPredmet : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
         spinner1.adapter = adapter
+        if(predmeti.size == 0) upisiMe.isClickable = false
+        else upisiMe.isClickable = true
     }
 
     private fun updateGrupe(spinner2: Spinner): Unit{
@@ -96,6 +99,7 @@ class UpisPredmet : AppCompatActivity() {
             adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
             spinner2.adapter = adapter1
+            upisiMe.isClickable = false
         }
         else {
             var grupe = GrupaRepository.getGroupsByPredmet(odabirPredmeta.selectedItem.toString())
@@ -109,6 +113,7 @@ class UpisPredmet : AppCompatActivity() {
             adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
             spinner2.adapter = adapter1
+            upisiMe.isClickable = true
         }
     }
 }

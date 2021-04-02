@@ -1,17 +1,15 @@
 package ba.etf.rma21.projekat
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
@@ -95,7 +93,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showUpisPredmet() {
-        //val pom = filterKvizova.selectedItemPosition
         val intent = Intent(this, UpisPredmet::class.java)
             startActivity(intent)
     }
