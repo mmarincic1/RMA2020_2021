@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private var quizListViewModel = KvizListViewModel()
     private lateinit var newAction: FloatingActionButton
     private lateinit var filterKvizova: Spinner
-    //private lateinit var filterKvizova: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -55,6 +54,21 @@ class MainActivity : AppCompatActivity() {
 
         quizzes.adapter = quizzesAdapter
 
+        napraviListenerZaSpinner()
+
+
+        newAction = findViewById(R.id.upisDugme)
+        newAction.setOnClickListener{
+            showUpisPredmet()
+//            .apply {
+//                updateQuizzes()
+//            }
+//            updateQuizzes()
+        }
+
+    }
+
+    private fun napraviListenerZaSpinner() {
         filterKvizova.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 updateQuizzes()
@@ -63,13 +77,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 updateQuizzes()
             }
-
         }
-        newAction = findViewById(R.id.upisDugme)
-        newAction.setOnClickListener{
-            showUpisPredmet()
-        }
-
     }
 
     private fun updateQuizzes(): Unit{
@@ -85,9 +93,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showUpisPredmet() {
+        //val pom = filterKvizova.selectedItemPosition
         val intent = Intent(this, UpisPredmet::class.java)
-        startActivity(intent)
+        //this.onPause().apply {
+            //updateQuizzes()
+            startActivity(intent)
+            //updateQuizzes()
+        //}
+//        onResume().apply {
+//            updateQuizzes()
+//            filterKvizova.setSelection(pom)
+//            updateQuizzes()
+//        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateQuizzes()
+    }
+
+    // OVE NISUUU
+//    override fun onActivityReenter(resultCode: Int, data: Intent?) {
+//        super.onActivityReenter(resultCode, data)
+//        updateQuizzes()
+//    }
+
+    //    override fun onRestart() {
+//        super.onRestart()
+//        updateQuizzes()
+//    }
+//
 
 }
 

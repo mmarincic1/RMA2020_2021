@@ -13,6 +13,11 @@ class PredmetRepository {
             upisani = mutableListOf()
         }
 
+        fun getPredmetsByGodina(godina: Int): List<Predmet>{
+            return getAll().stream().filter { predmet -> predmet.godina == godina }.collect(
+                Collectors.toList())
+        }
+
         fun getUpisani(): List<Predmet>{
             if(upisani.size == 0)
                 return emptyList()
@@ -28,8 +33,7 @@ class PredmetRepository {
         }
 
         fun getFromYear(godina: Int): List<String> {
-            val pom =  getAll().stream().filter { predmet -> predmet.godina == godina }.collect(
-                Collectors.toList())
+            val pom =  izdvojiVecUpisane(getPredmetsByGodina(godina))
             var pom1 = mutableListOf<String>()
             for(pomcic in pom){
                 pom1.add(pomcic.toString())
@@ -37,6 +41,17 @@ class PredmetRepository {
             return pom1
         }
 
+        fun izdvojiVecUpisane(predmeti: List<Predmet>): List<Predmet>{
+            var pom1 = mutableListOf<Predmet>()
+            for(predmetic in predmeti){
+                var nemaGa = true
+                for(predmetic1 in upisani){
+                    if(predmetic.equals(predmetic1)) nemaGa = false
+                }
+                if(nemaGa) pom1.add(predmetic)
+            }
+            return pom1
+        }
     }
 
 }

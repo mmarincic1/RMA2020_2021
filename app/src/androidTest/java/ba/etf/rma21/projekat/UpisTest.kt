@@ -94,11 +94,11 @@ class UpisTest {
         ).perform(ViewActions.click())
         val kvizoviPoslije = KvizRepository.getMyKvizes()
 
-//        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova))
-//            .check(hasItemCount(kvizoviPoslije.size))
-//        for (kviz in kvizoviPoslije) {
-//            itemTest(R.id.listaKvizova, kviz)
-//        }
+        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova))
+            .check(hasItemCount(kvizoviPoslije.size))
+        for (kviz in kvizoviPoslije) {
+            itemTest(R.id.listaKvizova, kviz)
+        }
 
         ViewMatchers.assertThat(
             "Nije dodan kviz nakon upisanog predmeta ",

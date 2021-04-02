@@ -89,7 +89,6 @@ class UpisPredmet : AppCompatActivity() {
     private fun updateGrupe(spinner2: Spinner): Unit{
         val grupe = GrupaRepository.getGroupsByPredmet(odabirPredmeta.selectedItem.toString())
 
-
         // Initializing an ArrayAdapter
         val adapter1 = ArrayAdapter(
             this, // Context
