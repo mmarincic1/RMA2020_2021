@@ -16,6 +16,7 @@ class KvizRepository {
 
         init {
             mojiKvizovi = mutableListOf()
+            addMojiKvizovi("DONE", "G1")
         }
 
         fun getMyKvizes(): List<Kviz> {

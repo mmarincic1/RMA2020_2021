@@ -42,10 +42,12 @@ class UpisPredmet : AppCompatActivity() {
         odabirGodine.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
                 updatePredmete(odabirPredmeta)
+                updateGrupe(odabirGrupe)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
                 updatePredmete(odabirPredmeta)
+                updateGrupe(odabirGrupe)
             }
         }
 
@@ -69,37 +71,44 @@ class UpisPredmet : AppCompatActivity() {
     }
 
     private fun updatePredmete(spinner1: Spinner): Unit{
-        // Initializing a String Array
         val predmeti = PredmetRepository.getFromYear(odabirGodine.selectedItem.toString().toInt())
 
-        // Initializing an ArrayAdapter
         val adapter = ArrayAdapter(
-            this, // Context
-            android.R.layout.simple_spinner_item, // Layout
-            predmeti // Array
+            this,
+            android.R.layout.simple_spinner_item,
+            predmeti
         )
 
-        // Set the drop down view resource
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
-        // Finally, data bind the spinner object with dapter
         spinner1.adapter = adapter
     }
 
     private fun updateGrupe(spinner2: Spinner): Unit{
-        val grupe = GrupaRepository.getGroupsByPredmet(odabirPredmeta.selectedItem.toString())
+        if((odabirPredmeta.selectedItem == null)){
+            val grupe = emptyArray<String>()
+            val adapter1 = ArrayAdapter(
+                this, // Context
+                android.R.layout.simple_spinner_item, // Layout
+                grupe // Array
+            )
 
-        // Initializing an ArrayAdapter
-        val adapter1 = ArrayAdapter(
-            this, // Context
-            android.R.layout.simple_spinner_item, // Layout
-            grupe // Array
-        )
+            adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
-        // Set the drop down view resource
-        adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+            spinner2.adapter = adapter1
+        }
+        else {
+            var grupe = GrupaRepository.getGroupsByPredmet(odabirPredmeta.selectedItem.toString())
 
-        // Finally, data bind the spinner object with dapter
-        spinner2.adapter = adapter1
+            val adapter1 = ArrayAdapter(
+                this, // Context
+                android.R.layout.simple_spinner_item, // Layout
+                grupe // Array
+            )
+
+            adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+
+            spinner2.adapter = adapter1
+        }
     }
 }

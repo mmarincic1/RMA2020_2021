@@ -7,8 +7,10 @@ fun predmeti(): List<Predmet>{
     return listOf(
         Predmet("IM", 1),
         Predmet("TP", 1),
+        Predmet("UUP", 1),
         Predmet("RPR", 2),
         Predmet("RMA", 2),
-        Predmet("OOAD", 2)
+        Predmet("OOAD", 2),
+        Predmet("DONE", 1)
     )
 }

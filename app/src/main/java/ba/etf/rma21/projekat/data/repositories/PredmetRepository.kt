@@ -11,6 +11,7 @@ class PredmetRepository {
 
         init {
             upisani = mutableListOf()
+            addUpisani(1, "DONE")
         }
 
         fun getPredmetsByGodina(godina: Int): List<Predmet>{

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">rma21projekat</string>
+    <string name="izabrani">Izabrani filter: </string>
     <string-array name="izbor_za_spinner">
         <item>Svi kvizovi</item>
         <item>Svi moji kvizovi</item>

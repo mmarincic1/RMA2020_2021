@@ -10,17 +10,59 @@ fun quizzes(): List<Kviz>{
         Kviz("Kviz 0", "IM", Date(2021, 3, 20), Date(2021, 3, 22),
             null, 30, "G1", null
     ),
+        Kviz("Kviz 0", "IM", Date(2021, 3, 20), Date(2021, 3, 22),
+            null, 30, "G2", null
+        ),
+        Kviz("Kviz 0", "IM", Date(2021, 3, 20), Date(2021, 3, 22),
+            null, 30, "G3", null
+        ),
+        Kviz("Kviz 1", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+            null, 5, "G1", null
+        ),
+        Kviz("Kviz 1", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+            null, 5, "G2", null
+        ),
+        Kviz("Kviz 1", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+            null, 5, "G3", null
+        ),
         Kviz("Kviz 1", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
-        null, 3, "G2", null
+        null, 3, "G1", null
+    ),
+        Kviz("Kviz 1", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
+            null, 3, "G2", null
+        ),
+        Kviz("Kviz 1", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
+            null, 3, "G3", null
+        ),
+        Kviz("Kviz 2", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
+        Date(2021, 3, 22), 7, "G1", 1F
     ),
         Kviz("Kviz 2", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
-        Date(2021, 3, 22), 7, "G3", 1F
+            Date(2021, 3, 22), 7, "G2", 1F
+        ),
+        Kviz("Kviz 2", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
+            Date(2021, 3, 22), 7, "G3", 1F
+        ),
+        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
+        null, 7, "G1", null
     ),
         Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
-        null, 7, "G4", null
-    ),
+            null, 7, "G2", null
+        ),
+        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
+            null, 7, "G3", null
+        ),
         Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
-            null, 13, "G5", null
+            null, 13, "G1", null
+        ),
+        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
+            null, 13, "G2", null
+        ),
+        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
+            null, 13, "G3", null
+        ),
+        Kviz("Kviz 0", "DONE", Date(2021, 3, 21), Date(2021, 3, 23),
+            Date(2021, 3, 22), 17, "G1", 10F
         )
     );
 }
