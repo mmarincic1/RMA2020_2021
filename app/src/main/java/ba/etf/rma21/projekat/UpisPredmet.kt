@@ -108,7 +108,7 @@ class UpisPredmet : AppCompatActivity() {
             upisiMe.isClickable = false
         }
         else {
-            var grupe = GrupaRepository.getGroupsByPredmet(odabirPredmeta.selectedItem.toString())
+            var grupe = GrupaRepository.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
 
             val adapter1 = ArrayAdapter(
                 this, // Context

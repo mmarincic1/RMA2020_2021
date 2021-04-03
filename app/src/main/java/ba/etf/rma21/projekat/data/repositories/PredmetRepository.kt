@@ -7,7 +7,7 @@ import java.util.stream.Collectors
 class PredmetRepository {
     companion object {
 
-        private lateinit var upisani: MutableList<Predmet>
+        private var upisani: MutableList<Predmet>
 
         init {
             upisani = mutableListOf()

@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private var quizListViewModel = KvizListViewModel()
     private lateinit var newAction: FloatingActionButton
     private lateinit var filterKvizova: Spinner
-    private var godina = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

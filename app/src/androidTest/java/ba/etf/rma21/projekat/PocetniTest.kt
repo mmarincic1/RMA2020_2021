@@ -28,7 +28,7 @@ class PocetniTest {
 
         onView(withId(R.id.filterKvizova)).check(matches(isDisplayed()))
         onView(withId(R.id.listaKvizova)).check(matches(isDisplayed()))
-        //onView(withId(R.id.upisDugme)).check(matches(isDisplayed()))
+        onView(withId(R.id.upisDugme)).check(matches(isDisplayed()))
 
         var listaOdabira = listOf<String>(
             "Svi moji kvizovi",
