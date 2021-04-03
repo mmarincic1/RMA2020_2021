@@ -23,4 +23,8 @@ class KvizListViewModel {
     fun getPastQuizzes(): List<Kviz>{
         return KvizRepository.getNotTaken()
     }
+
+    fun addMojKviz(predmet: String, grupa: String): Unit{
+        KvizRepository.addMojiKvizovi(predmet, grupa)
+    }
 }

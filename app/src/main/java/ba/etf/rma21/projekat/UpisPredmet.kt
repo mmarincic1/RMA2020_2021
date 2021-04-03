@@ -1,8 +1,6 @@
 package ba.etf.rma21.projekat
 
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -13,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import ba.etf.rma21.projekat.data.repositories.GrupaRepository
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository
+import ba.etf.rma21.projekat.data.viewmodel.GroupViewModel
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.data.viewmodel.PredmetViewModel
 
 
 class UpisPredmet : AppCompatActivity() {
@@ -21,6 +22,9 @@ class UpisPredmet : AppCompatActivity() {
     private lateinit var odabirPredmeta: Spinner
     private lateinit var odabirGrupe: Spinner
     private lateinit var upisiMe: Button
+    private var quizListViewModel = KvizListViewModel()
+    private var predmetViewModel = PredmetViewModel()
+    private var grupaViewModel = GroupViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //var godina = intent.getIntExtra("godina", 0)
@@ -68,8 +72,8 @@ class UpisPredmet : AppCompatActivity() {
         }
         upisiMe = findViewById(R.id.dodajPredmetDugme)
         upisiMe.setOnClickListener {
-            KvizRepository.addMojiKvizovi(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
-            PredmetRepository.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
+            quizListViewModel.addMojKviz(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
+            predmetViewModel.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
             MainActivity.godina = odabirGodine.selectedItemPosition
             this.finish()
         }
@@ -77,7 +81,7 @@ class UpisPredmet : AppCompatActivity() {
     }
 
     private fun updatePredmete(spinner1: Spinner): Unit{
-        val predmeti = PredmetRepository.getFromYear(odabirGodine.selectedItem.toString().toInt())
+        val predmeti = predmetViewModel.getFromYear(odabirGodine.selectedItem.toString().toInt())
 
         val adapter = ArrayAdapter(
             this,
@@ -107,7 +111,7 @@ class UpisPredmet : AppCompatActivity() {
             upisiMe.isClickable = false
         }
         else {
-            var grupe = GrupaRepository.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
+            var grupe = grupaViewModel.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
 
             val adapter1 = ArrayAdapter(
                 this, // Context
