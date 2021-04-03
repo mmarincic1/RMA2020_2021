@@ -9,7 +9,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Test
 
-class `Predmet&GroupTest` {
+class PredmetIGroupTest {
     @Test
     fun testSviPredmeti(){
         val predmeti = PredmetRepository.getAll()
