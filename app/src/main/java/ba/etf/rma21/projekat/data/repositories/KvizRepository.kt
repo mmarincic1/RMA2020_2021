@@ -10,8 +10,19 @@ class KvizRepository {
     companion object {
         private lateinit var mojiKvizovi: MutableList<Kviz>
 
+        // pomocna fija kako bi mogao sve testove odjednom pokrenuti
+        fun ispisiSve(): Unit{
+            mojiKvizovi = mutableListOf()
+            addMojiKvizovi("DONE", "G1")
+        }
+
+        // pomocna za dodavanje Kviza
+        fun getKvizSaImenomIGrupom(predmet: String, grupa: String): Kviz{
+            return getAll().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get()
+        }
+
         fun addMojiKvizovi(predmet: String, grupa: String): Unit{
-            mojiKvizovi.add(getAll().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get())
+            mojiKvizovi.add(getKvizSaImenomIGrupom(predmet, grupa))
         }
 
         init {

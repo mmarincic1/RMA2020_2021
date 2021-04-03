@@ -49,7 +49,6 @@ class UpisPredmet : AppCompatActivity() {
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
                 updatePredmete(odabirPredmeta)
                 updateGrupe(odabirGrupe)
-                MainActivity.godina = odabirGodine.selectedItemPosition
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
@@ -71,7 +70,7 @@ class UpisPredmet : AppCompatActivity() {
         upisiMe.setOnClickListener {
             KvizRepository.addMojiKvizovi(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
             PredmetRepository.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
-            //MainActivity.godina = odabirGodine.selectedItemPosition
+            MainActivity.godina = odabirGodine.selectedItemPosition
             this.finish()
         }
 
