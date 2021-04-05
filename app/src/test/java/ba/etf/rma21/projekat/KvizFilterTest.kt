@@ -2,6 +2,8 @@ package ba.etf.rma21.projekat
 
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import ba.etf.rma21.projekat.data.view.KvizListAdapter
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import junit.framework.Assert.assertEquals
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.not
@@ -12,9 +14,12 @@ import org.hamcrest.CoreMatchers.`is` as Is
 
 
 class KvizFilterTest {
+
+    var kvizModel: KvizListViewModel = KvizListViewModel()
+
     @Test
     fun testSviKvizovi(){
-        val kvizovi = KvizRepository.getAll()
+        val kvizovi = kvizModel.getQuizzes()
         assertEquals(19, kvizovi.size)
         // jedan koji nema bodova
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("RMA"))))
@@ -29,7 +34,7 @@ class KvizFilterTest {
 
     @Test
     fun testMojiKvizovi(){
-        var kvizovi = KvizRepository.getMyKvizes()
+        var kvizovi = kvizModel.getMyQuizzes()
         assertEquals(1, kvizovi.size)
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("DONE"))))
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("trajanje", Is(17))))
@@ -46,7 +51,7 @@ class KvizFilterTest {
     @Test
     fun testBuduciKvizovi(){
         // na pocetku 0 jer nije upisan ni na jedan buduci kviz samo na jedan koji je uradio
-        var kvizovi = KvizRepository.getFuture()
+        var kvizovi = kvizModel.getFutureQuizzes()
         assertEquals(0, kvizovi.size)
         // upisujem ga na 3 buduca i 1 prosli da vidim da li dobro filtrira sve
         KvizRepository.addMojiKvizovi("TP", "G1") // buduci
@@ -54,7 +59,7 @@ class KvizFilterTest {
         KvizRepository.addMojiKvizovi("UUP", "G3") // buduci
         KvizRepository.addMojiKvizovi("OOAD", "G1") // buduci
 
-        kvizovi = KvizRepository.getFuture()
+        kvizovi = kvizModel.getFutureQuizzes()
         assertEquals(3, kvizovi.size)
 
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("OOAD"))))
@@ -72,7 +77,7 @@ class KvizFilterTest {
         // na koji je vec upisan
 
         // ovdje treba da je vec 1 kviz jer je postavkom definisano da treba biti bar jedan kviz u mockup-u
-        var kvizovi = KvizRepository.getDone()
+        var kvizovi = kvizModel.getDoneQuizzes()
         assertEquals(1, kvizovi.size)
 
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("DONE"))))
@@ -84,7 +89,7 @@ class KvizFilterTest {
         KvizRepository.addMojiKvizovi("IM", "G2") // prosli
         KvizRepository.addMojiKvizovi("RPR", "G3") // uradjeni
 
-        kvizovi = KvizRepository.getDone()
+        kvizovi = kvizModel.getDoneQuizzes()
         assertEquals(2, kvizovi.size)
 
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("RPR"))))
@@ -98,7 +103,7 @@ class KvizFilterTest {
     @Test
     fun testProsliKvizovi(){
         // treba na pocetku da je 0 jer nije upisan ni u jedan prosli kviz
-        var kvizovi = KvizRepository.getNotTaken()
+        var kvizovi = kvizModel.getPastQuizzes()
         assertEquals(0, kvizovi.size)
 
         // upisujem ga na 1 uradjeni, 1 prosli i 1 buduci
@@ -106,7 +111,7 @@ class KvizFilterTest {
         KvizRepository.addMojiKvizovi("IM", "G2") // prosli
         KvizRepository.addMojiKvizovi("RPR", "G3") // uradjeni
 
-        kvizovi = KvizRepository.getNotTaken()
+        kvizovi = kvizModel.getPastQuizzes()
         assertEquals(1, kvizovi.size)
 
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("IM"))))
