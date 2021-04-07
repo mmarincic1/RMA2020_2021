@@ -27,7 +27,6 @@ class UpisPredmet : AppCompatActivity() {
     private var grupaViewModel = GroupViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //var godina = intent.getIntExtra("godina", 0)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upis_predmet)
@@ -51,8 +50,16 @@ class UpisPredmet : AppCompatActivity() {
 
         odabirGodine.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
-                updatePredmete(odabirPredmeta)
-                updateGrupe(odabirGrupe)
+                if(odabirGodine.selectedItem.toString() != "") {
+                    odabirPredmeta.isEnabled = true
+                    updatePredmete(odabirPredmeta)
+                    updateGrupe(odabirGrupe)
+                }
+                else {
+                    odabirPredmeta.isEnabled = false
+                    odabirGrupe.isEnabled = false
+                }
+                updateClickerUpis()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
@@ -63,13 +70,31 @@ class UpisPredmet : AppCompatActivity() {
 
         odabirPredmeta.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
-                updateGrupe(odabirGrupe)
+                if(odabirPredmeta.selectedItem.toString() != "") {
+                    odabirGrupe.isEnabled = true
+                    updateGrupe(odabirGrupe)
+                }
+                else {
+                    odabirGrupe.isEnabled = false
+                }
+                updateClickerUpis()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
                 updateGrupe(odabirGrupe)
             }
         }
+
+        odabirGrupe.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
+                updateClickerUpis()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>){
+
+            }
+        }
+
         upisiMe = findViewById(R.id.dodajPredmetDugme)
         upisiMe.setOnClickListener {
             quizListViewModel.addMojKviz(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
@@ -81,7 +106,12 @@ class UpisPredmet : AppCompatActivity() {
     }
 
     private fun updatePredmete(spinner1: Spinner): Unit{
-        val predmeti = predmetViewModel.getFromYear(odabirGodine.selectedItem.toString().toInt())
+        var predmeti = mutableListOf<String>()
+        predmeti.add("")
+        val predmeti1 = predmetViewModel.getFromYear(odabirGodine.selectedItem.toString().toInt())
+
+        for(predmetic in predmeti1)
+            predmeti.add(predmetic)
 
         val adapter = ArrayAdapter(
             this,
@@ -92,8 +122,6 @@ class UpisPredmet : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
         spinner1.adapter = adapter
-        if(predmeti.size == 0) upisiMe.isClickable = false
-        else upisiMe.isClickable = true
     }
 
     private fun updateGrupe(spinner2: Spinner): Unit{
@@ -108,10 +136,14 @@ class UpisPredmet : AppCompatActivity() {
             adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
             spinner2.adapter = adapter1
-            upisiMe.isClickable = false
         }
         else {
-            var grupe = grupaViewModel.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
+            var grupe = mutableListOf<String>()
+            grupe.add("")
+            var grupe1 = grupaViewModel.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
+
+            for(grupica in grupe1)
+                grupe.add(grupica)
 
             val adapter1 = ArrayAdapter(
                 this, // Context
@@ -122,7 +154,12 @@ class UpisPredmet : AppCompatActivity() {
             adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
             spinner2.adapter = adapter1
-            upisiMe.isClickable = true
         }
+    }
+
+    private fun updateClickerUpis(){
+        upisiMe.isClickable = odabirGodine.selectedItem.toString() != ""
+                && odabirPredmeta.selectedItem.toString() != ""
+                && odabirGrupe.selectedItem.toString() != ""
     }
 }

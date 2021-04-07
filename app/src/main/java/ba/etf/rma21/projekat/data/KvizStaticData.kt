@@ -43,22 +43,22 @@ fun quizzes(): List<Kviz>{
         Kviz("Kviz 2", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
             Date(2021, 3, 22), 7, "G3", 1F
         ),
-        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
+        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2022, 4, 22),
         null, 7, "G1", null
     ),
-        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
+        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2022, 4, 22),
             null, 7, "G2", null
         ),
-        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2021, 4, 22),
+        Kviz("Kviz 3", "RMA", Date(2021, 3, 30), Date(2022, 4, 22),
             null, 7, "G3", null
         ),
-        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
+        Kviz("Kviz 4", "OOAD", Date(2022, 4, 7), Date(2022, 4, 8),
             null, 13, "G1", null
         ),
-        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
+        Kviz("Kviz 4", "OOAD", Date(2022, 4, 7), Date(2022, 4, 8),
             null, 13, "G2", null
         ),
-        Kviz("Kviz 4", "OOAD", Date(2021, 4, 7), Date(2021, 4, 8),
+        Kviz("Kviz 4", "OOAD", Date(2022, 4, 7), Date(2022, 4, 8),
             null, 13, "G3", null
         ),
         Kviz("Kviz 0", "DONE", Date(2021, 3, 21), Date(2021, 3, 23),
