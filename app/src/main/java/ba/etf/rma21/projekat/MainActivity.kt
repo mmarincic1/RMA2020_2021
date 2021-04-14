@@ -1,6 +1,6 @@
 package ba.etf.rma21.projekat
 
-
+// PRVI COMMIT NA SPIRALU 2.
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         var godina: Int = 0
     }
 
+    private var prviCommitSpirala2 = true
     private lateinit var quizzes: RecyclerView
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
