@@ -24,16 +24,20 @@ class FragmentPredmeti : Fragment() {
     private var predmetViewModel = PredmetViewModel()
     private var grupaViewModel = GroupViewModel()
 
+    private var prviPutPredmet = true
+    private var prviPutGrupa = true
+
+    private lateinit var view1: View
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_upis, container, false)
-
-        odabirGodine = view.findViewById(R.id.odabirGodina)
-        odabirPredmeta = view.findViewById(R.id.odabirPredmet)
-        odabirGrupe = view.findViewById(R.id.odabirGrupa)
+        view1 = inflater.inflate(R.layout.fragment_upis, container, false)
+        odabirGodine = view1.findViewById(R.id.odabirGodina)
+        odabirPredmeta = view1.findViewById(R.id.odabirPredmet)
+        odabirGrupe = view1.findViewById(R.id.odabirGrupa)
 
         ArrayAdapter.createFromResource(
-            view.context,
+            view1.context,
             R.array.izbor_za_godine,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
@@ -43,14 +47,19 @@ class FragmentPredmeti : Fragment() {
             odabirGodine.adapter = adapter
         }
 
-        odabirGodine.setSelection(FragmentKvizovi.godina)
-
         odabirGodine.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long){
                 if(odabirGodine.selectedItem.toString() != "") {
                     odabirPredmeta.isEnabled = true
                     updatePredmete(odabirPredmeta)
-                    updateGrupe(odabirGrupe)
+                    if(!prviPutGrupa) {
+                        updateGrupe(odabirGrupe)
+                        FragmentKvizovi.odabranaGrupa = -1
+                    }
+                    FragmentKvizovi.odabranaGodina = odabirGodine.selectedItemPosition
+
+                    FragmentKvizovi.odabraniPredmet = -1
+
                 }
                 else {
                     odabirPredmeta.isEnabled = false
@@ -60,16 +69,19 @@ class FragmentPredmeti : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
-                updatePredmete(odabirPredmeta)
-                updateGrupe(odabirGrupe)
             }
         }
+
+        if(FragmentKvizovi.odabranaGodina != -1) odabirGodine.setSelection(FragmentKvizovi.odabranaGodina)
 
         odabirPredmeta.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long){
                 if(odabirPredmeta.selectedItem.toString() != "") {
                     odabirGrupe.isEnabled = true
                     updateGrupe(odabirGrupe)
+                    FragmentKvizovi.odabraniPredmet = odabirPredmeta.selectedItemPosition
+
+                    FragmentKvizovi.odabranaGrupa = -1
                 }
                 else {
                     odabirGrupe.isEnabled = false
@@ -78,13 +90,14 @@ class FragmentPredmeti : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
-                updateGrupe(odabirGrupe)
+
             }
         }
 
         odabirGrupe.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long){
                 updateClickerUpis()
+                FragmentKvizovi.odabranaGrupa = odabirGrupe.selectedItemPosition
             }
 
             override fun onNothingSelected(parent: AdapterView<*>){
@@ -92,18 +105,24 @@ class FragmentPredmeti : Fragment() {
             }
         }
 
-        upisiMe = view.findViewById(R.id.dodajPredmetDugme)
+        upisiMe = view1.findViewById(R.id.dodajPredmetDugme)
         upisiMe.setOnClickListener {
             quizListViewModel.addMojKviz(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
             predmetViewModel.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
-            FragmentKvizovi.godina = odabirGodine.selectedItemPosition
+            FragmentKvizovi.odabranaGodina = -1
+
+            FragmentKvizovi.odabraniPredmet = -1
+
+            FragmentKvizovi.odabranaGrupa = -1
         }
 
-        return view
+        return view1
     }
+
     companion object {
         fun newInstance(): FragmentPredmeti = FragmentPredmeti()
     }
+
     private fun updatePredmete(spinner1: Spinner): Unit{
         var predmeti = mutableListOf<String>()
         predmeti.add("")
@@ -113,7 +132,7 @@ class FragmentPredmeti : Fragment() {
             predmeti.add(predmetic)
 
         val adapter = ArrayAdapter(
-            view?.context!!,
+            view1.context,
             android.R.layout.simple_spinner_item,
             predmeti
         )
@@ -121,13 +140,35 @@ class FragmentPredmeti : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
         spinner1.adapter = adapter
+        if(prviPutPredmet && FragmentKvizovi.odabraniPredmet != -1){
+            odabirPredmeta.setSelection(FragmentKvizovi.odabraniPredmet)
+            prviPutPredmet = false
+        }
     }
 
     private fun updateGrupe(spinner2: Spinner): Unit{
-        if((odabirPredmeta.selectedItem == null)){
+        if ((odabirPredmeta.selectedItem == null)) {
             val grupe = emptyArray<String>()
             val adapter1 = ArrayAdapter(
-                view?.context!!, // Context
+                view1.context, // Context
+                android.R.layout.simple_spinner_item, // Layout
+                grupe // Array
+            )
+
+            adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+
+            spinner2.adapter = adapter1
+        } else {
+            var grupe = mutableListOf<String>()
+            grupe.add("")
+            var grupe1 =
+                grupaViewModel.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
+
+            for (grupica in grupe1)
+                grupe.add(grupica)
+
+            val adapter1 = ArrayAdapter(
+                view1.context, // Context
                 android.R.layout.simple_spinner_item, // Layout
                 grupe // Array
             )
@@ -136,29 +177,20 @@ class FragmentPredmeti : Fragment() {
 
             spinner2.adapter = adapter1
         }
-        else {
-            var grupe = mutableListOf<String>()
-            grupe.add("")
-            var grupe1 = grupaViewModel.getGroupsByPredmetString(odabirPredmeta.selectedItem.toString())
-
-            for(grupica in grupe1)
-                grupe.add(grupica)
-
-            val adapter1 = ArrayAdapter(
-                view?.context!!, // Context
-                android.R.layout.simple_spinner_item, // Layout
-                grupe // Array
-            )
-
-            adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-
-            spinner2.adapter = adapter1
+        if (prviPutGrupa && FragmentKvizovi.odabranaGrupa != -1) {
+            odabirGrupe.setSelection(FragmentKvizovi.odabranaGrupa)
+            prviPutGrupa = false
         }
     }
 
     private fun updateClickerUpis(){
+        if(odabirGodine.selectedItem != null && odabirPredmeta.selectedItem != null && odabirGrupe.selectedItem != null){
         upisiMe.isClickable = odabirGodine.selectedItem.toString() != ""
                 && odabirPredmeta.selectedItem.toString() != ""
                 && odabirGrupe.selectedItem.toString() != ""
+        }
+        else upisiMe.isClickable = false
     }
+
+
 }

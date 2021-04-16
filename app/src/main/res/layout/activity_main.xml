@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:itemBackground="@color/black"
+        android:backgroundTint="@color/black"
         app:itemIconTint="@color/navigation_selected"
         app:itemTextColor="@color/navigation_selected"
         app:layout_constraintBottom_toBottomOf="parent"

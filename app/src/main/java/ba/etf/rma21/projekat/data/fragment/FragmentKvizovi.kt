@@ -1,6 +1,5 @@
 package ba.etf.rma21.projekat.data.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
-import ba.etf.rma21.projekat.UpisPredmet
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 
@@ -53,8 +51,9 @@ class FragmentKvizovi : Fragment() {
     companion object {
         fun newInstance(): FragmentKvizovi = FragmentKvizovi()
 
-        var godina: Int = 0
-
+        var odabranaGodina: Int = -1
+        var odabraniPredmet: Int = -1
+        var odabranaGrupa: Int = -1
     }
 
     private fun napraviListenerZaSpinner() {

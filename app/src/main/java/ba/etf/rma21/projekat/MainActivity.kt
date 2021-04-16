@@ -64,5 +64,10 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val favoritesFragment = FragmentKvizovi.newInstance()
+        openFragment(favoritesFragment)
+    }
 }
 
