@@ -1,7 +1,5 @@
 package ba.etf.rma21.projekat
 
-// PRVI COMMIT NA SPIRALU 2.
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,24 +8,37 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
+import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
-    companion object{
-        var godina: Int = 0
-    }
 
-    private var prviCommitSpirala2 = true
-    private lateinit var quizzes: RecyclerView
-    private lateinit var quizzesAdapter: KvizListAdapter
-    private var quizListViewModel = KvizListViewModel()
-    private lateinit var newAction: FloatingActionButton
-    private lateinit var filterKvizova: Spinner
+    private lateinit var bottomNavigation: BottomNavigationView
+
+    private val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.kvizovi -> {
+                        val favoritesFragment = FragmentKvizovi.newInstance()
+                        openFragment(favoritesFragment)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.predmeti -> {
+                        val recentFragments = FragmentPredmeti.newInstance()
+                        openFragment(recentFragments)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -37,88 +48,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        filterKvizova = findViewById(R.id.filterKvizova)
-
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.izbor_za_spinner,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            filterKvizova.adapter = adapter
-        }
-        quizzes = findViewById(R.id.listaKvizova)
-
-        quizzes.setLayoutManager( GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false))
-        quizzesAdapter = KvizListAdapter(arrayListOf())//{
-            //showUpisPredmet()
-        //}
-
-        quizzes.adapter = quizzesAdapter
-
-        napraviListenerZaSpinner()
-
-
-        newAction = findViewById(R.id.upisDugme)
-        newAction.setOnClickListener{
-            showUpisPredmet()
-//            .apply {
-//                updateQuizzes()
-//            }
-//            updateQuizzes()
-        }
-
+        bottomNavigation= findViewById(R.id.bottomNav)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+//Defaultni fragment
+        bottomNavigation.selectedItemId= R.id.kvizovi
+        val kvizoviFragment = FragmentKvizovi.newInstance()
+        openFragment(kvizoviFragment)
     }
 
-    private fun napraviListenerZaSpinner() {
-        filterKvizova.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                updateQuizzes()
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                updateQuizzes()
-            }
-        }
+    //Funkcija za izmjenu fragmenta
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
-
-    private fun updateQuizzes(): Unit{
-        if(filterKvizova.selectedItem.toString() == "Svi kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
-        else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getMyQuizzes())
-        else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getDoneQuizzes())
-        else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getFutureQuizzes())
-        else quizzesAdapter.updateQuizes(quizListViewModel.getPastQuizzes())
-    }
-
-    private fun showUpisPredmet() {
-        val intent = Intent(this, UpisPredmet::class.java)
-        //intent.putExtra("godina", godina)
-            startActivity(intent)
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateQuizzes()
-    }
-
-    // OVE NISUUU
-//    override fun onActivityReenter(resultCode: Int, data: Intent?) {
-//        super.onActivityReenter(resultCode, data)
-//        updateQuizzes()
-//    }
-
-    //    override fun onRestart() {
-//        super.onRestart()
-//        updateQuizzes()
-//    }
-//
 
 }
 
