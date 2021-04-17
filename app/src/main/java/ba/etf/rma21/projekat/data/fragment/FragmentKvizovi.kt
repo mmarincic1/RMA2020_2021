@@ -10,6 +10,7 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
@@ -49,12 +50,9 @@ class FragmentKvizovi : Fragment() {
 
         quizzes.adapter = quizzesAdapter
 
-        quizzes.setOnClickListener{
-
-        }
 
         napraviListenerZaSpinner()
-
+        napraviBottomNav()
         return view
     }
     companion object {
@@ -63,6 +61,8 @@ class FragmentKvizovi : Fragment() {
         var odabranaGodina: Int = -1
         var odabraniPredmet: Int = -1
         var odabranaGrupa: Int = -1
+        var uradjeniKviz = ""
+        var uradjeniPredmet = ""
     }
 
     private fun napraviListenerZaSpinner() {
@@ -95,9 +95,19 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
+        uradjeniKviz = kviz.naziv
+        uradjeniPredmet = kviz.nazivPredmeta
+        FragmentPokusaj.brojTacnih = 0
         val fragment = FragmentPokusaj(getPitanja(kviz.naziv, kviz.nazivPredmeta))
         var fr = getFragmentManager()?.beginTransaction()
         fr?.replace(R.id.container, fragment)
         fr?.commit()
+    }
+
+    private fun napraviBottomNav() {
+        MainActivity.bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = true
+        MainActivity.bottomNavigation.menu.findItem(R.id.predmeti).isVisible = true
+        MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
+        MainActivity.bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
     }
 }

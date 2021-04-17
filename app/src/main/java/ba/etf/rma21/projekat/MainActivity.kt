@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
+import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
+import ba.etf.rma21.projekat.data.fragment.FragmentPoruka
 import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,16 +32,6 @@ class MainActivity : AppCompatActivity() {
                         val predmetiFragments = FragmentPredmeti.newInstance()
                         openFragment(predmetiFragments)
                         return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.predajKviz -> {
-//                        val kvizoviFragments = FragmentKvizovi.newInstance()
-//                        openFragment(kvizoviFragments)
-//                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.zaustaviKviz -> {
-//                        val predmetiFragments = FragmentPredmeti.newInstance()
-//                        openFragment(predmetiFragments)
-//                        return@OnNavigationItemSelectedListener true
                     }
                 }
                 false

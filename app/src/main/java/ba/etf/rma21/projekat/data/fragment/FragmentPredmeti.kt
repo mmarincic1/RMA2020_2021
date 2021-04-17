@@ -115,7 +115,9 @@ class FragmentPredmeti : Fragment() {
 
             FragmentKvizovi.odabranaGrupa = -1
             // otvaranje novog fragmenta
-            val porukicaFragment = FragmentPoruka.newInstance(odabirGrupe.selectedItem.toString(), odabirPredmeta.selectedItem.toString())
+            val nazivGrupe1 = odabirGrupe.selectedItem.toString()
+            val nazivPredmeta1 = odabirPredmeta.selectedItem.toString()
+            val porukicaFragment = FragmentPoruka.newInstance( "Uspješno ste upisani u grupu " + nazivGrupe1 + " predmeta " + nazivPredmeta1 + "!" )
             openFragment(porukicaFragment)
         }
 

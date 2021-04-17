@@ -18,16 +18,13 @@ class FragmentPoruka : Fragment() {
                               savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_poruka, container, false)
         porukica = view.findViewById(R.id.tvPoruka)
-        val nazivGrupe1 = arguments?.getString("nazivGrupe")
-        val nazivPredmeta1 = arguments?.getString("nazivPredmeta")
-        porukica.setText("Uspješno ste upisani u grupu " + nazivGrupe1 + " predmeta " + nazivPredmeta1 + "!")
+        porukica.setText(arguments?.getString("tekstZaIspis"))
         return view
     }
     companion object {
-        fun newInstance(nazivGrupe:String, nazivPredmeta:String): FragmentPoruka = FragmentPoruka().apply {
+        fun newInstance(tekstZaIspis: String): FragmentPoruka = FragmentPoruka().apply {
             arguments = Bundle().apply {
-                putString("nazivGrupe", nazivGrupe)
-                putString("nazivPredmeta", nazivPredmeta)
+                putString("tekstZaIspis", tekstZaIspis)
             }
         }
     }
