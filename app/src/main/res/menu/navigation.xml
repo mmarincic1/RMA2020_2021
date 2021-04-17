@@ -10,5 +10,12 @@
         android:id="@+id/predmeti"
         android:icon="@android:drawable/ic_menu_add"
         android:title="Upis" />
-
+    <item
+        android:id="@+id/predajKviz"
+        android:icon="@android:drawable/checkbox_on_background"
+        android:title="Predaj kviz" />
+    <item
+        android:id="@+id/zaustaviKviz"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="Zaustavi kviz" />
 </menu>

@@ -14,6 +14,7 @@ import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository.Companion.getPitanja
 
 class FragmentKvizovi : Fragment() {
     private lateinit var quizzes: RecyclerView
@@ -94,7 +95,7 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
-        val fragment = FragmentPokusaj.newInstance(kviz)
+        val fragment = FragmentPokusaj(getPitanja(kviz.naziv, kviz.nazivPredmeta))
         var fr = getFragmentManager()?.beginTransaction()
         fr?.replace(R.id.container, fragment)
         fr?.commit()

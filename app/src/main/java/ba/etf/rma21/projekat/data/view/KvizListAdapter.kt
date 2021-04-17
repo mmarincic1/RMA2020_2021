@@ -38,7 +38,9 @@ class KvizListAdapter(
     override fun getItemCount(): Int = quizzes.size
 
     override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
+
         holder.itemView.setOnClickListener{onItemClicked(quizzes[position])}
+
         holder.quizName.text = quizzes[position].naziv
         // nije radio kviz
         if(quizzes[position].datumRada == null){

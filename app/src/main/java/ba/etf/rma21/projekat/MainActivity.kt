@@ -15,9 +15,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var bottomNavigation: BottomNavigationView
-
+    companion object {
+        lateinit var bottomNavigation: BottomNavigationView
+    }
     private val mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
@@ -30,6 +30,16 @@ class MainActivity : AppCompatActivity() {
                         val predmetiFragments = FragmentPredmeti.newInstance()
                         openFragment(predmetiFragments)
                         return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.predajKviz -> {
+//                        val kvizoviFragments = FragmentKvizovi.newInstance()
+//                        openFragment(kvizoviFragments)
+//                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.zaustaviKviz -> {
+//                        val predmetiFragments = FragmentPredmeti.newInstance()
+//                        openFragment(predmetiFragments)
+//                        return@OnNavigationItemSelectedListener true
                     }
                 }
                 false
@@ -45,6 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigation= findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
+        bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
 //Defaultni fragment
         bottomNavigation.selectedItemId= R.id.kvizovi
         val kvizoviFragment = FragmentKvizovi.newInstance()
@@ -61,8 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        napraviBottomNav()
         val favoritesFragment = FragmentKvizovi.newInstance()
         openFragment(favoritesFragment)
+    }
+
+    private fun napraviBottomNav() {
+        bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = true
+        bottomNavigation.menu.findItem(R.id.predmeti).isVisible = true
+        bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
+        bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
     }
 }
 

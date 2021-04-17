@@ -13,7 +13,8 @@ class PitanjeKvizRepository {
 
         // nisam iskorisio nazivPredmeta jer ne bi ovo pozivao da nije kliknuo na vec neki odabrani kviz
         // koji se nalazi u kvizRepository-u
-        private fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
+
+         fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
             var listaPitanja = pitanjaKvizovi().stream().filter{x -> x.kviz == nazivKviza}.collect(
                 Collectors.toList())
             var pomocnaPitanja = getPitanja()

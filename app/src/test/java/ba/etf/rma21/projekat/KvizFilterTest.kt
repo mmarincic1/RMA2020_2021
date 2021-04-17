@@ -4,6 +4,7 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import junit.framework.Assert.assertEquals
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.not
@@ -16,6 +17,16 @@ import org.hamcrest.CoreMatchers.`is` as Is
 class KvizFilterTest {
 
     var kvizModel: KvizListViewModel = KvizListViewModel()
+    var pitanjeKvizModel: PitanjeKvizViewModel = PitanjeKvizViewModel()
+
+    // NOVI TEST
+    @Test
+    fun noviTest(){
+        val kvizovi = pitanjeKvizModel.getPitanja("kviz0", "DONE")
+        assertEquals(3, kvizovi.size)
+
+    }
+    // NOVI TEST
 
     @Test
     fun testSviKvizovi(){

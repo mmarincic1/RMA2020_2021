@@ -8,14 +8,14 @@ import ba.etf.rma21.projekat.data.models.PitanjeKviz
 
 fun pitanjaKvizovi(): List<PitanjeKviz>{
     return listOf(
-        PitanjeKviz("pitanje0", "kviz0"),
-        PitanjeKviz("pitanje1", "kviz0"),
-        PitanjeKviz("pitanje2", "kviz0"),
-        PitanjeKviz("pitanje3", "kviz1"),
-        PitanjeKviz("pitanje4", "kviz1"),
-        PitanjeKviz("pitanje5", "kviz1"),
-        PitanjeKviz("pitanje6", "kviz2"),
-        PitanjeKviz("pitanje7", "kviz2"),
-        PitanjeKviz("pitanje8", "kviz2")
+        PitanjeKviz("pitanje0", "Kviz 0"),
+        PitanjeKviz("pitanje1", "Kviz 0"),
+        PitanjeKviz("pitanje2", "Kviz 0"),
+        PitanjeKviz("pitanje3", "Kviz 1"),
+        PitanjeKviz("pitanje4", "Kviz 1"),
+        PitanjeKviz("pitanje5", "Kviz 1"),
+        PitanjeKviz("pitanje6", "Kviz 2"),
+        PitanjeKviz("pitanje7", "Kviz 2"),
+        PitanjeKviz("pitanje8", "Kviz 2")
     )
 }
