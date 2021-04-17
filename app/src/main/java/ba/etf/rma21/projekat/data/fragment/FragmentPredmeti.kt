@@ -199,10 +199,6 @@ class FragmentPredmeti : Fragment() {
         var fr = getFragmentManager()?.beginTransaction()
         fr?.replace(R.id.container, fragment)
         fr?.commit()
-//        val transaction = childFragmentManager.beginTransaction()
-//        transaction.replace(R.id.container, fragment)
-//        transaction.addToBackStack(null)
-//        transaction.commit()
     }
 
 }

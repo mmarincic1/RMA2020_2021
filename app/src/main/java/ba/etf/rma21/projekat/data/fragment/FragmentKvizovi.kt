@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 
@@ -40,9 +41,16 @@ class FragmentKvizovi : Fragment() {
 
         quizzes.setLayoutManager( GridLayoutManager(view.context, 2, GridLayoutManager.VERTICAL, false))
 
-        quizzesAdapter = KvizListAdapter(arrayListOf())
+
+        quizzesAdapter = KvizListAdapter(arrayListOf()){kviz ->
+            showKviz(kviz)
+        }
 
         quizzes.adapter = quizzesAdapter
+
+        quizzes.setOnClickListener{
+
+        }
 
         napraviListenerZaSpinner()
 
@@ -83,5 +91,12 @@ class FragmentKvizovi : Fragment() {
     override fun onResume() {
         super.onResume()
         updateQuizzes()
+    }
+
+    private fun showKviz(kviz: Kviz) {
+        val fragment = FragmentPokusaj.newInstance(kviz)
+        var fr = getFragmentManager()?.beginTransaction()
+        fr?.replace(R.id.container, fragment)
+        fr?.commit()
     }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
@@ -20,7 +21,8 @@ import java.util.stream.Collectors
 
 
 class KvizListAdapter(
-    private var quizzes: List<Kviz>
+    private var quizzes: List<Kviz>,
+    private val onItemClicked: (kviz: Kviz) -> Unit
 ): RecyclerView.Adapter<KvizListAdapter.QuizViewHolder>(){
 
     override fun onCreateViewHolder(
@@ -36,7 +38,7 @@ class KvizListAdapter(
     override fun getItemCount(): Int = quizzes.size
 
     override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
-        //holder.newAction.setOnClickListener{onItemClicked()}
+        holder.itemView.setOnClickListener{onItemClicked(quizzes[position])}
         holder.quizName.text = quizzes[position].naziv
         // nije radio kviz
         if(quizzes[position].datumRada == null){
