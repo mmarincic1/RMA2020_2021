@@ -114,6 +114,9 @@ class FragmentPredmeti : Fragment() {
             FragmentKvizovi.odabraniPredmet = -1
 
             FragmentKvizovi.odabranaGrupa = -1
+            // otvaranje novog fragmenta
+            val porukicaFragment = FragmentPoruka.newInstance(odabirGrupe.selectedItem.toString(), odabirPredmeta.selectedItem.toString())
+            openFragment(porukicaFragment)
         }
 
         return view1
@@ -192,5 +195,14 @@ class FragmentPredmeti : Fragment() {
         else upisiMe.isClickable = false
     }
 
+    private fun openFragment(fragment: Fragment) {
+        var fr = getFragmentManager()?.beginTransaction()
+        fr?.replace(R.id.container, fragment)
+        fr?.commit()
+//        val transaction = childFragmentManager.beginTransaction()
+//        transaction.replace(R.id.container, fragment)
+//        transaction.addToBackStack(null)
+//        transaction.commit()
+    }
 
 }

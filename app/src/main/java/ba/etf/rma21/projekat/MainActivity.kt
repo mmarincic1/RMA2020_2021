@@ -1,22 +1,17 @@
 package ba.etf.rma21.projekat
 
-import android.content.Intent
+
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
 import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
-import ba.etf.rma21.projekat.data.view.KvizListAdapter
-import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,13 +22,13 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.kvizovi -> {
-                        val favoritesFragment = FragmentKvizovi.newInstance()
-                        openFragment(favoritesFragment)
+                        val kvizoviFragments = FragmentKvizovi.newInstance()
+                        openFragment(kvizoviFragments)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.predmeti -> {
-                        val recentFragments = FragmentPredmeti.newInstance()
-                        openFragment(recentFragments)
+                        val predmetiFragments = FragmentPredmeti.newInstance()
+                        openFragment(predmetiFragments)
                         return@OnNavigationItemSelectedListener true
                     }
                 }
