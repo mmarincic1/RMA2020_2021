@@ -67,7 +67,9 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                     openFragment(fragment)
                 }
                 "Rezultat" ->{
-                    val rezultat = pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                    var rezultat = pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                    if(rezultat == -1)
+                        rezultat = 0
                     val kvizoviFragments = FragmentPoruka.newInstance(
                         "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
                                 rezultat
@@ -124,7 +126,9 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         }
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
-            val rezultat =  pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+            var rezultat =  pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+            if(rezultat == -1)
+                rezultat = 0
             val kvizoviFragments = FragmentPoruka.newInstance(
                             "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
                                     rezultat
