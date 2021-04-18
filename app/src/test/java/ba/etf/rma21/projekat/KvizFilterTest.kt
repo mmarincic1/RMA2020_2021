@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat
 
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
@@ -24,6 +25,7 @@ class KvizFilterTest {
     fun noviTest(){
         val kvizovi = pitanjeKvizModel.getPitanja("kviz0", "DONE")
         assertEquals(3, kvizovi.size)
+        //assertEquals(3, PitanjeKvizRepository.getSize())
 
     }
     // NOVI TEST

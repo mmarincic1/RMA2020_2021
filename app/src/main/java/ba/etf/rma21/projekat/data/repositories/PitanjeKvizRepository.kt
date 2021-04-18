@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.text.BoringLayout
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.pitanjaKvizovi
 import java.util.stream.Collectors
@@ -11,13 +12,11 @@ import ba.etf.rma21.projekat.data.models.PitanjeKviz
 class PitanjeKvizRepository {
 
     companion object{
-        // nisam iskorisio nazivPredmeta jer ne bi ovo pozivao da nije kliknuo na vec neki odabrani kviz
-        // koji se nalazi u kvizRepository-u
+
         var listaSvihOdgovorenihPitanja = mutableListOf<PitanjeKviz>()
 
          fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
              var rezultatnaPitanja = mutableListOf<Pitanje>()
-                 // prvi put ulazi u pitanja
                  var listaPitanja =
                      pitanjaKvizovi().stream().filter { x -> x.kviz == nazivKviza }.collect(
                          Collectors.toList()
@@ -27,26 +26,76 @@ class PitanjeKvizRepository {
                      for (kviz in listaPitanja) {
                          if (pitanje.naziv == kviz.naziv){
                              rezultatnaPitanja.add(pitanje)
-//                             var pom = PitanjeKviz(pitanje.naziv, nazivKviza)
-//                             pom.setNazivPredmeta(nazivPredmeta)
-//                             listaSvihOdgovorenihPitanja.add(pom)
+                             var pom = PitanjeKviz(pitanje.naziv, nazivKviza)
+                             pom.setNazivPredmeta(nazivPredmeta)
+                             if(!listaSvihOdgovorenihPitanja.contains(pom))
+                                listaSvihOdgovorenihPitanja.add(pom)
                          }
                      }
                  }
             return rezultatnaPitanja
         }
 
-//        fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){
-//            var pom = PitanjeKviz(nazivPitanja, nazivKviza)
-//            pom.setNazivPredmeta(nazivPredmeta)
-//            for(pom1 in listaSvihOdgovorenihPitanja){
-//                if(pom1.equals(pom)){
-//                    pom.setOdgovorNaPitanje(odgovor)
-//                    break
-//                }
-//            }
-//        }
+        fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){
+            var pom = PitanjeKviz(nazivPitanja, nazivKviza)
+            pom.setNazivPredmeta(nazivPredmeta)
+            for(pom1 in listaSvihOdgovorenihPitanja){
+                if(pom1.equals(pom)){
+                    pom1.setOdgovorNaPitanje(odgovor)
+                    break
+                }
+            }
+        }
 
+        fun getOdgovorNaPitanje(nazivKviza: String, nazivPredmeta: String, nazivPitanja: String): Int{
+            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
+                    pitanje ->
+                pitanje.naziv == nazivPitanja &&
+                        pitanje.kviz == nazivKviza &&
+                        pitanje.getNazivPredmeta() == nazivPredmeta
+            }.findFirst().get()
+            return pom.getOdgovorNaPitanje()
+        }
+
+        fun zavrsiKviz(nazivKviza: String, nazivPredmeta: String){
+            listaSvihOdgovorenihPitanja.stream().filter{x ->
+                x.getNazivPredmeta() == nazivPredmeta && x.kviz == nazivKviza
+            }.forEach { x -> x.setZavrsenKviz() }
+        }
+
+        fun getRezultat(nazivKviza: String, nazivPredmeta: String): Int{
+            if(listaSvihOdgovorenihPitanja.stream().filter {
+                        pitanje ->
+                    pitanje.kviz == nazivKviza &&
+                            pitanje.getNazivPredmeta() == nazivPredmeta
+                }.findFirst().isPresent){
+            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
+                    pitanje ->
+                        pitanje.kviz == nazivKviza &&
+                        pitanje.getNazivPredmeta() == nazivPredmeta
+            }.findFirst().get()
+            return pom.getRezultat()
+            }
+            return -1
+        }
+
+        fun getZavrsenKviz(nazivKviza: String, nazivPredmeta: String): Boolean{
+            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
+                    pitanje ->
+                pitanje.kviz == nazivKviza &&
+                        pitanje.getNazivPredmeta() == nazivPredmeta
+            }.findFirst().get()
+            return pom.getZavrsenKviz()
+        }
+
+        fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Int) {
+            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
+                    pitanje ->
+                pitanje.kviz == uradjeniKviz &&
+                        pitanje.getNazivPredmeta() == uradjeniPredmet
+            }.findFirst().get()
+           pom.dodajRezultat(rezultat)
+        }
 
     }
 

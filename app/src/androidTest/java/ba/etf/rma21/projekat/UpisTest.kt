@@ -1,4 +1,3 @@
-@file:Suppress("PackageDirectoryMismatch")
 package ba.etf.rma21.projekat
 
 import androidx.test.espresso.Espresso
@@ -34,12 +33,11 @@ class UpisTest {
         ).perform(ViewActions.click())
         val kvizoviPrije = KvizRepository.getMyKvizes()
         val kvizoviPrijeSize = kvizoviPrije.size
-        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova))
-            .check(hasItemCount(kvizoviPrije.size))
+        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova)).check(hasItemCount(kvizoviPrije.size))
         for (kviz in kvizoviPrije) {
             itemTest(R.id.listaKvizova, kviz)
         }
-        Espresso.onView(ViewMatchers.withId(R.id.upisDugme)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.predmeti)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.odabirGodina)).perform(ViewActions.click())
         val nedodjeljeniKvizovi = KvizRepository.getAll().minus(KvizRepository.getMyKvizes())
         val nedodjeljeniPredmeti = PredmetRepository.getAll().minus(PredmetRepository.getUpisani())
@@ -84,7 +82,8 @@ class UpisTest {
             )
         ).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.dodajPredmetDugme)).perform(ViewActions.click())
-
+        Espresso.onView(ViewMatchers.withSubstring("Uspješno ste upisani u grupu"))
+        Espresso.onView(ViewMatchers.withId(R.id.kvizovi)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.filterKvizova)).perform(ViewActions.click())
         Espresso.onData(
             CoreMatchers.allOf(
@@ -94,8 +93,7 @@ class UpisTest {
         ).perform(ViewActions.click())
         val kvizoviPoslije = KvizRepository.getMyKvizes()
 
-        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova))
-            .check(hasItemCount(kvizoviPoslije.size))
+        Espresso.onView(ViewMatchers.withId(R.id.listaKvizova)).check(hasItemCount(kvizoviPoslije.size))
         for (kviz in kvizoviPoslije) {
             itemTest(R.id.listaKvizova, kviz)
         }

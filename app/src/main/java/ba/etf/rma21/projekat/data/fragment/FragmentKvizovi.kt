@@ -15,12 +15,13 @@ import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
-import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository.Companion.getPitanja
+import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 
 class FragmentKvizovi : Fragment() {
     private lateinit var quizzes: RecyclerView
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
+    private var pitanjaKvizViewModel = PitanjeKvizViewModel()
     private lateinit var filterKvizova: Spinner
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -97,8 +98,7 @@ class FragmentKvizovi : Fragment() {
     private fun showKviz(kviz: Kviz) {
         uradjeniKviz = kviz.naziv
         uradjeniPredmet = kviz.nazivPredmeta
-        FragmentPokusaj.brojTacnih = 0
-        val fragment = FragmentPokusaj(getPitanja(kviz.naziv, kviz.nazivPredmeta))
+        val fragment = FragmentPokusaj(pitanjaKvizViewModel.getPitanja(kviz.naziv, kviz.nazivPredmeta))
         var fr = getFragmentManager()?.beginTransaction()
         fr?.replace(R.id.container, fragment)
         fr?.commit()
