@@ -1,10 +1,14 @@
 package ba.etf.rma21.projekat
 
 
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
@@ -65,9 +69,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        napraviBottomNav()
-        val favoritesFragment = FragmentKvizovi.newInstance()
-        openFragment(favoritesFragment)
+        Handler().postDelayed({
+            napraviBottomNav()
+            val favoritesFragment = FragmentKvizovi.newInstance()
+            openFragment(favoritesFragment)
+        }, 2)
+
     }
 
     private fun napraviBottomNav() {

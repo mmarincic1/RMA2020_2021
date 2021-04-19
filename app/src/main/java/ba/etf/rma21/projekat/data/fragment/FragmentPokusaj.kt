@@ -85,9 +85,11 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
             false
         }
 
-        // PITAJ TREBA LI OVO????
-//        val fragment = FragmentPitanje(listaPitanja.get(0))
-//        openFragment(fragment)
+        //prvo pitanje se odmah prikazuje
+        navigationView.setCheckedItem(0)
+        indexPitanja = "1"
+        val fragment = FragmentPitanje(listaPitanja.get(0))
+        openFragment(fragment)
 
         brojPitanja = listaPitanja.size
 
@@ -130,25 +132,43 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         }
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
-            var rezultat =  pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
-            if(rezultat == -1)
-                rezultat = 0
-            val kvizoviFragments = FragmentPoruka.newInstance(
-                            "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
-                                    rezultat
-                        )
-            // jer ima samo 3 pitanja svaki kviz ZA SADA (to je po postavci)
-            if(navigationView.menu.size() < 4){
-                var godina = Calendar.getInstance().get(Calendar.YEAR)
-                var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
-                var dan = Calendar.getInstance().get(Calendar.DATE)
-                kvizViewModel.zavrsiKviz(Date(godina, mjesec, dan), FragmentKvizovi.uradjeniPredmet, uradjeniKviz, rezultat)
-                pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+            // MOZE SAMO PREDATI KVIZ AKO JE KVIZ AKTIVAN
+            if(kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, uradjeniKviz) != "crvena") {
+                var rezultat =
+                    pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                if (rezultat == -1)
+                    rezultat = 0
+                val kvizoviFragments = FragmentPoruka.newInstance(
+                    "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
+                            rezultat
+                )
+                // jer ima samo 3 pitanja svaki kviz ZA SADA (to je po postavci)
+                if (navigationView.menu.size() < 4) {
+                    var godina = Calendar.getInstance().get(Calendar.YEAR)
+                    var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
+                    var dan = Calendar.getInstance().get(Calendar.DATE)
+                    kvizViewModel.zavrsiKviz(
+                        Date(godina, mjesec, dan),
+                        FragmentKvizovi.uradjeniPredmet,
+                        uradjeniKviz,
+                        rezultat
+                    )
+                    pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
 
-                if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
-                    navigationView.menu.add(123456, listaPitanja.size, listaPitanja.size, "Rezultat")
+                    if (pitanjeKvizViewModel.getZavrsenKviz(
+                            uradjeniKviz,
+                            FragmentKvizovi.uradjeniPredmet
+                        )
+                    ) {
+                        navigationView.menu.add(
+                            123456,
+                            listaPitanja.size,
+                            listaPitanja.size,
+                            "Rezultat"
+                        )
+                    }
+                    openFragment(kvizoviFragments)
                 }
-                openFragment(kvizoviFragments)
             }
             return@OnMenuItemClickListener true
         }
@@ -156,6 +176,4 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).setOnMenuItemClickListener(predajKvizItemClickListener)
         MainActivity.bottomNavigation.menu.findItem(R.id.zaustaviKviz).setOnMenuItemClickListener(zaustaviKvizItemClickListener)
     }
-
-
 }

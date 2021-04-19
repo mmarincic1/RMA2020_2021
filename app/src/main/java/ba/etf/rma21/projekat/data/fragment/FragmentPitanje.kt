@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.fragment
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.BojaOdgovoraOnClick
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 
 
@@ -27,6 +29,7 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
     private lateinit var odgovori: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
+    private var kvizViewModel = KvizListViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,8 +50,12 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
         Handler().postDelayed({
             if(FragmentPokusaj.odgovor != -1){
                 odgovori.performItemClick(odgovori, FragmentPokusaj.odgovor, odgovori.adapter.getItemId(FragmentPokusaj.odgovor))
-            } // OVO ZNACI DA NIJE ODGOVORIO, DA LI TREBA DA SE PRIKAZE TACAN ODGOVOR???
-            else if(pitanjeKvizViewModel.getZavrsenKviz(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
+            } // OVO ZNACI DA NIJE ODGOVORIO
+            else if(pitanjeKvizViewModel.getZavrsenKviz(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                || kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, FragmentKvizovi.uradjeniKviz) == "crvena") {
+                // moram pokazati i tacan odgovor
+                val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
+                odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
                 for(odabir in odgovori.children){
                     odabir.isEnabled = false
                     odabir.setOnClickListener(null)
@@ -57,4 +64,5 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
         }, 1)
 
     }
+
 }
