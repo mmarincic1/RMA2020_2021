@@ -1,5 +1,7 @@
 package ba.etf.rma21.projekat.data.models
 
+import kotlin.math.roundToInt
+
 // - naziv: String - jedinstveni naziv pitanja u okviru kvizova u kojima se nalazi
 // - kviz: String - jedinstveni naziv kviza
 
@@ -9,7 +11,7 @@ class PitanjeKviz(val naziv: String, val kviz: String){
     private var odgovorNaPitanje: Int = -1
     private var zavrsenKviz = false
 
-    private var rezultat = -1
+    private var rezultat: Double = (-1).toDouble()
 
     fun setNazivPredmeta(naziv: String){
         nazivPredmeta = naziv
@@ -57,12 +59,12 @@ class PitanjeKviz(val naziv: String, val kviz: String){
     }
 
     fun getRezultat(): Int{
-        return rezultat
+        return rezultat.roundToInt()
     }
 
-    fun dodajRezultat(rezultat: Int) {
-        if(this.rezultat == -1)
-            this.rezultat = 0
+    fun dodajRezultat(rezultat: Double) {
+        if(this.rezultat == (-1).toDouble())
+            this.rezultat = 0.toDouble()
         this.rezultat+= rezultat
     }
 

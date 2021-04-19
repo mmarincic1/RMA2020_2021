@@ -30,7 +30,7 @@ class PitanjeKvizViewModel {
         return PitanjeKvizRepository.getZavrsenKviz(nazivKviza, nazivPredmeta)
     }
 
-    fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Int) {
+    fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Double) {
         PitanjeKvizRepository.dodajRezultat(uradjeniKviz, uradjeniPredmet, rezultat)
     }
 

@@ -20,11 +20,11 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
 
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
     private val menu: Menu = FragmentPokusaj.navigationView.getMenu()
-    private var rezultat = 0
+    private var rezultat: Double = 0.toDouble()
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if(position == pitanje.tacan){
             if(FragmentPokusaj.odgovor == -1)
-                rezultat =  ((1.toDouble()/FragmentPokusaj.brojPitanja.toDouble())*100).toInt()
+                rezultat =  ((1.toDouble()/FragmentPokusaj.brojPitanja.toDouble())*100)
             pitanjeKvizViewModel.dodajRezultat(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet, rezultat)
             val odgovorTacan = parent?.getChildAt(position) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
@@ -46,7 +46,7 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
             }
         }else{
             if(FragmentPokusaj.odgovor == -1)
-            pitanjeKvizViewModel.dodajRezultat(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet, 0)
+            pitanjeKvizViewModel.dodajRezultat(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet, 0.toDouble())
             val odgovorTacan = parent?.getChildAt(pitanje.tacan) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
             val odgovorPogresan = parent?.getChildAt(position) as TextView

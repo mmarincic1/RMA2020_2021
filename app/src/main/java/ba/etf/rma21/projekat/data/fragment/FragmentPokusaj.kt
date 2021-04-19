@@ -1,6 +1,9 @@
 package ba.etf.rma21.projekat.data.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -100,7 +103,39 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         val brojPitanja: Int = listaPitanja.size
         for(i in 1 .. brojPitanja)
             navigationView.menu.add(123456, i-1, i-1, (i).toString())
-        //navigationView.menu.add(i.toString())
+
+        for (i in 0 until listaPitanja.size) {
+            odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(i).naziv)
+            // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
+            if((odgovor == -1 &&
+                        (pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                                || kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, uradjeniKviz) == "crvena"))
+                || (odgovor != -1 && odgovor != listaPitanja.get(i).tacan)){
+                val menuItem: MenuItem = navigationView.menu.getItem(i)
+                val spanString =
+                    SpannableString(menuItem.getTitle().toString())
+                spanString.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#DB4F3D")),
+                    0,
+                    spanString.length,
+                    0
+                )
+                menuItem.setTitle(spanString)
+            }
+            // tacan odgovor
+            else if(odgovor == listaPitanja.get(i).tacan) {
+                val menuItem: MenuItem = navigationView.menu.getItem(i)
+                val spanString =
+                    SpannableString(menuItem.getTitle().toString())
+                spanString.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#3DDC84")),
+                    0,
+                    spanString.length,
+                    0
+                )
+                menuItem.setTitle(spanString)
+            }
+        }
 
         if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
             navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")

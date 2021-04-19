@@ -88,7 +88,7 @@ class PitanjeKvizRepository {
             return pom.getZavrsenKviz()
         }
 
-        fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Int) {
+        fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Double) {
             val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
                     pitanje ->
                 pitanje.kviz == uradjeniKviz &&
