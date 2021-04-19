@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -80,7 +79,7 @@ class FragmentKvizovi : Fragment() {
         }
     }
 
-    private fun updateQuizzes(): Unit{
+    private fun updateQuizzes(){
         if(filterKvizova.selectedItem.toString() == "Svi kvizovi")
             quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
         else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
@@ -98,7 +97,7 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
-        if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi") {
+        if(filterKvizova.selectedItem.toString() != "Svi kvizovi" && quizListViewModel.getStatus(kviz.nazivPredmeta, kviz.naziv) != "zuta") {
             uradjeniKviz = kviz.naziv
             uradjeniPredmet = kviz.nazivPredmeta
             val fragment =

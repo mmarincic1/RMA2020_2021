@@ -22,7 +22,9 @@ class KvizRepository {
         }
 
         fun addMojiKvizovi(predmet: String, grupa: String): Unit{
-            mojiKvizovi.add(getKvizSaImenomIGrupom(predmet, grupa))
+            var pom = getKvizSaImenomIGrupom(predmet, grupa)
+            pom.setStatus(dajStatus(pom))
+            mojiKvizovi.add(pom)
         }
 
         init {
@@ -33,6 +35,7 @@ class KvizRepository {
         fun getMyKvizes(): List<Kviz> {
             if(mojiKvizovi.size == 0)
                 return emptyList()
+            updateStatuseZaSvakiSlucaj()
             return mojiKvizovi
         }
 
@@ -41,7 +44,8 @@ class KvizRepository {
         }
 
         fun getDone(): List<Kviz> {
-            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "plava" }.collect(
+            updateStatuseZaSvakiSlucaj()
+            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "plava" }.collect(
                 Collectors.toList())
             if(pom.size == 0)
                 return emptyList()
@@ -49,7 +53,8 @@ class KvizRepository {
         }
 
         fun getFuture(): List<Kviz> {
-            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "zuta" }.collect(
+            updateStatuseZaSvakiSlucaj()
+            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "zuta" }.collect(
                 Collectors.toList())
             if(pom.size == 0)
                 return emptyList()
@@ -57,7 +62,8 @@ class KvizRepository {
         }
 
         fun getNotTaken(): List<Kviz> {
-            val pom = mojiKvizovi.stream().filter { kviz -> dajStatus(kviz) == "crvena" }.collect(
+            updateStatuseZaSvakiSlucaj()
+            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "crvena" }.collect(
                 Collectors.toList())
             if(pom.size == 0)
                 return emptyList()
@@ -71,6 +77,7 @@ class KvizRepository {
                 var datumKraja = uporediSaTrenutnimDatumom(kviz.datumKraj)
                 // kviz nije otvoren
                 if(datumPocetka == 1){
+
                     return "zuta"
                 }
                 // kviz aktivan
@@ -101,8 +108,16 @@ class KvizRepository {
         fun zavrsiKviz(datum: Date, predmet: String, kvizz: String, bodovi: Int){
             mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().datumRada = datum
             mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().osvojeniBodovi = bodovi.toFloat()
+            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().setStatus("plava")
+        }
+
+        fun getStatus(predmet: String, kvizz: String): String{
+            return mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().getStatus()
         }
 
 
+        private fun updateStatuseZaSvakiSlucaj(){
+            mojiKvizovi.stream().forEach { kviz -> kviz.setStatus(dajStatus(kviz))}
+        }
     }
 }
