@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +46,8 @@ class FragmentKvizovi : Fragment() {
         quizzes.setLayoutManager( GridLayoutManager(view.context, 2, GridLayoutManager.VERTICAL, false))
 
 
-        quizzesAdapter = KvizListAdapter(arrayListOf()){kviz ->
+
+        quizzesAdapter = KvizListAdapter(arrayListOf()) { kviz ->
             showKviz(kviz)
         }
 
@@ -96,12 +98,15 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
-        uradjeniKviz = kviz.naziv
-        uradjeniPredmet = kviz.nazivPredmeta
-        val fragment = FragmentPokusaj(pitanjaKvizViewModel.getPitanja(kviz.naziv, kviz.nazivPredmeta))
-        var fr = getFragmentManager()?.beginTransaction()
-        fr?.replace(R.id.container, fragment)
-        fr?.commit()
+        if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi") {
+            uradjeniKviz = kviz.naziv
+            uradjeniPredmet = kviz.nazivPredmeta
+            val fragment =
+                FragmentPokusaj(pitanjaKvizViewModel.getPitanja(kviz.naziv, kviz.nazivPredmeta))
+            var fr = getFragmentManager()?.beginTransaction()
+            fr?.replace(R.id.container, fragment)
+            fr?.commit()
+        }
     }
 
     private fun napraviBottomNav() {

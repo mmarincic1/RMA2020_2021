@@ -23,10 +23,8 @@ class KvizFilterTest {
     // NOVI TEST
     @Test
     fun noviTest(){
-        val kvizovi = pitanjeKvizModel.getPitanja("kviz0", "DONE")
+        val kvizovi = pitanjeKvizModel.getPitanja("Kviz 0", "DONE")
         assertEquals(3, kvizovi.size)
-        //assertEquals(3, PitanjeKvizRepository.getSize())
-
     }
     // NOVI TEST
 
@@ -128,7 +126,7 @@ class KvizFilterTest {
         assertEquals(1, kvizovi.size)
 
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("IM"))))
-        assertThat(kvizovi, hasItem<Kviz>(hasProperty("naziv", Is("Kviz 0"))))
+        assertThat(kvizovi, hasItem<Kviz>(hasProperty("naziv", Is("Kviz 1"))))
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("trajanje", Is(30))))
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivGrupe", Is("G2"))))
 

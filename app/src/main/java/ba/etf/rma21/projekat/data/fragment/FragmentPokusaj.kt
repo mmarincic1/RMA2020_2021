@@ -94,10 +94,11 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
     private fun napraviNavView() {
         val brojPitanja: Int = listaPitanja.size
         for(i in 1 .. brojPitanja)
-            navigationView.menu.add(i.toString())
+            navigationView.menu.add(123456, i-1, i-1, (i).toString())
+        //navigationView.menu.add(i.toString())
 
         if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
-            navigationView.menu.add("Rezultat")
+            navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
         }
     }
 
@@ -136,7 +137,9 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
             // jer ima samo 3 pitanja svaki kviz ZA SADA (to je po postavci)
             if(navigationView.menu.size() < 4){
                 pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
-                navigationView.menu.add("Rezultat")
+                if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
+                    navigationView.menu.add(123456, listaPitanja.size, listaPitanja.size, "Rezultat")
+                }
                 openFragment(kvizoviFragments)
             }
             return@OnMenuItemClickListener true
