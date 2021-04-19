@@ -189,6 +189,14 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                         rezultat
                     )
                     pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                    // ovo je ako nije odgovorio na neka pitanja a odmah otisao da preda kviz, oni moraju da pocrvene
+                    navigationView.menu.clear()
+                    napraviNavView()
+
+                    // izbacuje jedan visak "Rezultat"
+                    if(navigationView.menu.findItem(listaPitanja.size) != null){
+                        navigationView.menu.removeItem(listaPitanja.size)
+                    }
 
                     if (pitanjeKvizViewModel.getZavrsenKviz(
                             uradjeniKviz,
