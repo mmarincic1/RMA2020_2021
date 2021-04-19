@@ -8,7 +8,7 @@ import java.util.stream.Collectors
 class KvizRepository {
 
     companion object {
-        private lateinit var mojiKvizovi: MutableList<Kviz>
+        private var mojiKvizovi: MutableList<Kviz>
 
         // pomocna fija kako bi mogao sve testove odjednom pokrenuti
         fun ispisiSve(): Unit{
@@ -96,6 +96,11 @@ class KvizRepository {
             else if(datum1.getDate() > dan) return 1;
             else if(dan > datum1.getDate()) return 2;
             return 0;
+        }
+
+        fun zavrsiKviz(datum: Date, predmet: String, kvizz: String, bodovi: Int){
+            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().datumRada = datum
+            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().osvojeniBodovi = bodovi.toFloat()
         }
 
 

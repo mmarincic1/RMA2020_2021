@@ -10,8 +10,10 @@ import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi.Companion.uradjeniKviz
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import com.google.android.material.navigation.NavigationView
+import java.util.*
 
 class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
@@ -22,6 +24,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         var indexPitanja = ""
     }
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
+    private var kvizViewModel = KvizListViewModel()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -136,7 +139,12 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                         )
             // jer ima samo 3 pitanja svaki kviz ZA SADA (to je po postavci)
             if(navigationView.menu.size() < 4){
+                var godina = Calendar.getInstance().get(Calendar.YEAR)
+                var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
+                var dan = Calendar.getInstance().get(Calendar.DATE)
+                kvizViewModel.zavrsiKviz(Date(godina, mjesec, dan), FragmentKvizovi.uradjeniPredmet, uradjeniKviz, rezultat)
                 pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+
                 if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
                     navigationView.menu.add(123456, listaPitanja.size, listaPitanja.size, "Rezultat")
                 }

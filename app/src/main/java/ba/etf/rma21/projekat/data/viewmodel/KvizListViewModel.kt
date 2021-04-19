@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import java.util.*
 
 class KvizListViewModel {
     fun getQuizzes(): List<Kviz>{
@@ -26,5 +27,9 @@ class KvizListViewModel {
 
     fun addMojKviz(predmet: String, grupa: String): Unit{
         KvizRepository.addMojiKvizovi(predmet, grupa)
+    }
+
+    fun zavrsiKviz(datum: Date, predmet: String, kvizz: String, bodovi: Int){
+        KvizRepository.zavrsiKviz(datum, predmet, kvizz, bodovi)
     }
 }
