@@ -39,51 +39,27 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         napraviNavView()
 
         navigationView.setNavigationItemSelectedListener { item ->
-            when(item.toString()){
-                // Po postaci pise da trebaju biti samo 3 pitanja iako je nekada u buducnosti moguce da ce biti vise
-                // tada bi trebao naci nacin da dinamicki ovo pravim
-                "1" -> {
-                    odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(0).naziv)
-                    val fragment = FragmentPitanje(listaPitanja.get(0))
-                    indexPitanja = "1"
-                    openFragment(fragment)
-                }
-                "2" -> {
-                    odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(1).naziv)
-                    val fragment = FragmentPitanje(listaPitanja.get(1))
-                    indexPitanja = "2"
-                    openFragment(fragment)
-                }
-                "3" -> {
-                    odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(2).naziv)
-                    val fragment = FragmentPitanje(listaPitanja.get(2))
-                    indexPitanja = "3"
-                    openFragment(fragment)
-                }
-                "4" -> {
-                    odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(3).naziv)
-                    val fragment = FragmentPitanje(listaPitanja.get(3))
-                    indexPitanja = "4"
-                    openFragment(fragment)
-                }
-                "5" -> {
-                    odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(4).naziv)
-                    val fragment = FragmentPitanje(listaPitanja.get(4))
-                    indexPitanja = "5"
-                    openFragment(fragment)
-                }
-                "Rezultat" ->{
-                    var rezultat = pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
-                    if(rezultat == -1)
-                        rezultat = 0
-                    val kvizoviFragments = FragmentPoruka.newInstance(
+            if(item.toString() == "Rezultat"){
+                var rezultat = pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                if(rezultat == -1)
+                    rezultat = 0
+                val kvizoviFragments = FragmentPoruka.newInstance(
                         "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
                                 rezultat
-                    )
-                    indexPitanja = ""
-                    openFragment(kvizoviFragments)
-                }
+                )
+                indexPitanja = ""
+                openFragment(kvizoviFragments)
+            }
+            else {
+                when (item.toString().toInt()) {
+                    in 1..listaPitanja.size -> {
+                        odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(item.toString().toInt() - 1).naziv)
+                        val fragment = FragmentPitanje(listaPitanja.get(item.toString().toInt() - 1))
+                        indexPitanja = (item.toString().toInt()).toString()
+                        openFragment(fragment)
+                    }
 
+                }
             }
             false
         }
@@ -91,9 +67,10 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         //prvo pitanje se odmah prikazuje
         navigationView.setCheckedItem(0)
         indexPitanja = "1"
+        odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(0).naziv)
         val fragment = FragmentPitanje(listaPitanja.get(0))
         openFragment(fragment)
-
+        //
         brojPitanja = listaPitanja.size
 
         return view
@@ -177,8 +154,8 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                     "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
                             rezultat
                 )
-                // jer ima samo 3 pitanja svaki kviz ZA SADA (to je po postavci)
-                if (navigationView.menu.size() < 4) {
+                // jer ima manje nego broj pitanja + 1 a to je rezultat
+                if (navigationView.menu.size() <= listaPitanja.size) {
                     var godina = Calendar.getInstance().get(Calendar.YEAR)
                     var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
                     var dan = Calendar.getInstance().get(Calendar.DATE)

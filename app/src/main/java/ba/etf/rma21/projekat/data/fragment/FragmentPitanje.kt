@@ -49,7 +49,17 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
         // KONAAAACNO HEHEHEHEHEHHE
         Handler().postDelayed({
             if(FragmentPokusaj.odgovor != -1){
-                odgovori.performItemClick(odgovori, FragmentPokusaj.odgovor, odgovori.adapter.getItemId(FragmentPokusaj.odgovor))
+                // ne moram kliktati mogu direktno bojiti
+                //odgovori.performItemClick(odgovori, FragmentPokusaj.odgovor, odgovori.adapter.getItemId(FragmentPokusaj.odgovor))
+                val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
+                var odgovorPogresan = odgovori?.getChildAt(FragmentPokusaj.odgovor) as TextView
+                odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+                if(pitanje.tacan != FragmentPokusaj.odgovor)
+                    odgovorPogresan.setTextColor(Color.parseColor("#DB4F3D"))
+                for(odabir in odgovori.children){
+                    odabir.isEnabled = false
+                    odabir.setOnClickListener(null)
+                }
             } // OVO ZNACI DA NIJE ODGOVORIO
             else if(pitanjeKvizViewModel.getZavrsenKviz(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
                 || kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, FragmentKvizovi.uradjeniKviz) == "crvena") {
