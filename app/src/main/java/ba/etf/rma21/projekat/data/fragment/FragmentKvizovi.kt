@@ -59,12 +59,6 @@ class FragmentKvizovi : Fragment() {
     }
     companion object {
         fun newInstance(): FragmentKvizovi = FragmentKvizovi()
-
-        var odabranaGodina: Int = -1
-        var odabraniPredmet: Int = -1
-        var odabranaGrupa: Int = -1
-        var uradjeniKviz = ""
-        var uradjeniPredmet = ""
     }
 
     private fun napraviListenerZaSpinner() {
@@ -98,8 +92,8 @@ class FragmentKvizovi : Fragment() {
 
     private fun showKviz(kviz: Kviz) {
         if(filterKvizova.selectedItem.toString() != "Svi kvizovi" && quizListViewModel.getStatus(kviz.nazivPredmeta, kviz.naziv) != "zuta") {
-            uradjeniKviz = kviz.naziv
-            uradjeniPredmet = kviz.nazivPredmeta
+            pitanjaKvizViewModel.setUradjeniKviz(kviz.naziv)
+            pitanjaKvizViewModel.setUradjeniPredmet(kviz.nazivPredmeta)
             val fragment =
                 FragmentPokusaj(pitanjaKvizViewModel.getPitanja(kviz.naziv, kviz.nazivPredmeta))
             var fr = getFragmentManager()?.beginTransaction()

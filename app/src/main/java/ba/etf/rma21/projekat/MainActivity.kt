@@ -1,21 +1,14 @@
 package ba.etf.rma21.projekat
 
 
-import android.graphics.Color
+
 import android.os.Bundle
 import android.os.Handler
-import android.widget.TextView
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
-
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
-import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
-import ba.etf.rma21.projekat.data.fragment.FragmentPoruka
 import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
-
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

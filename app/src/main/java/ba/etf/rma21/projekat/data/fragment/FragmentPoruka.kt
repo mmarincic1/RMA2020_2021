@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.R
 
 
-// Uspješno ste upisani u grupu ${grupa.naziv} predmeta ${grupa.nazivPredmeta}!
-
 class FragmentPoruka : Fragment() {
     private lateinit var porukica: TextView
 

@@ -14,6 +14,14 @@ class PitanjeKvizRepository {
     companion object{
 
         var listaSvihOdgovorenihPitanja = mutableListOf<PitanjeKviz>()
+        var odabranaGodina: Int = -1
+        var odabraniPredmet: Int = -1
+        var odabranaGrupa: Int = -1
+        var uradjeniKviz = ""
+        var uradjeniPredmet = ""
+        var brojPitanja = 0
+        var odgovor = -1
+        var indexPitanja = ""
 
          fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
              var rezultatnaPitanja = mutableListOf<Pitanje>()
@@ -48,13 +56,20 @@ class PitanjeKvizRepository {
         }
 
         fun getOdgovorNaPitanje(nazivKviza: String, nazivPredmeta: String, nazivPitanja: String): Int{
-            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
-                    pitanje ->
+            if(listaSvihOdgovorenihPitanja.stream().filter {
+                pitanje ->
                 pitanje.naziv == nazivPitanja &&
                         pitanje.kviz == nazivKviza &&
                         pitanje.getNazivPredmeta() == nazivPredmeta
-            }.findFirst().get()
-            return pom.getOdgovorNaPitanje()
+            }.findFirst().isPresent) {
+                val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter { pitanje ->
+                    pitanje.naziv == nazivPitanja &&
+                            pitanje.kviz == nazivKviza &&
+                            pitanje.getNazivPredmeta() == nazivPredmeta
+                }.findFirst().get()
+                return pom.getOdgovorNaPitanje()
+            }
+            return -1
         }
 
         fun zavrsiKviz(nazivKviza: String, nazivPredmeta: String){

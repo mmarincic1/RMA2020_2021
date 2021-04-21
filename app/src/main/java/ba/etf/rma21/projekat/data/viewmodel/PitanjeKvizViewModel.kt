@@ -34,5 +34,59 @@ class PitanjeKvizViewModel {
         PitanjeKvizRepository.dodajRezultat(uradjeniKviz, uradjeniPredmet, rezultat)
     }
 
+    fun setOdabranaGodina(odabranaGodina: Int){
+        PitanjeKvizRepository.odabranaGodina = odabranaGodina
+    }
+    fun getOdabranaGodina(): Int{
+        return PitanjeKvizRepository.odabranaGodina
+    }
 
+    fun setOdabraniPredmet(odabraniPredmet: Int){
+        PitanjeKvizRepository.odabraniPredmet = odabraniPredmet
+    }
+    fun getOdabraniPredmet(): Int{
+        return PitanjeKvizRepository.odabraniPredmet
+    }
+
+    fun setOdabranaGrupa(odabanaGrupa: Int){
+        PitanjeKvizRepository.odabranaGrupa = odabanaGrupa
+    }
+    fun getOdabranaGrupa(): Int{
+        return PitanjeKvizRepository.odabranaGrupa
+    }
+
+    fun setUradjeniKviz(uradjeniKviz: String){
+        PitanjeKvizRepository.uradjeniKviz = uradjeniKviz
+    }
+    fun getUradjeniKviz(): String{
+        return PitanjeKvizRepository.uradjeniKviz
+    }
+
+    fun setUradjeniPredmet(uradjeniPredmet: String){
+        PitanjeKvizRepository.uradjeniPredmet = uradjeniPredmet
+    }
+    fun getUradjeniPredmet(): String{
+        return PitanjeKvizRepository.uradjeniPredmet
+    }
+
+    fun setBrojPitanja(brojPitanja: Int){
+        PitanjeKvizRepository.brojPitanja = brojPitanja
+    }
+    fun getBrojPitanja(): Int{
+        return PitanjeKvizRepository.brojPitanja
+    }
+
+    fun setOdgovor(odgovor: Int){
+        PitanjeKvizRepository.odgovor = odgovor
+    }
+    fun getOdgovor(): Int{
+        return PitanjeKvizRepository.odgovor
+    }
+
+    fun setIndexPitanja(indexPitanja: String){
+        PitanjeKvizRepository.indexPitanja = indexPitanja
+    }
+    fun getIndexPitanja(): String{
+        return PitanjeKvizRepository.indexPitanja
+    }
 }

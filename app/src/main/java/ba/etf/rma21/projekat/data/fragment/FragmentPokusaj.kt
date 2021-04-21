@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
-import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi.Companion.uradjeniKviz
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
@@ -21,10 +20,7 @@ import java.util.*
 class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
     companion object{
-        var brojPitanja: Int = 0
-        var odgovor = -1
         lateinit var navigationView: NavigationView
-        var indexPitanja = ""
     }
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
     private var kvizViewModel = KvizListViewModel()
@@ -40,22 +36,25 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         navigationView.setNavigationItemSelectedListener { item ->
             if(item.toString() == "Rezultat"){
-                var rezultat = pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                var rezultat = pitanjeKvizViewModel.getRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
                 if(rezultat == -1)
                     rezultat = 0
                 val kvizoviFragments = FragmentPoruka.newInstance(
-                        "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
+                        "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
                                 rezultat
                 )
-                indexPitanja = ""
+                pitanjeKvizViewModel.setIndexPitanja("")
                 openFragment(kvizoviFragments)
             }
             else {
                 when (item.toString().toInt()) {
                     in 1..listaPitanja.size -> {
-                        odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(item.toString().toInt() - 1).naziv)
+                        pitanjeKvizViewModel.setOdgovor(
+                        pitanjeKvizViewModel.
+                        getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
+                                pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(item.toString().toInt() - 1).naziv))
                         val fragment = FragmentPitanje(listaPitanja.get(item.toString().toInt() - 1))
-                        indexPitanja = (item.toString().toInt()).toString()
+                        pitanjeKvizViewModel.setIndexPitanja((item.toString().toInt()).toString())
                         openFragment(fragment)
                     }
 
@@ -66,12 +65,13 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         //prvo pitanje se odmah prikazuje
         navigationView.setCheckedItem(0)
-        indexPitanja = "1"
-        odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(0).naziv)
+        pitanjeKvizViewModel.setIndexPitanja("1")
+        pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
+                pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(0).naziv))
         val fragment = FragmentPitanje(listaPitanja.get(0))
         openFragment(fragment)
         //
-        brojPitanja = listaPitanja.size
+        pitanjeKvizViewModel.setBrojPitanja(listaPitanja.size)
 
         return view
     }
@@ -82,11 +82,15 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
             navigationView.menu.add(123456, i-1, i-1, (i).toString())
 
         for (i in 0 until listaPitanja.size) {
-            odgovor = pitanjeKvizViewModel.getOdgovorNaPitanje(uradjeniKviz, FragmentKvizovi.uradjeniPredmet, listaPitanja.get(i).naziv)
+             pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
+                    pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(i).naziv))
+            val odgovor = pitanjeKvizViewModel.getOdgovor()
             // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
             if((odgovor == -1 &&
-                        (pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
-                                || kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, uradjeniKviz) == "crvena"))
+                        (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(),
+                                pitanjeKvizViewModel.getUradjeniPredmet())
+                                || kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(),
+                                pitanjeKvizViewModel.getUradjeniKviz()) == "crvena"))
                 || (odgovor != -1 && odgovor != listaPitanja.get(i).tacan)){
                 val menuItem: MenuItem = navigationView.menu.getItem(i)
                 val spanString =
@@ -114,7 +118,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
             }
         }
 
-        if(pitanjeKvizViewModel.getZavrsenKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)){
+        if(pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())){
             navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
         }
     }
@@ -145,13 +149,13 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
             // MOZE SAMO PREDATI KVIZ AKO JE KVIZ AKTIVAN
-            if(kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, uradjeniKviz) != "crvena") {
+            if(kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(), pitanjeKvizViewModel.getUradjeniKviz()) != "crvena") {
                 var rezultat =
-                    pitanjeKvizViewModel.getRezultat(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                    pitanjeKvizViewModel.getRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
                 if (rezultat == -1)
                     rezultat = 0
                 val kvizoviFragments = FragmentPoruka.newInstance(
-                    "Završili ste kviz " + uradjeniKviz + " sa tačnosti " +
+                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
                             rezultat
                 )
                 // jer ima manje nego broj pitanja + 1 a to je rezultat
@@ -161,11 +165,11 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                     var dan = Calendar.getInstance().get(Calendar.DATE)
                     kvizViewModel.zavrsiKviz(
                         Date(godina, mjesec, dan),
-                        FragmentKvizovi.uradjeniPredmet,
-                        uradjeniKviz,
+                        pitanjeKvizViewModel.getUradjeniPredmet(),
+                        pitanjeKvizViewModel.getUradjeniKviz(),
                         rezultat
                     )
-                    pitanjeKvizViewModel.zavrsiKviz(uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
+                    pitanjeKvizViewModel.zavrsiKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
                     // ovo je ako nije odgovorio na neka pitanja a odmah otisao da preda kviz, oni moraju da pocrvene
                     navigationView.menu.clear()
                     napraviNavView()
@@ -176,8 +180,8 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                     }
 
                     if (pitanjeKvizViewModel.getZavrsenKviz(
-                            uradjeniKviz,
-                            FragmentKvizovi.uradjeniPredmet
+                            pitanjeKvizViewModel.getUradjeniKviz(),
+                             pitanjeKvizViewModel.getUradjeniPredmet()
                         )
                     ) {
                         navigationView.menu.add(

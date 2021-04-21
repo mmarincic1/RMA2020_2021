@@ -5,6 +5,7 @@ import androidx.core.widget.ListViewAutoScrollHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -22,6 +23,7 @@ import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.hamcrest.Matchers.anything
 
 
 @RunWith(AndroidJUnit4::class)
@@ -132,9 +134,11 @@ class MySpirala2AndroidTest {
 //        //for (pitanje in pitanja) {
 //            onView(withId(R.id.navigacijaPitanja)).perform(NavigationViewActions.navigateTo(indeks))
 //            onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekst)))
-//        //Espresso.onData(CoreMatchers.allOf(CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)))).atPosition(pitanja[indeks].tacan).perform(click()))
-////        onView(withId(R.id.odgovoriLista))
-////                .perform(scrollTo(), click())
+//        // OVE DVIJE LINIJE KODA SU SOLUCIJE KOJE SAM PROBAO I OBJE RADE KADA SMANJIM NAVVIEW
+//        //Espresso.onData(withId(R.id.odgovoriLista)).atPosition(0).perform(click())
+//        Espresso.onData(anything()).inAdapterView(withId(R.id.odgovoriLista)).atPosition(0).perform(click())
+//                //.perform(click())
+//        //Espresso.onData(CoreMatchers.allOf(CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)))).atPosition(pitanja[indeks].tacan).perform(click())
 //        indeks++
 //        //}
 ////        // zaustavljam kviz

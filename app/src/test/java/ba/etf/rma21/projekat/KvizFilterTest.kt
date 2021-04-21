@@ -24,7 +24,7 @@ class KvizFilterTest {
     @Test
     fun noviTest(){
         val kvizovi = pitanjeKvizModel.getPitanja("Kviz 0", "DONE")
-        assertEquals(3, kvizovi.size)
+        assertEquals(4, kvizovi.size)
     }
     // NOVI TEST
 

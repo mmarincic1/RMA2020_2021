@@ -48,27 +48,30 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
         super.onViewCreated(view, savedInstanceState)
         // KONAAAACNO HEHEHEHEHEHHE
         Handler().postDelayed({
-            if(FragmentPokusaj.odgovor != -1){
-                // ne moram kliktati mogu direktno bojiti
-                //odgovori.performItemClick(odgovori, FragmentPokusaj.odgovor, odgovori.adapter.getItemId(FragmentPokusaj.odgovor))
-                val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-                var odgovorPogresan = odgovori?.getChildAt(FragmentPokusaj.odgovor) as TextView
-                odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
-                if(pitanje.tacan != FragmentPokusaj.odgovor)
-                    odgovorPogresan.setTextColor(Color.parseColor("#DB4F3D"))
-                for(odabir in odgovori.children){
-                    odabir.isEnabled = false
-                    odabir.setOnClickListener(null)
-                }
-            } // OVO ZNACI DA NIJE ODGOVORIO
-            else if(pitanjeKvizViewModel.getZavrsenKviz(FragmentKvizovi.uradjeniKviz, FragmentKvizovi.uradjeniPredmet)
-                || kvizViewModel.getStatus(FragmentKvizovi.uradjeniPredmet, FragmentKvizovi.uradjeniKviz) == "crvena") {
-                // moram pokazati i tacan odgovor
-                val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-                odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
-                for(odabir in odgovori.children){
-                    odabir.isEnabled = false
-                    odabir.setOnClickListener(null)
+            val odgovor = pitanjeKvizViewModel.getOdgovor()
+            // ovo sam uveo jer sam primijetio da je bio bug kada se pritisne back dugme
+            if(odgovori.getChildAt(0) != null) {
+                if (odgovor != -1) {
+                    // ne moram kliktati mogu direktno bojiti
+                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
+                    var odgovorPogresan = odgovori?.getChildAt(odgovor) as TextView
+                    odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+                    if (pitanje.tacan != odgovor)
+                        odgovorPogresan.setTextColor(Color.parseColor("#DB4F3D"))
+                    for (odabir in odgovori.children) {
+                        odabir.isEnabled = false
+                        odabir.setOnClickListener(null)
+                    }
+                } // OVO ZNACI DA NIJE ODGOVORIO
+                else if (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
+                        || kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(), pitanjeKvizViewModel.getUradjeniKviz()) == "crvena") {
+                    // moram pokazati i tacan odgovor
+                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
+                    odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+                    for (odabir in odgovori.children) {
+                        odabir.isEnabled = false
+                        odabir.setOnClickListener(null)
+                    }
                 }
             }
         }, 1)
