@@ -29,7 +29,8 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
                 rezultat =  ((1.toDouble()/brojPitanja.toDouble())*100)
             pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), rezultat)
             val odgovorTacan = parent?.getChildAt(position) as TextView
-            odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+            odgovorTacan.setTextColor(Color.parseColor("#000000"))
+            parent.getChildAt(position).setBackgroundColor(Color.parseColor("#3DDC84"))
             if(indexPitanja != "") {
                 for (i in 0 until menu.size()) {
                     val menuItem: MenuItem = menu.getItem(i)
@@ -48,11 +49,13 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
             }
         }else{
             if(odgovor == -1)
-            pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), 0.toDouble())
+                pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), 0.toDouble())
             val odgovorTacan = parent?.getChildAt(pitanje.tacan) as TextView
-            odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+            odgovorTacan.setTextColor(Color.parseColor("#000000"))
+            parent.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
             val odgovorPogresan = parent?.getChildAt(position) as TextView
-            odgovorPogresan.setTextColor(Color.parseColor("#DB4F3D"))
+            odgovorPogresan.setTextColor(Color.parseColor("#000000"))
+            parent.getChildAt(position).setBackgroundColor(Color.parseColor("#DB4F3D"))
             if(indexPitanja != "") {
                 for (i in 0 until menu.size()) {
                     val menuItem: MenuItem = menu.getItem(i)

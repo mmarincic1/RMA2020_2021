@@ -55,9 +55,12 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
                     // ne moram kliktati mogu direktno bojiti
                     val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
                     var odgovorPogresan = odgovori?.getChildAt(odgovor) as TextView
-                    odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
-                    if (pitanje.tacan != odgovor)
-                        odgovorPogresan.setTextColor(Color.parseColor("#DB4F3D"))
+                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
+                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
+                    if (pitanje.tacan != odgovor){
+                        odgovorPogresan.setTextColor(Color.parseColor("#000000"))
+                        odgovori.getChildAt(odgovor).setBackgroundColor(Color.parseColor("#DB4F3D"))
+                    }
                     for (odabir in odgovori.children) {
                         odabir.isEnabled = false
                         odabir.setOnClickListener(null)
@@ -67,7 +70,8 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
                         || kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(), pitanjeKvizViewModel.getUradjeniKviz()) == "crvena") {
                     // moram pokazati i tacan odgovor
                     val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-                    odgovorTacan.setTextColor(Color.parseColor("#3DDC84"))
+                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
+                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
                     for (odabir in odgovori.children) {
                         odabir.isEnabled = false
                         odabir.setOnClickListener(null)
