@@ -77,7 +77,6 @@ class KvizRepository {
                 var datumKraja = uporediSaTrenutnimDatumom(kviz.datumKraj)
                 // kviz nije otvoren
                 if(datumPocetka == 1){
-
                     return "zuta"
                 }
                 // kviz aktivan

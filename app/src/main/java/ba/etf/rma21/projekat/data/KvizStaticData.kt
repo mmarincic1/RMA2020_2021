@@ -16,31 +16,31 @@ fun quizzes(): List<Kviz>{
         Kviz("Kviz 2", "IM", Date(2021, 3, 20), Date(2021, 3, 22),
             null, 30, "G3", null
         ),
-        Kviz("Kviz 0", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 0", "UUP", Date(2022, 4, 22), Date(2022, 4, 23),
             null, 5, "G1", null
         ),
-        Kviz("Kviz 1", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 1", "UUP", Date(2022, 4, 22), Date(2022, 4, 23),
             null, 5, "G2", null
         ),
-        Kviz("Kviz 2", "UUP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 2", "UUP", Date(2022, 4, 22), Date(2022, 4, 23),
             null, 5, "G3", null
         ),
-        Kviz("Kviz 0", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 0", "TP", Date(2022, 4, 22), Date(2022, 4, 23),
         null, 3, "G1", null
     ),
-        Kviz("Kviz 1", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 1", "TP", Date(2022, 4, 22), Date(2022, 4, 23),
             null, 3, "G2", null
         ),
-        Kviz("Kviz 2", "TP", Date(2021, 4, 22), Date(2021, 4, 23),
+        Kviz("Kviz 2", "TP", Date(2022, 4, 22), Date(2022, 4, 23),
             null, 3, "G3", null
         ),
-        Kviz("Kviz 0", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
+        Kviz("Kviz 0", "RPR", Date(2022, 3, 21), Date(2022, 3, 23),
         Date(2021, 3, 22), 7, "G1", 1F
     ),
-        Kviz("Kviz 1", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
+        Kviz("Kviz 1", "RPR", Date(2022, 3, 21), Date(2022, 3, 23),
             Date(2021, 3, 22), 7, "G2", 1F
         ),
-        Kviz("Kviz 2", "RPR", Date(2021, 3, 21), Date(2021, 3, 23),
+        Kviz("Kviz 2", "RPR", Date(2022, 3, 21), Date(2022, 3, 23),
             Date(2021, 3, 22), 7, "G3", 1F
         ),
         Kviz("Kviz 0", "RMA", Date(2021, 3, 30), Date(2022, 4, 22),

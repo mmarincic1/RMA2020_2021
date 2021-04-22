@@ -83,6 +83,7 @@ class KvizFilterTest {
 
     @Test
     fun testUradjeniKvizovi(){
+        KvizRepository.ispisiSve()
         // NAPOMENA - dodao sam jedan kviz uradjeni koji je prosao i ima bodove ali nije na pocetku
         // korisnik upisan na njega cisto da se vidi da radi i tako, dok je kviz "DONE" taj kviz
         // na koji je vec upisan
