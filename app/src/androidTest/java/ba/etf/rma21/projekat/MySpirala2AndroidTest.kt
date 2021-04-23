@@ -1,11 +1,15 @@
 package ba.etf.rma21.projekat
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -15,16 +19,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository
-import org.hamcrest.CoreMatchers
-import org.hamcrest.Description
-import org.hamcrest.Matchers
+import org.hamcrest.*
 import org.hamcrest.Matchers.anything
-import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,6 +46,40 @@ class MySpirala2AndroidTest {
             val context: Context = item.context
             val bitmap: Bitmap? = context.getDrawable(id)?.toBitmap()
             return item is ImageView && item.drawable.toBitmap().sameAs(bitmap)
+        }
+    }
+    // pomocna fija sa neta za boje
+    fun matchesBackgroundColor(expectedResourceId: Int): Any {
+        return object : BoundedMatcher<View?, View>(View::class.java) {
+            var actualColor = 0
+            var expectedColor = 0
+            var message: String? = null
+            override fun matchesSafely(item: View): Boolean {
+                if (item.getBackground() == null) {
+                    message = item.getId().toString() + " does not have a background"
+                    return false
+                }
+                val resources: Resources = item.getContext().getResources()
+                expectedColor = ResourcesCompat.getColor(resources, expectedResourceId, null)
+                actualColor = try {
+                    (item.getBackground() as ColorDrawable).color
+                } catch (e: Exception) {
+                    (item.getBackground() as GradientDrawable).color!!.defaultColor
+                } finally {
+
+                }
+                return actualColor == expectedColor
+            }
+
+            override fun describeTo(description: Description) {
+                if (actualColor != 0) {
+                    message = ("Background color did not match: Expected " + String.format(
+                            "#%06X",
+                            0xFFFFFF and expectedColor
+                    ) + " was " + String.format("#%06X", 0xFFFFFF and actualColor))
+                }
+                description.appendText(message)
+            }
         }
     }
 
@@ -147,11 +183,12 @@ class MySpirala2AndroidTest {
         // klikam na prvo pitanje i odgovaram na sva pitanja tacno
         val pitanja = PitanjeKvizRepository.getPitanja(kvizovi[1].naziv, kvizovi[1].nazivPredmeta)
         var indeks = 0
-        // odgovoriti cemo na sva pianja tacno
+        // odgovoriti cemo na sva pitanja tacno i provjeriti da li je boja prava
         for (pitanje in pitanja) {
             onView(withId(R.id.navigacijaPitanja)).perform(NavigationViewActions.navigateTo(indeks))
             onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekst)))
             Espresso.onData(anything()).inAdapterView(withId(R.id.odgovoriLista)).atPosition(pitanje.tacan).perform(click())
+            Espresso.onData(anything()).inAdapterView(withId(R.id.odgovoriLista)).atPosition(pitanje.tacan).check(matches(matchesBackgroundColor(R.color.zelena) as Matcher<in View>?))
             indeks++
             }
             // zaustavljam kviz
