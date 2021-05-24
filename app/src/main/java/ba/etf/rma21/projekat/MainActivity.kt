@@ -11,7 +11,7 @@ import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
 import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
+// probni commit za spiralu3
 
 class MainActivity : AppCompatActivity() {
     companion object {
