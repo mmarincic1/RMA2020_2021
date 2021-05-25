@@ -2,6 +2,8 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.quizzes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.stream.Collectors
 
@@ -18,7 +20,7 @@ class KvizRepository {
 
         // pomocna za dodavanje Kviza
         fun getKvizSaImenomIGrupom(predmet: String, grupa: String): Kviz{
-            return getAll().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get()
+            return getAll1().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get()
         }
 
         fun addMojiKvizovi(predmet: String, grupa: String): Unit{
@@ -29,7 +31,7 @@ class KvizRepository {
 
         init {
             mojiKvizovi = mutableListOf()
-            addMojiKvizovi("DONE", "G1")
+            //addMojiKvizovi("DONE", "G1")
         }
 
         fun getMyKvizes(): List<Kviz> {
@@ -39,7 +41,7 @@ class KvizRepository {
             return mojiKvizovi
         }
 
-        fun getAll(): List<Kviz> {
+       fun getAll1(): List<Kviz> {
             return quizzes()
         }
 
@@ -74,7 +76,7 @@ class KvizRepository {
             // kviz nije uradjen
             if(kviz.datumRada == null){
                 var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
-                var datumKraja = uporediSaTrenutnimDatumom(kviz.datumKraj)
+                var datumKraja = kviz.datumKraj?.let { uporediSaTrenutnimDatumom(it) }
                 // kviz nije otvoren
                 if(datumPocetka == 1){
                     return "zuta"
@@ -117,6 +119,13 @@ class KvizRepository {
 
         private fun updateStatuseZaSvakiSlucaj(){
             mojiKvizovi.stream().forEach { kviz -> kviz.setStatus(dajStatus(kviz))}
+        }
+
+        // nova
+        suspend fun getAll():List<Kviz>{
+            return withContext(Dispatchers.IO){
+                return@withContext ApiAdapter.retrofit.getAll()
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 // probni commit za spiralu3
+// {"message":"Uspješno ste kreirali account!","link":"http://rma21-etf.herokuapp.com/account/0934422d-53e3-4817-b211-1964211c912d"}
 
 class MainActivity : AppCompatActivity() {
     companion object {

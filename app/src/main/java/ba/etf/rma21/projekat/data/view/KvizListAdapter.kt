@@ -45,9 +45,9 @@ class KvizListAdapter(
         // nije radio kviz
         if(quizzes[position].datumRada == null){
             // nije aktivan kviz onda datum pocetka inace datum kraja
-            if(uporediSaTrenutnimDatumom(quizzes[position].datumPocetka) == 1)
+            if(uporediSaTrenutnimDatumom(quizzes[position].datumPocetka) == 1 || quizzes[position].datumKraj == null)
                 holder.quizDate.text = dajDatum(quizzes[position].datumPocetka)
-            else holder.quizDate.text = dajDatum(quizzes[position].datumKraj)
+            else holder.quizDate.text = quizzes[position].datumKraj?.let { dajDatum(it) }
         }
         else holder.quizDate.text = quizzes[position].datumRada?.let { dajDatum(it) }
         holder.quizSubjectName.text = quizzes[position].nazivPredmeta
@@ -62,10 +62,10 @@ class KvizListAdapter(
     }
 
     private fun dajDatum(datumRada: Date): String{
-        var dan: Int = datumRada.getDate()
-        var mjesec: Int = datumRada.getMonth()
-        var danString: String?
-        var mjesecString: String?
+        val dan: Int = datumRada.getDate()
+        var mjesec: Int = datumRada.getMonth() +1
+        val danString: String?
+        val mjesecString: String?
         if(dan < 10){
             danString = "0" + dan.toString() + "."
         }
@@ -75,17 +75,17 @@ class KvizListAdapter(
         }
         else mjesecString = mjesec.toString() + "."
 
-        return danString + mjesecString + datumRada.getYear().toString()
+        return danString + mjesecString + datumRada.getYear().plus(1900).toString()
     }
 
     private fun uporediSaTrenutnimDatumom(datum1: Date): Int{
         var godina = Calendar.getInstance().get(Calendar.YEAR)
         var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
         var dan = Calendar.getInstance().get(Calendar.DATE)
-        if(datum1.getYear() > godina) return 1
-        else if(godina > datum1.getYear()) return 2;
-        else if(datum1.getMonth() > mjesec) return 1;
-        else if(mjesec > datum1.getMonth()) return 2;
+        if(datum1.getYear().plus(1900) > godina) return 1
+        else if(godina > datum1.getYear().plus(1900)) return 2;
+        else if(datum1.getMonth().plus(1) > mjesec) return 1;
+        else if(mjesec > datum1.getMonth().plus(1)) return 2;
         else if(datum1.getDate() > dan) return 1;
         else if(dan > datum1.getDate()) return 2;
         return 0;
@@ -96,13 +96,13 @@ class KvizListAdapter(
         // kviz nije uradjen
         if(kviz.datumRada == null){
             var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
-            var datumKraja = uporediSaTrenutnimDatumom(kviz.datumKraj)
+            var datumKraja = kviz.datumKraj?.let { uporediSaTrenutnimDatumom(it) }
             // kviz nije otvoren
             if(datumPocetka == 1){
                 return "zuta"
             }
             // kviz aktivan
-            else if(datumPocetka == 2 && datumKraja == 1){
+            else if(datumPocetka == 2 && (datumKraja == 1 || datumKraja == null)){
                 return "zelena"
             }
             // kviz nije uradjen i nije aktivan

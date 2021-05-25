@@ -1,11 +1,9 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import android.text.BoringLayout
 import ba.etf.rma21.projekat.data.models.Pitanje
-import ba.etf.rma21.projekat.data.pitanjaKvizovi
-import java.util.stream.Collectors
-import ba.etf.rma21.projekat.data.getPitanja
 import ba.etf.rma21.projekat.data.models.PitanjeKviz
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 // - getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>
 
@@ -23,7 +21,7 @@ class PitanjeKvizRepository {
         var odgovor = -1
         var indexPitanja = ""
 
-         fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
+         /*fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
              var rezultatnaPitanja = mutableListOf<Pitanje>()
                  var listaPitanja =
                      pitanjaKvizovi().stream().filter { x -> x.kviz == nazivKviza }.collect(
@@ -42,7 +40,7 @@ class PitanjeKvizRepository {
                      }
                  }
             return rezultatnaPitanja
-        }
+        }*/
 
         fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){
             var pom = PitanjeKviz(nazivPitanja, nazivKviza)
@@ -110,6 +108,14 @@ class PitanjeKvizRepository {
                         pitanje.getNazivPredmeta() == uradjeniPredmet
             }.findFirst().get()
            pom.dodajRezultat(rezultat)
+        }
+
+        // - vraća sva pitanja na kvizu sa zadanim id-em
+        // example: OrderedMap { "id": 1, "naziv": "P1", "tekstPitanja": "Koji je prvi odgovor?", "opcije": List [ "A", "B", "C" ], "tacan": 0 }]
+        suspend fun getPitanja(idKviza:Int):List<Pitanje> {
+            return withContext(Dispatchers.IO){
+                return@withContext ApiAdapter.retrofit.getPitanja(idKviza)
+            }
         }
 
     }

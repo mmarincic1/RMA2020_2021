@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,10 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FragmentKvizovi : Fragment() {
     private lateinit var quizzes: RecyclerView
@@ -75,7 +80,9 @@ class FragmentKvizovi : Fragment() {
 
     private fun updateQuizzes(){
         if(filterKvizova.selectedItem.toString() == "Svi kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getQuizzes())
+            quizListViewModel.getQuizzes(
+                onSuccess = ::onSuccess,
+                onError = ::onError)
         else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
             quizzesAdapter.updateQuizes(quizListViewModel.getMyQuizzes())
         else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
@@ -108,4 +115,22 @@ class FragmentKvizovi : Fragment() {
         MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
         MainActivity.bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
     }
+
+    fun onSuccess(quizzes:List<Kviz>){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                quizzesAdapter.updateQuizes(quizzes)
+            }
+        }
+    }
+
+    fun onError() {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val toast = Toast.makeText(context, "Search error", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
 }
