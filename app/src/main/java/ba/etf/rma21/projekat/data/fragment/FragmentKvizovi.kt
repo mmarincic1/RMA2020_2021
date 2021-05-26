@@ -84,7 +84,9 @@ class FragmentKvizovi : Fragment() {
                 onSuccess = ::onSuccess,
                 onError = ::onError)
         else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getMyQuizzes())
+            quizListViewModel.getMyQuizzes(
+                onSuccess = ::onSuccess,
+                onError = ::onError)
         else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
             quizzesAdapter.updateQuizes(quizListViewModel.getDoneQuizzes())
         else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")

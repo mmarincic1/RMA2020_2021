@@ -2,6 +2,8 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.data.predmeti
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.stream.Collectors
 
 class PredmetRepository {
@@ -11,12 +13,19 @@ class PredmetRepository {
 
         init {
             upisani = mutableListOf()
-            addUpisani(1, "DONE")
         }
 
-        fun getPredmetsByGodina(godina: Int): List<Predmet>{
-            return getAll().stream().filter { predmet -> predmet.godina == godina }.collect(
-                Collectors.toList())
+        suspend fun getPredmetsByGodina(godina: Int): List<Predmet>{
+
+            return withContext(Dispatchers.IO){
+                var pom = ApiAdapter.retrofit.getPredmetsByGodina()
+                var rezultat = mutableListOf<Predmet>()
+                for(predmet in pom) {
+                    if(predmet.godina == godina)
+                        rezultat.add(predmet)
+                }
+                return@withContext rezultat
+            }
         }
 
         fun getUpisani(): List<Predmet>{
@@ -33,26 +42,6 @@ class PredmetRepository {
             return predmeti()
         }
 
-        fun getFromYear(godina: Int): List<String> {
-            val pom =  izdvojiVecUpisane(getPredmetsByGodina(godina))
-            var pom1 = mutableListOf<String>()
-            for(pomcic in pom){
-                pom1.add(pomcic.toString())
-            }
-            return pom1
-        }
-
-        fun izdvojiVecUpisane(predmeti: List<Predmet>): List<Predmet>{
-            var pom1 = mutableListOf<Predmet>()
-            for(predmetic in predmeti){
-                var nemaGa = true
-                for(predmetic1 in upisani){
-                    if(predmetic.equals(predmetic1)) nemaGa = false
-                }
-                if(nemaGa) pom1.add(predmetic)
-            }
-            return pom1
-        }
     }
 
 }

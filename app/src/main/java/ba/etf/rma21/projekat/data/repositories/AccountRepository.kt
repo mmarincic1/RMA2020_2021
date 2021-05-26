@@ -1,15 +1,17 @@
 package ba.etf.rma21.projekat.data.repositories
 
 class AccountRepository {
-    private lateinit var studentHash: String
-
+    companion object {
+        var acHash: String = "0934422d-53e3-4817-b211-1964211c912d"
+    }
     // lokalno a ne na web
-    fun postaviHash(acHash:String):Boolean{
-        studentHash = acHash
+    fun postaviHash(accHash:String):Boolean{
+        acHash = accHash
         return true
     }
 
     fun getHash():String{
-        return studentHash
+        //acHash = "0934422d-53e3-4817-b211-1964211c912d" // NEMOJ ZABORAVITI OBRISATI !!!!!!!
+        return acHash
     }
 }

@@ -36,7 +36,7 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
         var view = inflater.inflate(R.layout.fragment_pitanje, container, false)
         tekstPitanja = view.findViewById(R.id.tekstPitanja)
         odgovori = view.findViewById(R.id.odgovoriLista)
-        tekstPitanja.setText(pitanje.tekst)
+        tekstPitanja.setText(pitanje.tekstPitanja)
         adapter = ArrayAdapter(view.context, android.R.layout.simple_list_item_1, pitanje.opcije)
         odgovori.adapter = adapter
         odgovori.onItemClickListener =

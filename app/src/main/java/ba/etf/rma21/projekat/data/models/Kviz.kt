@@ -6,12 +6,12 @@ import java.util.*
 data class Kviz(
     @SerializedName("id") val id: Int,
     @SerializedName("naziv") val naziv: String,
-    val nazivPredmeta: String,
     @SerializedName("datumPocetak") val datumPocetka: Date,
     @SerializedName("datumKraj") val datumKraj: Date?,
     var datumRada: Date?,
     @SerializedName("trajanje") val trajanje: Int,
-    val nazivGrupe: String,
+    var nazivGrupe: String,
+    var nazivPredmeta: String,
     var osvojeniBodovi: Float?
 ) {
     private var status = ""

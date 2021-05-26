@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import ba.etf.rma21.projekat.Api
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.quizzes
 import kotlinx.coroutines.Dispatchers
@@ -124,8 +125,43 @@ class KvizRepository {
         // nova
         suspend fun getAll():List<Kviz>{
             return withContext(Dispatchers.IO){
-                return@withContext ApiAdapter.retrofit.getAll()
+                var pom = ApiAdapter.retrofit.getAll()
+                var rezultat = mutableListOf<Kviz>()
+                for(kviz in pom){
+                    var pom1 = ApiAdapter.retrofit.getGrupeZaKviz(kviz.id)
+                    for(kviz1 in pom1){
+                        var kvizZaUbaciti = kviz
+                        kvizZaUbaciti.nazivGrupe = kviz1.nazivGrupe
+                        kvizZaUbaciti.nazivPredmeta = ApiAdapter.retrofit.getPredmetId(kviz1.predmetId).naziv
+                        rezultat.add(kvizZaUbaciti)
+                    }
+                }
+                return@withContext rezultat
             }
         }
+
+        suspend fun getById(id:Int): Kviz{
+            return withContext(Dispatchers.IO){
+                return@withContext ApiAdapter.retrofit.getById(id)
+            }
+        }
+
+        // svi kvizovi za grupe u kojima je student upisan
+        suspend fun getUpisani():List<Kviz>{
+            return withContext(Dispatchers.IO){
+                val acc = AccountRepository()
+                var grupe = ApiAdapter.retrofit.getUpisaneGrupe(acc.getHash())
+                var rezultat = mutableListOf<Kviz>()
+                for(grupa in grupe){
+                    var pom = ApiAdapter.retrofit.getUpisani(grupa.id)
+                    val nazivPredmeta = ApiAdapter.retrofit.getPredmetId(grupa.predmetId).naziv
+                    pom.stream().forEach { x -> x.nazivGrupe = grupa.naziv; x.nazivPredmeta = nazivPredmeta}
+                    rezultat.addAll(pom)
+                }
+                return@withContext rezultat
+            }
+        }
+
+
     }
 }

@@ -20,8 +20,15 @@ class KvizListViewModel {
         }
     }
 
-    fun getMyQuizzes(): List<Kviz>{
-        return KvizRepository.getMyKvizes()
+    fun getMyQuizzes(onSuccess: (quizzes: List<Kviz>) -> Unit,
+                     onError: () -> Unit){
+        GlobalScope.launch{
+            val quizzes = KvizRepository.getUpisani()
+            when(quizzes){
+                is List<Kviz> -> onSuccess?.invoke(quizzes)
+                else -> onError?.invoke()
+            }
+        }
     }
 
     fun getDoneQuizzes(): List<Kviz>{
