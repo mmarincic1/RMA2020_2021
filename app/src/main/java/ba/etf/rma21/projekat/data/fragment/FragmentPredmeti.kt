@@ -89,6 +89,7 @@ class FragmentPredmeti: Fragment() {
                     pitanjeKvizListViewModel.setOdabranaGrupa(-1)
                 }
                 else {
+                    updateGrupe()
                     odabirGrupe.isEnabled = false
                 }
                 updateClickerUpis()
@@ -138,7 +139,7 @@ class FragmentPredmeti: Fragment() {
     }
 
     private fun updateGrupe(){
-        if ((odabirPredmeta.selectedItem == null)) {
+        if ((odabirPredmeta.selectedItem == null) || (odabirPredmeta.selectedItem as Predmet).naziv == "") {
             val grupe = emptyArray<String>()
             val adapter1 = ArrayAdapter(
                 view1.context, // Context
@@ -155,7 +156,8 @@ class FragmentPredmeti: Fragment() {
     }
 
     private fun updateClickerUpis(){
-        if(odabirGodine.selectedItem != null && odabirPredmeta.selectedItem != null && odabirGrupe.selectedItem != null){
+        if(odabirGodine.selectedItem != null && odabirPredmeta.selectedItem != null && odabirGrupe.selectedItem != null
+            && (odabirPredmeta.selectedItem as Predmet).naziv != "" && (odabirGrupe.selectedItem as Grupa).naziv != ""){
             upisiMe.isClickable = odabirGodine.selectedItem.toString() != ""
                     && odabirPredmeta.selectedItem.toString() != ""
                     && odabirGrupe.selectedItem.toString() != ""

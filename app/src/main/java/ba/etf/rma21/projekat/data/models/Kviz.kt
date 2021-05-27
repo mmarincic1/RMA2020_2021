@@ -10,8 +10,8 @@ data class Kviz(
     @SerializedName("datumKraj") val datumKraj: Date?,
     var datumRada: Date?,
     @SerializedName("trajanje") val trajanje: Int,
-    var nazivGrupe: String,
-    var nazivPredmeta: String,
+    var nazivGrupe: String?,
+    var nazivPredmeta: String?,
     var osvojeniBodovi: Float?
 ) {
     private var status = ""

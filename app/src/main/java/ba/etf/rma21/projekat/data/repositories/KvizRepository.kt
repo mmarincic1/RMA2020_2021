@@ -128,13 +128,21 @@ class KvizRepository {
                 var pom = ApiAdapter.retrofit.getAll()
                 var rezultat = mutableListOf<Kviz>()
                 for(kviz in pom){
-                    var pom1 = ApiAdapter.retrofit.getGrupeZaKviz(kviz.id)
+                    val pom1 = ApiAdapter.retrofit.getGrupeZaKviz(kviz.id)
+                    val kvizZaUbaciti = kviz
+                    var listaNaziva = mutableListOf<String>()
                     for(kviz1 in pom1){
-                        var kvizZaUbaciti = kviz
-                        kvizZaUbaciti.nazivGrupe = kviz1.nazivGrupe
-                        kvizZaUbaciti.nazivPredmeta = ApiAdapter.retrofit.getPredmetId(kviz1.predmetId).naziv
-                        rezultat.add(kvizZaUbaciti)
+                        //kvizZaUbaciti.nazivGrupe = kviz1.nazivGrupe
+                        val naziv = ApiAdapter.retrofit.getPredmetId(kviz1.predmetId).naziv
+                        if(!listaNaziva.contains(naziv)) {
+                            if (kvizZaUbaciti.nazivPredmeta == null)
+                                kvizZaUbaciti.nazivPredmeta =
+                                    naziv
+                            else kvizZaUbaciti.nazivPredmeta += "," + naziv
+                            listaNaziva.add(naziv)
+                        }
                     }
+                    rezultat.add(kvizZaUbaciti)
                 }
                 return@withContext rezultat
             }
@@ -161,7 +169,6 @@ class KvizRepository {
                 return@withContext rezultat
             }
         }
-
 
     }
 }

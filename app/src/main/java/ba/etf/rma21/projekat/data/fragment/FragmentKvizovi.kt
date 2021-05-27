@@ -100,13 +100,22 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
-        if(filterKvizova.selectedItem.toString() != "Svi kvizovi" && quizListViewModel.getStatus(kviz.nazivPredmeta, kviz.naziv) != "zuta") {
+        if(filterKvizova.selectedItem.toString() != "Svi kvizovi" && kviz.nazivPredmeta?.let {
+                quizListViewModel.getStatus(
+                    it, kviz.naziv)
+            } != "zuta") {
             pitanjaKvizViewModel.setUradjeniKviz(kviz.naziv)
-            pitanjaKvizViewModel.setUradjeniPredmet(kviz.nazivPredmeta)
+            kviz.nazivPredmeta?.let { pitanjaKvizViewModel.setUradjeniPredmet(it) }
             val fragment =
-                FragmentPokusaj(pitanjaKvizViewModel.getPitanja(kviz.naziv, kviz.nazivPredmeta))
+                kviz.nazivPredmeta?.let {
+                    pitanjaKvizViewModel.getPitanja(kviz.naziv,
+                        it
+                    )
+                }?.let { FragmentPokusaj(it) }
             var fr = getFragmentManager()?.beginTransaction()
-            fr?.replace(R.id.container, fragment)
+            if (fragment != null) {
+                fr?.replace(R.id.container, fragment)
+            }
             fr?.commit()
         }
     }

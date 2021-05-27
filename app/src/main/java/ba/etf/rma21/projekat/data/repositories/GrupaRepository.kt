@@ -12,7 +12,9 @@ class GrupaRepository {
 
         suspend fun getGroupsByPredmet(predmet: Predmet): List<Grupa> {
             return withContext(Dispatchers.IO){
-                return@withContext ApiAdapter.retrofit.getGrupeZaPredmet(predmet.id)
+                var pom: MutableList<Grupa> = ApiAdapter.retrofit.getGrupeZaPredmet(predmet.id) as MutableList<Grupa>
+                pom.add(0, Grupa(-1, "", -1, ""))
+                return@withContext pom
             }
         }
     }
