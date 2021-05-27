@@ -12,6 +12,7 @@ class KvizRepository {
 
     companion object {
         private var mojiKvizovi: MutableList<Kviz>
+        lateinit var pokrenutiKviz: Kviz
 
         // pomocna fija kako bi mogao sve testove odjednom pokrenuti
         fun ispisiSve(): Unit{
@@ -113,8 +114,8 @@ class KvizRepository {
             mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().setStatus("plava")
         }
 
-        fun getStatus(predmet: String, kvizz: String): String{
-            return mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().getStatus()
+        fun getStatus(kviz: Kviz): String{
+            return dajStatus(kviz)
         }
 
 

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.BojaOdgovoraOnClick
+import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 
@@ -66,17 +67,17 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment(){
                         odabir.setOnClickListener(null)
                     }
                 } // OVO ZNACI DA NIJE ODGOVORIO
-                else if (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
-                        || kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(), pitanjeKvizViewModel.getUradjeniKviz()) == "crvena") {
-                    // moram pokazati i tacan odgovor
-                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
-                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
-                    for (odabir in odgovori.children) {
-                        odabir.isEnabled = false
-                        odabir.setOnClickListener(null)
-                    }
-                }
+//                else if (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
+//                        || kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) == "crvena") {
+//                    // moram pokazati i tacan odgovor
+//                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
+//                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
+//                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
+//                    for (odabir in odgovori.children) {
+//                        odabir.isEnabled = false
+//                        odabir.setOnClickListener(null)
+//                    }
+//                }
             }
         }, 1)
 

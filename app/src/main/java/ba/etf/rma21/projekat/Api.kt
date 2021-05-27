@@ -48,4 +48,7 @@ interface Api {
 
     @GET("predmet")
     suspend fun getPredmetsByGodina(): List<Predmet>
+
+    @POST("grupa/{gid}/student/{id}")
+    suspend fun upisiUGrupu(@Path("gid") gid: Int, @Path("id") id: String): Message
 }

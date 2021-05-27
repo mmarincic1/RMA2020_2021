@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
@@ -100,23 +102,16 @@ class FragmentKvizovi : Fragment() {
     }
 
     private fun showKviz(kviz: Kviz) {
-        if(filterKvizova.selectedItem.toString() != "Svi kvizovi" && kviz.nazivPredmeta?.let {
-                quizListViewModel.getStatus(
-                    it, kviz.naziv)
-            } != "zuta") {
+        if(filterKvizova.selectedItem.toString() != "Svi kvizovi" &&
+                quizListViewModel.getStatus(kviz) != "zuta") {
+
             pitanjaKvizViewModel.setUradjeniKviz(kviz.naziv)
+
             kviz.nazivPredmeta?.let { pitanjaKvizViewModel.setUradjeniPredmet(it) }
-            val fragment =
-                kviz.nazivPredmeta?.let {
-                    pitanjaKvizViewModel.getPitanja(kviz.naziv,
-                        it
-                    )
-                }?.let { FragmentPokusaj(it) }
-            var fr = getFragmentManager()?.beginTransaction()
-            if (fragment != null) {
-                fr?.replace(R.id.container, fragment)
-            }
-            fr?.commit()
+
+            KvizRepository.pokrenutiKviz = kviz
+            pitanjaKvizViewModel.getPitanja(kviz.id, onSuccess = ::onSuccess1, onError = ::onError)
+
         }
     }
 
@@ -134,6 +129,22 @@ class FragmentKvizovi : Fragment() {
             }
         }
     }
+
+    fun onSuccess1(pitanja:List<Pitanje>){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val fragment =
+                    FragmentPokusaj(pitanja)
+
+                var fr = getFragmentManager()?.beginTransaction()
+                if (fragment != null) {
+                    fr?.replace(R.id.container, fragment)
+                }
+                fr?.commit()
+            }
+        }
+    }
+
 
     fun onError() {
         GlobalScope.launch(Dispatchers.IO){

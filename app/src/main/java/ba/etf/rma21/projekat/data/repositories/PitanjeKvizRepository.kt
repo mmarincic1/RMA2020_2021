@@ -21,27 +21,6 @@ class PitanjeKvizRepository {
         var odgovor = -1
         var indexPitanja = ""
 
-         /*fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
-             var rezultatnaPitanja = mutableListOf<Pitanje>()
-                 var listaPitanja =
-                     pitanjaKvizovi().stream().filter { x -> x.kviz == nazivKviza }.collect(
-                         Collectors.toList()
-                     )
-                 var pomocnaPitanja = getPitanja()
-                 for (pitanje in pomocnaPitanja) {
-                     for (kviz in listaPitanja) {
-                         if (pitanje.naziv == kviz.naziv){
-                             rezultatnaPitanja.add(pitanje)
-                             var pom = PitanjeKviz(pitanje.naziv, nazivKviza)
-                             pom.setNazivPredmeta(nazivPredmeta)
-                             if(!listaSvihOdgovorenihPitanja.contains(pom))
-                                listaSvihOdgovorenihPitanja.add(pom)
-                         }
-                     }
-                 }
-            return rezultatnaPitanja
-        }*/
-
         fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){
             var pom = PitanjeKviz(nazivPitanja, nazivKviza)
             pom.setNazivPredmeta(nazivPredmeta)

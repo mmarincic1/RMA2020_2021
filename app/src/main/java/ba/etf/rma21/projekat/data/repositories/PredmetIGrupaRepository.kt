@@ -28,10 +28,18 @@ class PredmetIGrupaRepository {
             }
         }
 
-//    // - upisuje studenta u grupu sa id-em idGrupa i vraća true ili vraća false ako nije moguće upisati studenta
-//    suspend fun upisiUGrupu(idGrupa:Int):Boolean{
-//
-//    }
+    // - upisuje studenta u grupu sa id-em idGrupa i vraća true ili vraća false ako nije moguće upisati studenta
+    suspend fun upisiUGrupu(idGrupa:Int):Boolean{
+        return withContext(Dispatchers.IO) {
+            val acc = AccountRepository()
+            val odgovor = ApiAdapter.retrofit.upisiUGrupu(idGrupa, acc.getHash())
+            var rezultat = true
+            if(odgovor.message.contains("not found") ||
+                odgovor.message.contains("Ne postoji account"))
+                rezultat = false
+            return@withContext rezultat
+        }
+    }
 
         //- vraća grupe u kojima je student upisan
         suspend fun getUpisaneGrupe(): List<Grupa> {

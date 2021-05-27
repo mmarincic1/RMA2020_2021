@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import com.google.android.material.navigation.NavigationView
@@ -81,46 +82,45 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         for(i in 1 .. brojPitanja)
             navigationView.menu.add(123456, i-1, i-1, (i).toString())
 
-        for (i in 0 until listaPitanja.size) {
-             pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
-                    pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(i).naziv))
-            val odgovor = pitanjeKvizViewModel.getOdgovor()
-            // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
-            if((odgovor == -1 &&
-                        (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(),
-                                pitanjeKvizViewModel.getUradjeniPredmet())
-                                || kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(),
-                                pitanjeKvizViewModel.getUradjeniKviz()) == "crvena"))
-                || (odgovor != -1 && odgovor != listaPitanja.get(i).tacan)){
-                val menuItem: MenuItem = navigationView.menu.getItem(i)
-                val spanString =
-                    SpannableString(menuItem.getTitle().toString())
-                spanString.setSpan(
-                    ForegroundColorSpan(Color.parseColor("#DB4F3D")),
-                    0,
-                    spanString.length,
-                    0
-                )
-                menuItem.setTitle(spanString)
-            }
-            // tacan odgovor
-            else if(odgovor == listaPitanja.get(i).tacan) {
-                val menuItem: MenuItem = navigationView.menu.getItem(i)
-                val spanString =
-                    SpannableString(menuItem.getTitle().toString())
-                spanString.setSpan(
-                    ForegroundColorSpan(Color.parseColor("#3DDC84")),
-                    0,
-                    spanString.length,
-                    0
-                )
-                menuItem.setTitle(spanString)
-            }
-        }
+//        for (i in 0 until listaPitanja.size) {
+//             pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
+//                    pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(i).naziv))
+//            val odgovor = pitanjeKvizViewModel.getOdgovor()
+//            // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
+//            if((odgovor == -1 &&
+//                        (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(),
+//                                pitanjeKvizViewModel.getUradjeniPredmet())
+//                                || kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) == "crvena"))
+//                || (odgovor != -1 && odgovor != listaPitanja.get(i).tacan)){
+//                val menuItem: MenuItem = navigationView.menu.getItem(i)
+//                val spanString =
+//                    SpannableString(menuItem.getTitle().toString())
+//                spanString.setSpan(
+//                    ForegroundColorSpan(Color.parseColor("#DB4F3D")),
+//                    0,
+//                    spanString.length,
+//                    0
+//                )
+//                menuItem.setTitle(spanString)
+//            }
+//            // tacan odgovor
+//            else if(odgovor == listaPitanja.get(i).tacan) {
+//                val menuItem: MenuItem = navigationView.menu.getItem(i)
+//                val spanString =
+//                    SpannableString(menuItem.getTitle().toString())
+//                spanString.setSpan(
+//                    ForegroundColorSpan(Color.parseColor("#3DDC84")),
+//                    0,
+//                    spanString.length,
+//                    0
+//                )
+//                menuItem.setTitle(spanString)
+//            }
+//        }
 
-        if(pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())){
-            navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
-        }
+//        if(pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())){
+//            navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
+//        }
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -149,7 +149,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
             // MOZE SAMO PREDATI KVIZ AKO JE KVIZ AKTIVAN
-            if(kvizViewModel.getStatus(pitanjeKvizViewModel.getUradjeniPredmet(), pitanjeKvizViewModel.getUradjeniKviz()) != "crvena") {
+            if(kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) != "crvena") {
                 var rezultat =
                     pitanjeKvizViewModel.getRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
                 if (rezultat == -1)

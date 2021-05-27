@@ -3,6 +3,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.data.repositories.GrupaRepository
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -22,5 +23,17 @@ class GroupViewModel {
         }
     }
 
+    fun upisUGrupu(grupaId: Int,
+                   onSuccess: (Boolean) -> Unit,
+                   onError: () -> Unit
+    ){
+        GlobalScope.launch{
+            val upisan = PredmetIGrupaRepository.upisiUGrupu(grupaId)
+            when(upisan){
+                is Boolean  -> onSuccess?.invoke(upisan)
+                else -> onError?.invoke()
+            }
+        }
+    }
 
 }

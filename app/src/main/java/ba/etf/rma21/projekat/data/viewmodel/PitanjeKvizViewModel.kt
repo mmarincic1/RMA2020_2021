@@ -1,14 +1,25 @@
 package ba.etf.rma21.projekat.data.viewmodel
 
+
 import ba.etf.rma21.projekat.data.models.Pitanje
-import ba.etf.rma21.projekat.data.models.PitanjeKviz
+
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class PitanjeKvizViewModel {
 
-    fun getPitanja(nazivKviza: String, nazivPredmeta: String): List<Pitanje>{
-        return emptyList()
-        //return PitanjeKvizRepository.getPitanja(nazivKviza, nazivPredmeta)
+    fun getPitanja(idKviza: Int,
+                   onSuccess: (pitanja: List<Pitanje>) -> Unit,
+                   onError: () -> Unit
+    ){
+        GlobalScope.launch{
+            val pitanja = PitanjeKvizRepository.getPitanja(idKviza)
+            when(pitanja){
+                is List<Pitanje> -> onSuccess?.invoke(pitanja)
+                else -> onError?.invoke()
+            }
+        }
     }
 
     fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){

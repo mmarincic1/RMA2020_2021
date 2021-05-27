@@ -51,7 +51,7 @@ class KvizListViewModel {
         KvizRepository.zavrsiKviz(datum, predmet, kvizz, bodovi)
     }
 
-    fun getStatus(predmet: String, kvizz: String): String{
-        return KvizRepository.getStatus(predmet, kvizz)
+    fun getStatus(kviz: Kviz): String{
+        return KvizRepository.getStatus(kviz)
     }
 }

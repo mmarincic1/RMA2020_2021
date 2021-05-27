@@ -17,16 +17,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.acl.Group
 
+// PROVJERI TREBA LI SE OPET PAMTITI STA JE PRITISNUO !!!
 class FragmentPredmeti: Fragment() {
     private lateinit var odabirGodine: Spinner
     private lateinit var odabirPredmeta: Spinner
     private lateinit var odabirGrupe: Spinner
     private lateinit var upisiMe: Button
-    private var quizListViewModel = KvizListViewModel()
     private var predmetViewModel = PredmetViewModel()
     private var grupaViewModel = GroupViewModel()
     private var pitanjeKvizListViewModel = PitanjeKvizViewModel()
+    private var groupViewModel = GroupViewModel()
+    private var quizListViewModel = KvizListViewModel()
 
     private var prviPutPredmet = true
     private var prviPutGrupa = true
@@ -113,18 +116,9 @@ class FragmentPredmeti: Fragment() {
 
         upisiMe = view1.findViewById(R.id.dodajPredmetDugme)
         upisiMe.setOnClickListener {
-            quizListViewModel.addMojKviz(odabirPredmeta.selectedItem.toString(), odabirGrupe.selectedItem.toString())
-            predmetViewModel.addUpisani(odabirGodine.selectedItem.toString().toInt(), odabirPredmeta.selectedItem.toString())
-            pitanjeKvizListViewModel.setOdabranaGodina(-1)
 
-            pitanjeKvizListViewModel.setOdabraniPredmet(-1)
+            grupaViewModel.upisUGrupu((odabirGrupe.selectedItem as Grupa).id, onSuccess = ::onSuccess2, onError = ::onError)
 
-            pitanjeKvizListViewModel.setOdabranaGrupa(-1)
-            // otvaranje novog fragmenta
-            val nazivGrupe1 = odabirGrupe.selectedItem.toString()
-            val nazivPredmeta1 = odabirPredmeta.selectedItem.toString()
-            val porukicaFragment = FragmentPoruka.newInstance( "Uspješno ste upisani u grupu " + nazivGrupe1 + " predmeta " + nazivPredmeta1 + "!" )
-            openFragment(porukicaFragment)
         }
 
         return view1
@@ -207,6 +201,25 @@ class FragmentPredmeti: Fragment() {
             if (prviPutGrupa && pitanjeKvizListViewModel.getOdabranaGrupa() != -1) {
                 odabirGrupe.setSelection(pitanjeKvizListViewModel.getOdabranaGrupa())
                 prviPutGrupa = false
+            }
+        }
+    }
+
+    fun onSuccess2(upisan: Boolean){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                if(upisan){
+                    pitanjeKvizListViewModel.setOdabranaGodina(-1)
+
+                    pitanjeKvizListViewModel.setOdabraniPredmet(-1)
+
+                    pitanjeKvizListViewModel.setOdabranaGrupa(-1)
+                    // otvaranje novog fragmenta
+                    val nazivGrupe1 = odabirGrupe.selectedItem.toString()
+                    val nazivPredmeta1 = odabirPredmeta.selectedItem.toString()
+                    val porukicaFragment = FragmentPoruka.newInstance( "Uspješno ste upisani u grupu " + nazivGrupe1 + " predmeta " + nazivPredmeta1 + "!" )
+                    openFragment(porukicaFragment)
+                }else onError()
             }
         }
     }
