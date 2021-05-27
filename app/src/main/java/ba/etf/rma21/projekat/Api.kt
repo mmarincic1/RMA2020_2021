@@ -51,4 +51,7 @@ interface Api {
 
     @POST("grupa/{gid}/student/{id}")
     suspend fun upisiUGrupu(@Path("gid") gid: Int, @Path("id") id: String): Message
+
+    @POST("student/{id}/kviztaken/{ktid}/odgovor")
+    suspend fun postaviOdgovorKviz(@Path("id") idKviza: String, @Path("ktid") idKvizTaken: Int, @Body odgovor: OdgPitBod) : PovratniOdgovor
 }

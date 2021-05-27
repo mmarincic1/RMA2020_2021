@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.Api
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.quizzes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,6 +14,7 @@ class KvizRepository {
     companion object {
         private var mojiKvizovi: MutableList<Kviz>
         lateinit var pokrenutiKviz: Kviz
+        var radjeniKviz: KvizTaken? = null
 
         // pomocna fija kako bi mogao sve testove odjednom pokrenuti
         fun ispisiSve(): Unit{

@@ -8,10 +8,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.children
 import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener {
@@ -25,9 +32,11 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if(position == pitanje.tacan){
-            if(odgovor == -1)
-                rezultat =  ((1.toDouble()/brojPitanja.toDouble())*100)
-            pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), rezultat)
+//            if(odgovor == -1)
+//                rezultat =  ((1.toDouble()/brojPitanja.toDouble())*100)
+//
+//            pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), rezultat)
+
             val odgovorTacan = parent?.getChildAt(position) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#000000"))
             parent.getChildAt(position).setBackgroundColor(Color.parseColor("#3DDC84"))
@@ -48,8 +57,8 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
                 }
             }
         }else{
-            if(odgovor == -1)
-                pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), 0.toDouble())
+//            if(odgovor == -1)
+//                pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), 0.toDouble())
             val odgovorTacan = parent?.getChildAt(pitanje.tacan) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#000000"))
             parent.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
@@ -79,8 +88,10 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
             odabir.setOnClickListener(null)
         }
         // evidentiraj odgovor
-        if(odgovor == -1)
-            pitanjeKvizViewModel.odgovoriNaPitanje(position, pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), pitanje.naziv)
+//        if(odgovor == -1)
+//            pitanjeKvizViewModel.odgovoriNaPitanje(position, pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), pitanje.naziv)
         //
+        KvizRepository.radjeniKviz?.id?.let { pitanjeKvizViewModel.postaviOdgovorKviz(it, pitanje.id, position) }
     }
+
 }

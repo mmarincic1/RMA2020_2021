@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.models.KvizTaken
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,6 +20,26 @@ class TakeKvizRepository {
             return withContext(Dispatchers.IO) {
                 val acc = AccountRepository()
                 return@withContext ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+            }
+        }
+
+        suspend fun getPocetiKvizoviApp() {
+            return withContext(Dispatchers.IO) {
+                val acc = AccountRepository()
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                var imaGa = false
+                for(pKviz in pokrenutiKvizovi){
+                    if(pKviz.KvizId == KvizRepository.pokrenutiKviz.id){
+                        KvizRepository.radjeniKviz = pKviz
+                        imaGa = true
+                        break
+                    }
+                }
+                if(!imaGa){
+                    val kviz = ApiAdapter.retrofit.zapocniKviz(KvizRepository.pokrenutiKviz.id, acc.getHash())
+                    KvizRepository.radjeniKviz = kviz
+                }
+                //return@withContext KvizRepository.radjeniKviz
             }
         }
     }

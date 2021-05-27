@@ -57,14 +57,14 @@ class RepositoryUnitTest {
         assertThat(upisane?.size,CoreMatchers.equalTo(0))
     }
 
-//    @Test
-//    fun a4_upisiIProvjeri() = runBlocking {
-//        var grupe = PredmetIGrupaRepository.getGrupe()
-//        PredmetIGrupaRepository.upisiUGrupu(grupe!![0]?.id)
-//        var upisane = PredmetIGrupaRepository.getUpisaneGrupe()
-//        assertThat(upisane?.size,CoreMatchers.equalTo(1))
-//        assertThat(upisane?.intersect(grupe)?.size,CoreMatchers.equalTo(1))
-//    }
+    @Test
+    fun a4_upisiIProvjeri() = runBlocking {
+        var grupe = PredmetIGrupaRepository.getGrupe()
+        PredmetIGrupaRepository.upisiUGrupu(grupe!![0]?.id)
+        var upisane = PredmetIGrupaRepository.getUpisaneGrupe()
+        assertThat(upisane?.size,CoreMatchers.equalTo(1))
+        assertThat(upisane?.intersect(grupe)?.size,CoreMatchers.equalTo(1))
+    }
 
     @Test
     fun a5_zapocniUpisaniKviz() = runBlocking {
@@ -87,15 +87,15 @@ class RepositoryUnitTest {
         var poceti = TakeKvizRepository.getPocetiKvizovi()
         assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.id)!!.size,CoreMatchers.equalTo(0))
     }
-//    @Test
-//    fun a8_provjeriOdgovor() = runBlocking {
-//        var poceti = TakeKvizRepository.getPocetiKvizovi()
-//        var pitanja = PitanjeKvizRepository.getPitanja(poceti!![poceti.size-1]?.KvizId)
-//        var result = OdgovorRepository.postaviOdgovorKviz(poceti!![poceti.size-1]?.id,pitanja!![0]?.id,pitanja!![0]?.tacan)
+    @Test
+    fun a8_provjeriOdgovor() = runBlocking {
+        var poceti = TakeKvizRepository.getPocetiKvizovi()
+        var pitanja = PitanjeKvizRepository.getPitanja(poceti!![poceti.size-1]?.KvizId)
+        var result = OdgovorRepository.postaviOdgovorKviz(poceti!![poceti.size-1]?.id,pitanja!![0]?.id,pitanja!![0]?.tacan)
 //        assertThat(result,CoreMatchers.notNullValue())
 //        assertThat(result,CoreMatchers.equalTo(50))
 //        assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.id)!!.size,CoreMatchers.equalTo(1))
-//    }
+    }
     @Test
     fun a9_provjeriKvizove() = runBlocking {
         assertThat(KvizRepository.getAll()!!.size,CoreMatchers.equalTo(3))

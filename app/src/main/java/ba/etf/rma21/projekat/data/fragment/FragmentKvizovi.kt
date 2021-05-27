@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
@@ -42,28 +44,20 @@ class FragmentKvizovi : Fragment() {
             R.array.izbor_za_spinner,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
             filterKvizova.adapter = adapter
         }
         quizzes = view.findViewById(R.id.listaKvizova)
-
         quizzes.setLayoutManager( GridLayoutManager(view.context, 2, GridLayoutManager.VERTICAL, false))
-
-
-
         quizzesAdapter = KvizListAdapter(arrayListOf()) { kviz ->
             showKviz(kviz)
         }
-
         quizzes.adapter = quizzesAdapter
-
-
         napraviListenerZaSpinner()
         napraviBottomNav()
         return view
     }
+
     companion object {
         fun newInstance(): FragmentKvizovi = FragmentKvizovi()
     }
@@ -73,7 +67,6 @@ class FragmentKvizovi : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 updateQuizzes()
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 updateQuizzes()
             }
@@ -109,7 +102,13 @@ class FragmentKvizovi : Fragment() {
 
             kviz.nazivPredmeta?.let { pitanjaKvizViewModel.setUradjeniPredmet(it) }
 
+            // SACUVAO KVIZ RADI PITANJA
             KvizRepository.pokrenutiKviz = kviz
+
+            // NAPRAVITI KVIZTAKEN ILI NE AKO VEC POSTOJI TJ OTVORIO JE KVIZ KOJI NIJE ZAVRSIO
+            quizListViewModel.getPocetiKvizoviApp(onSuccess = ::onSuccess, onError = ::onError)
+            // SACUVATI TAJ KVIZTAKEN U NEKI REPO
+
             pitanjaKvizViewModel.getPitanja(kviz.id, onSuccess = ::onSuccess1, onError = ::onError)
 
         }
@@ -145,6 +144,14 @@ class FragmentKvizovi : Fragment() {
         }
     }
 
+    fun onSuccess(){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val toast = Toast.makeText(context, "Sve ok kralju", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
 
     fun onError() {
         GlobalScope.launch(Dispatchers.IO){

@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 
 
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import kotlinx.coroutines.GlobalScope
@@ -17,6 +18,24 @@ class PitanjeKvizViewModel {
             val pitanja = PitanjeKvizRepository.getPitanja(idKviza)
             when(pitanja){
                 is List<Pitanje> -> onSuccess?.invoke(pitanja)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+    fun postaviOdgovorKviz(idKvizTaken:Int, idPitanje:Int, odgovor:Int){
+        GlobalScope.launch{
+            OdgovorRepository.postaviOdgovorKviz(idKvizTaken, idPitanje, odgovor)
+        }
+    }
+
+    fun getOdgovorApp(idKvizTaken:Int, idPitanje:Int,
+    onSuccess: (odgovor: Int) -> Unit,
+    onError: () -> Unit){
+        GlobalScope.launch{
+            val odgovor = OdgovorRepository.getOdgovorKviz(idKvizTaken, idPitanje)
+            when(odgovor){
+                is Int -> onSuccess?.invoke(odgovor)
                 else -> onError?.invoke()
             }
         }
@@ -45,6 +64,15 @@ class PitanjeKvizViewModel {
     fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Double) {
         PitanjeKvizRepository.dodajRezultat(uradjeniKviz, uradjeniPredmet, rezultat)
     }
+
+
+
+
+
+
+
+
+
 
     fun setOdabranaGodina(odabranaGodina: Int){
         PitanjeKvizRepository.odabranaGodina = odabranaGodina
@@ -91,6 +119,7 @@ class PitanjeKvizViewModel {
     fun setOdgovor(odgovor: Int){
         PitanjeKvizRepository.odgovor = odgovor
     }
+
     fun getOdgovor(): Int{
         return PitanjeKvizRepository.odgovor
     }

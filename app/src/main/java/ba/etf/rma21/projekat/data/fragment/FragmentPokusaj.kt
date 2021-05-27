@@ -50,10 +50,13 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
             else {
                 when (item.toString().toInt()) {
                     in 1..listaPitanja.size -> {
+
                         pitanjeKvizViewModel.setOdgovor(
                         pitanjeKvizViewModel.
                         getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
                                 pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(item.toString().toInt() - 1).naziv))
+
+
                         val fragment = FragmentPitanje(listaPitanja.get(item.toString().toInt() - 1))
                         pitanjeKvizViewModel.setIndexPitanja((item.toString().toInt()).toString())
                         openFragment(fragment)
@@ -117,7 +120,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 //                menuItem.setTitle(spanString)
 //            }
 //        }
-
+//
 //        if(pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())){
 //            navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
 //        }
