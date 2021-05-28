@@ -13,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
+import androidx.core.view.size
 
 import androidx.fragment.app.Fragment
 
@@ -106,12 +107,14 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment() {
                     if (odgovor != -1) {
                         // ne moram kliktati mogu direktno bojiti
                         val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-                        var odgovorPogresan = odgovori?.getChildAt(odgovor) as TextView
+                        lateinit var odgovorPogresan: TextView
+                        if(odgovor != odgovori.size)
+                            odgovorPogresan = odgovori?.getChildAt(odgovor) as TextView
                         odgovorTacan.setTextColor(Color.parseColor("#000000"))
                         odgovori.getChildAt(pitanje.tacan)
                             .setBackgroundColor(Color.parseColor("#3DDC84"))
-                        if (pitanje.tacan != odgovor) {
-                            odgovorPogresan.setTextColor(Color.parseColor("#000000"))
+                        if (pitanje.tacan != odgovor && odgovor != odgovori.size) {
+                                odgovorPogresan.setTextColor(Color.parseColor("#000000"))
                             odgovori.getChildAt(odgovor)
                                 .setBackgroundColor(Color.parseColor("#DB4F3D"))
                         }

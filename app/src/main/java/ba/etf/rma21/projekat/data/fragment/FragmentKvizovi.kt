@@ -106,10 +106,8 @@ class FragmentKvizovi : Fragment() {
             KvizRepository.pokrenutiKviz = kviz
 
             // NAPRAVITI KVIZTAKEN ILI NE AKO VEC POSTOJI TJ OTVORIO JE KVIZ KOJI NIJE ZAVRSIO
-            quizListViewModel.getPocetiKvizoviApp(onSuccess = ::onSuccess, onError = ::onError)
+            quizListViewModel.getPocetiKvizoviApp(kviz, onSuccess = ::onSuccess, onError = ::onError)
             // SACUVATI TAJ KVIZTAKEN U NEKI REPO
-
-            pitanjaKvizViewModel.getPitanja(kviz.id, onSuccess = ::onSuccess1, onError = ::onError)
 
         }
     }
@@ -144,11 +142,11 @@ class FragmentKvizovi : Fragment() {
         }
     }
 
-    fun onSuccess(){
+    fun onSuccess(rezultat: Boolean, kviz: Kviz){
         GlobalScope.launch(Dispatchers.IO){
             withContext(Dispatchers.Main){
-                val toast = Toast.makeText(context, "Sve ok kralju", Toast.LENGTH_SHORT)
-                toast.show()
+                if(rezultat)
+                    pitanjaKvizViewModel.getPitanja(kviz.id, onSuccess = ::onSuccess1, onError = ::onError)
             }
         }
     }

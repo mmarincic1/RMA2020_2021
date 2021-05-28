@@ -8,14 +8,20 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
@@ -37,15 +43,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         navigationView.setNavigationItemSelectedListener { item ->
             if(item.toString() == "Rezultat"){
-                var rezultat = pitanjeKvizViewModel.getRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
-                if(rezultat == -1)
-                    rezultat = 0
-                val kvizoviFragments = FragmentPoruka.newInstance(
-                        "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
-                                rezultat
-                )
-                pitanjeKvizViewModel.setIndexPitanja("")
-                openFragment(kvizoviFragments)
+                KvizRepository.radjeniKviz?.id?.let { pitanjeKvizViewModel.getRezultat(it, onSuccess = ::onSuccess3, onError = ::onError) }
             }
             else {
                 when (item.toString().toInt()) {
@@ -85,45 +83,13 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         for(i in 1 .. brojPitanja)
             navigationView.menu.add(123456, i-1, i-1, (i).toString())
 
-//        for (i in 0 until listaPitanja.size) {
-//             pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
-//                    pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(i).naziv))
-//            val odgovor = pitanjeKvizViewModel.getOdgovor()
-//            // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
-//            if((odgovor == -1 &&
-//                        (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(),
-//                                pitanjeKvizViewModel.getUradjeniPredmet())
-//                                || kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) == "crvena"))
-//                || (odgovor != -1 && odgovor != listaPitanja.get(i).tacan)){
-//                val menuItem: MenuItem = navigationView.menu.getItem(i)
-//                val spanString =
-//                    SpannableString(menuItem.getTitle().toString())
-//                spanString.setSpan(
-//                    ForegroundColorSpan(Color.parseColor("#DB4F3D")),
-//                    0,
-//                    spanString.length,
-//                    0
-//                )
-//                menuItem.setTitle(spanString)
-//            }
-//            // tacan odgovor
-//            else if(odgovor == listaPitanja.get(i).tacan) {
-//                val menuItem: MenuItem = navigationView.menu.getItem(i)
-//                val spanString =
-//                    SpannableString(menuItem.getTitle().toString())
-//                spanString.setSpan(
-//                    ForegroundColorSpan(Color.parseColor("#3DDC84")),
-//                    0,
-//                    spanString.length,
-//                    0
-//                )
-//                menuItem.setTitle(spanString)
-//            }
-//        }
-//
-//        if(pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())){
-//            navigationView.menu.add(123456, brojPitanja, brojPitanja, "Rezultat")
-//        }
+        for (i in 0 until listaPitanja.size) {
+            KvizRepository.radjeniKviz?.id?.let {
+                pitanjeKvizViewModel.getOdgovorAppZaPokusaj(
+                    it, listaPitanja[i].id, i , onSuccess = ::onSuccess, onError = ::onError)
+            }
+        }
+        KvizRepository.radjeniKviz?.let { pitanjeKvizViewModel.getZavrsenKviz(it, onSuccess = ::onSuccess2, onError = ::onError) }
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -142,6 +108,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         MainActivity.bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = false
         MainActivity.bottomNavigation.menu.findItem(R.id.predmeti).isVisible = false
         MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = true
+        MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isEnabled = true
         MainActivity.bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = true
 
         val zaustaviKvizItemClickListener = MenuItem.OnMenuItemClickListener {
@@ -152,55 +119,101 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
             // MOZE SAMO PREDATI KVIZ AKO JE KVIZ AKTIVAN
-            if(kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) != "crvena") {
-                var rezultat =
-                    pitanjeKvizViewModel.getRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
-                if (rezultat == -1)
-                    rezultat = 0
-                val kvizoviFragments = FragmentPoruka.newInstance(
-                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
-                            rezultat
-                )
-                // jer ima manje nego broj pitanja + 1 a to je rezultat
-                if (navigationView.menu.size() <= listaPitanja.size) {
-                    var godina = Calendar.getInstance().get(Calendar.YEAR)
-                    var mjesec = Calendar.getInstance().get(Calendar.MONTH) + 1
-                    var dan = Calendar.getInstance().get(Calendar.DATE)
-                    kvizViewModel.zavrsiKviz(
-                        Date(godina, mjesec, dan),
-                        pitanjeKvizViewModel.getUradjeniPredmet(),
-                        pitanjeKvizViewModel.getUradjeniKviz(),
-                        rezultat
-                    )
-                    pitanjeKvizViewModel.zavrsiKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
-                    // ovo je ako nije odgovorio na neka pitanja a odmah otisao da preda kviz, oni moraju da pocrvene
-                    navigationView.menu.clear()
-                    napraviNavView()
-
-                    // izbacuje jedan visak "Rezultat"
-                    if(navigationView.menu.findItem(listaPitanja.size) != null){
-                        navigationView.menu.removeItem(listaPitanja.size)
-                    }
-
-                    if (pitanjeKvizViewModel.getZavrsenKviz(
-                            pitanjeKvizViewModel.getUradjeniKviz(),
-                             pitanjeKvizViewModel.getUradjeniPredmet()
-                        )
-                    ) {
-                        navigationView.menu.add(
-                            123456,
-                            listaPitanja.size,
-                            listaPitanja.size,
-                            "Rezultat"
-                        )
-                    }
-                    openFragment(kvizoviFragments)
-                }
-            }
+            //if(kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) != "crvena") {
+                    KvizRepository.radjeniKviz?.id?.let { it1 -> pitanjeKvizViewModel.getRezultat(it1, onSuccess = ::onSuccess1, onError = ::onError) }
+                    MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isEnabled = false
+            //}
             return@OnMenuItemClickListener true
         }
 
         MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).setOnMenuItemClickListener(predajKvizItemClickListener)
         MainActivity.bottomNavigation.menu.findItem(R.id.zaustaviKviz).setOnMenuItemClickListener(zaustaviKvizItemClickListener)
+    }
+
+    fun onSuccess(odgovor: Int, i :Int) {
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                // tacan odg
+                if (odgovor == listaPitanja.get(i).tacan) {
+                    val menuItem: MenuItem = navigationView.menu.getItem(i)
+                    val spanString =
+                        SpannableString(menuItem.getTitle().toString())
+                    spanString.setSpan(
+                        ForegroundColorSpan(Color.parseColor("#3DDC84")),
+                        0,
+                        spanString.length,
+                        0
+                    )
+                    menuItem.setTitle(spanString)
+                }
+                // zavrsen kviz i nije dao odgovor znaci crvena boja ili dao pogresan odgovor
+                if ((odgovor != -1 && odgovor != listaPitanja.get(i).tacan)) {
+                    val menuItem: MenuItem = navigationView.menu.getItem(i)
+                    val spanString =
+                        SpannableString(menuItem.getTitle().toString())
+                    spanString.setSpan(
+                        ForegroundColorSpan(Color.parseColor("#DB4F3D")),
+                        0,
+                        spanString.length,
+                        0
+                    )
+                    menuItem.setTitle(spanString)
+                }
+            }
+        }
+    }
+
+    fun onSuccess1(rezultat: Int){
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                // ZAVRSI KVIZ
+                KvizRepository.radjeniKviz?.let { kvizViewModel.zavrsiKviz(it, rezultat , onSuccess = ::onSuccess4, onError = ::onError) }
+            }
+        }
+    }
+
+    fun onSuccess2(rezultat: Boolean){
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                // ZAVRSI KVIZ
+                if(rezultat)
+                    navigationView.menu.add(123456, listaPitanja.size, listaPitanja.size, "Rezultat")
+            }
+        }
+    }
+
+    fun onSuccess3(rezultat: Int){
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val kvizoviFragments = FragmentPoruka.newInstance(
+                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
+                            rezultat
+                )
+                    openFragment(kvizoviFragments)
+            }
+        }
+    }
+
+    fun onSuccess4(rezultat: Int){
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val kvizoviFragments = FragmentPoruka.newInstance(
+                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
+                            rezultat
+                )
+                navigationView.menu.clear()
+                napraviNavView()
+                openFragment(kvizoviFragments)
+            }
+        }
+    }
+
+    fun onError() {
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val toast = Toast.makeText(context, "Neki error", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
     }
 }

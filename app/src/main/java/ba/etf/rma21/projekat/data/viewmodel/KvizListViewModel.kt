@@ -77,11 +77,21 @@ class KvizListViewModel {
         }
     }
 
-    fun getPocetiKvizoviApp(onSuccess: () -> Unit,
+    fun getPocetiKvizoviApp(kviz: Kviz, onSuccess: (rezultat: Boolean, kviz: Kviz) -> Unit,
                          onError: () -> Unit){
         GlobalScope.launch{
-            TakeKvizRepository.getPocetiKvizoviApp()
-       onSuccess?.invoke()
+            val rezultat = TakeKvizRepository.getPocetiKvizoviApp()
+            when(rezultat){
+                is Boolean-> onSuccess?.invoke(rezultat, kviz)
+                else -> onError?.invoke()
+            }
             }
         }
+
+    fun zavrsiKviz(idKvizTaken: KvizTaken, rezultat: Int, onSuccess: (rezultat: Int) -> Unit, onError: () -> Unit){
+        GlobalScope.launch{
+            KvizRepository.zavrsiKviz(idKvizTaken)
+            onSuccess?.invoke(rezultat)
+        }
+    }
 }

@@ -19,7 +19,8 @@ class OdgovorRepository {
         //    idKvizTaken. Funkcija vraća ukupne bodove na kvizu nakon odgovora ili -1 ukoliko ima neka greška u zahtjevu
         suspend fun postaviOdgovorKviz(idKvizTaken:Int, idPitanje:Int, odgovor:Int):Int{
             return withContext(Dispatchers.IO){
-                val odgovor = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = 0)
+                val bodovi = PitanjeKvizRepository.getRezultatSaNeta(idKvizTaken)
+                val odgovor = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = bodovi)
                 val acc = AccountRepository()
                 val povratniOdg = ApiAdapter.retrofit.postaviOdgovorKviz(acc.getHash(), idKvizTaken, odgovor)
                 // NEMA LOGIKE NIKAKVE

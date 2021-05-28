@@ -23,7 +23,7 @@ class TakeKvizRepository {
             }
         }
 
-        suspend fun getPocetiKvizoviApp() {
+        suspend fun getPocetiKvizoviApp(): Boolean{
             return withContext(Dispatchers.IO) {
                 val acc = AccountRepository()
                 val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
@@ -39,7 +39,7 @@ class TakeKvizRepository {
                     val kviz = ApiAdapter.retrofit.zapocniKviz(KvizRepository.pokrenutiKviz.id, acc.getHash())
                     KvizRepository.radjeniKviz = kviz
                 }
-                //return@withContext KvizRepository.radjeniKviz
+                return@withContext true
             }
         }
     }

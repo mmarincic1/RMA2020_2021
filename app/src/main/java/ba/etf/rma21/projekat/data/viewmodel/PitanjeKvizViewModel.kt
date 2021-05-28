@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.viewmodel
 
 
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 
@@ -41,29 +42,53 @@ class PitanjeKvizViewModel {
         }
     }
 
-    fun odgovoriNaPitanje(odgovor: Int, nazivKviza: String, nazivPredmeta: String, nazivPitanja: String){
-        return PitanjeKvizRepository.odgovoriNaPitanje(odgovor, nazivKviza, nazivPredmeta, nazivPitanja)
+    fun getOdgovorAppZaPokusaj(idKvizTaken:Int, idPitanje:Int, index: Int ,
+                      onSuccess: (odgovor: Int, i: Int) -> Unit,
+                      onError: () -> Unit){
+        GlobalScope.launch{
+            val odgovor = OdgovorRepository.getOdgovorKviz(idKvizTaken, idPitanje)
+            when(odgovor){
+                is Int -> onSuccess?.invoke(odgovor, index)
+                else -> onError?.invoke()
+            }
+        }
     }
+
+    fun getRezultat(kvizTaken: Int,
+    onSuccess: (rezultat: Int) -> Unit,
+    onError: () -> Unit){
+        GlobalScope.launch {
+            val rezultat = PitanjeKvizRepository.getRezultatSaNeta(kvizTaken)
+            when(rezultat){
+                is Int -> onSuccess?.invoke(rezultat)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+    fun getZavrsenKviz(kvizTaken: KvizTaken,
+                    onSuccess: (rezultat: Boolean) -> Unit,
+                    onError: () -> Unit){
+        GlobalScope.launch {
+            val rezultat = PitanjeKvizRepository.getZavrsenKviz(kvizTaken)
+            when(rezultat){
+                is Boolean -> onSuccess?.invoke(rezultat)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+
 
     fun getOdgovorNaPitanje(nazivKviza: String, nazivPredmeta: String, nazivPitanja: String): Int{
        return PitanjeKvizRepository.getOdgovorNaPitanje(nazivKviza, nazivPredmeta, nazivPitanja)
     }
 
-    fun zavrsiKviz(nazivKviza: String, nazivPredmeta: String){
-       PitanjeKvizRepository.zavrsiKviz(nazivKviza, nazivPredmeta)
-    }
 
     fun getRezultat(nazivKviza: String, nazivPredmeta: String): Int{
         return PitanjeKvizRepository.getRezultat(nazivKviza, nazivPredmeta)
     }
 
-    fun getZavrsenKviz(nazivKviza: String, nazivPredmeta: String): Boolean{
-        return PitanjeKvizRepository.getZavrsenKviz(nazivKviza, nazivPredmeta)
-    }
-
-    fun dodajRezultat(uradjeniKviz: String, uradjeniPredmet: String, rezultat: Double) {
-        PitanjeKvizRepository.dodajRezultat(uradjeniKviz, uradjeniPredmet, rezultat)
-    }
 
 
 

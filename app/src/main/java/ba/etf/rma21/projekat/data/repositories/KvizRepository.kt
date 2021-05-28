@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.math.roundToInt
 
 class KvizRepository {
 
@@ -170,6 +171,18 @@ class KvizRepository {
                     rezultat.addAll(pom)
                 }
                 return@withContext rezultat
+            }
+        }
+
+        suspend fun zavrsiKviz(idKviza: KvizTaken){
+            return withContext(Dispatchers.IO){
+                val pitanja = ApiAdapter.retrofit.getPitanja(pokrenutiKviz.id)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza.id)
+                for(pitanje in pitanja){
+                    if(odgovori.stream().noneMatch{ x -> x.pitanjeId == pitanje.id })
+                        OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)
+                }
+                return@withContext
             }
         }
 
