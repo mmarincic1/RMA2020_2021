@@ -25,18 +25,10 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
 
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
     private val menu: Menu = FragmentPokusaj.navigationView.getMenu()
-    private var rezultat: Double = 0.toDouble()
-    private val odgovor = pitanjeKvizViewModel.getOdgovor()
-    private val brojPitanja = pitanjeKvizViewModel.getBrojPitanja()
     private val indexPitanja = pitanjeKvizViewModel.getIndexPitanja()
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if(position == pitanje.tacan){
-//            if(odgovor == -1)
-//                rezultat =  ((1.toDouble()/brojPitanja.toDouble())*100)
-//
-//            pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), rezultat)
-
             val odgovorTacan = parent?.getChildAt(position) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#000000"))
             parent.getChildAt(position).setBackgroundColor(Color.parseColor("#3DDC84"))
@@ -57,8 +49,6 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
                 }
             }
         }else{
-//            if(odgovor == -1)
-//                pitanjeKvizViewModel.dodajRezultat(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), 0.toDouble())
             val odgovorTacan = parent?.getChildAt(pitanje.tacan) as TextView
             odgovorTacan.setTextColor(Color.parseColor("#000000"))
             parent.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
@@ -88,9 +78,6 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
             odabir.setOnClickListener(null)
         }
         // evidentiraj odgovor
-//        if(odgovor == -1)
-//            pitanjeKvizViewModel.odgovoriNaPitanje(position, pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet(), pitanje.naziv)
-        //
         KvizRepository.radjeniKviz?.id?.let { pitanjeKvizViewModel.postaviOdgovorKviz(it, pitanje.id, position) }
     }
 

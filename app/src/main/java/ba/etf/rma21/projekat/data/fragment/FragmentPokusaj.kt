@@ -49,11 +49,6 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
                 when (item.toString().toInt()) {
                     in 1..listaPitanja.size -> {
 
-                        pitanjeKvizViewModel.setOdgovor(
-                        pitanjeKvizViewModel.
-                        getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
-                                pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(item.toString().toInt() - 1).naziv))
-
 
                         val fragment = FragmentPitanje(listaPitanja.get(item.toString().toInt() - 1))
                         pitanjeKvizViewModel.setIndexPitanja((item.toString().toInt()).toString())
@@ -68,13 +63,8 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         //prvo pitanje se odmah prikazuje
         navigationView.setCheckedItem(0)
         pitanjeKvizViewModel.setIndexPitanja("1")
-        pitanjeKvizViewModel.setOdgovor(pitanjeKvizViewModel.getOdgovorNaPitanje(pitanjeKvizViewModel.getUradjeniKviz(),
-                pitanjeKvizViewModel.getUradjeniPredmet(), listaPitanja.get(0).naziv))
         val fragment = FragmentPitanje(listaPitanja.get(0))
         openFragment(fragment)
-        //
-        pitanjeKvizViewModel.setBrojPitanja(listaPitanja.size)
-
         return view
     }
 
@@ -176,8 +166,10 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 // ZAVRSI KVIZ
-                if(rezultat)
+                if(rezultat){
                     navigationView.menu.add(123456, listaPitanja.size, listaPitanja.size, "Rezultat")
+                    MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isEnabled = false
+                }
             }
         }
     }

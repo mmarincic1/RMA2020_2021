@@ -98,10 +98,6 @@ class FragmentKvizovi : Fragment() {
         if(filterKvizova.selectedItem.toString() != "Svi kvizovi" &&
                 quizListViewModel.getStatus(kviz) != "zuta") {
 
-            pitanjaKvizViewModel.setUradjeniKviz(kviz.naziv)
-
-            kviz.nazivPredmeta?.let { pitanjaKvizViewModel.setUradjeniPredmet(it) }
-
             // SACUVAO KVIZ RADI PITANJA
             KvizRepository.pokrenutiKviz = kviz
 

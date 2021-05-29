@@ -1,11 +1,13 @@
 package ba.etf.rma21.projekat.data.viewmodel
 
 
+import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
+import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -66,6 +68,18 @@ class PitanjeKvizViewModel {
         }
     }
 
+    fun getRezultatZaKviz(kviz: Kviz, holder: KvizListAdapter.QuizViewHolder,
+                          onSuccess: (rezultat: Int, holder: KvizListAdapter.QuizViewHolder) -> Unit,
+                          onError: () -> Unit){
+        GlobalScope.launch {
+            val rezultat = PitanjeKvizRepository.getRezultatSaNetaZaKviz(kviz)
+            when(rezultat){
+                is Int -> onSuccess?.invoke(rezultat, holder)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
     fun getZavrsenKviz(kvizTaken: KvizTaken,
                     onSuccess: (rezultat: Boolean) -> Unit,
                     onError: () -> Unit){
@@ -77,26 +91,6 @@ class PitanjeKvizViewModel {
             }
         }
     }
-
-
-
-    fun getOdgovorNaPitanje(nazivKviza: String, nazivPredmeta: String, nazivPitanja: String): Int{
-       return PitanjeKvizRepository.getOdgovorNaPitanje(nazivKviza, nazivPredmeta, nazivPitanja)
-    }
-
-
-    fun getRezultat(nazivKviza: String, nazivPredmeta: String): Int{
-        return PitanjeKvizRepository.getRezultat(nazivKviza, nazivPredmeta)
-    }
-
-
-
-
-
-
-
-
-
 
 
     fun setOdabranaGodina(odabranaGodina: Int){
@@ -120,33 +114,8 @@ class PitanjeKvizViewModel {
         return PitanjeKvizRepository.odabranaGrupa
     }
 
-    fun setUradjeniKviz(uradjeniKviz: String){
-        PitanjeKvizRepository.uradjeniKviz = uradjeniKviz
-    }
     fun getUradjeniKviz(): String{
         return PitanjeKvizRepository.uradjeniKviz
-    }
-
-    fun setUradjeniPredmet(uradjeniPredmet: String){
-        PitanjeKvizRepository.uradjeniPredmet = uradjeniPredmet
-    }
-    fun getUradjeniPredmet(): String{
-        return PitanjeKvizRepository.uradjeniPredmet
-    }
-
-    fun setBrojPitanja(brojPitanja: Int){
-        PitanjeKvizRepository.brojPitanja = brojPitanja
-    }
-    fun getBrojPitanja(): Int{
-        return PitanjeKvizRepository.brojPitanja
-    }
-
-    fun setOdgovor(odgovor: Int){
-        PitanjeKvizRepository.odgovor = odgovor
-    }
-
-    fun getOdgovor(): Int{
-        return PitanjeKvizRepository.odgovor
     }
 
     fun setIndexPitanja(indexPitanja: String){

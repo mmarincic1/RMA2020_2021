@@ -7,12 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
+import ba.etf.rma21.projekat.data.fragment.FragmentPoruka
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.Collator
 import java.time.LocalTime
 import java.util.*
@@ -24,6 +33,9 @@ class KvizListAdapter(
     private var quizzes: List<Kviz>,
     private val onItemClicked: (kviz: Kviz) -> Unit
 ): RecyclerView.Adapter<KvizListAdapter.QuizViewHolder>(){
+
+    private val kvizViewModel = KvizListViewModel()
+    private var status: String? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -52,13 +64,10 @@ class KvizListAdapter(
         else holder.quizDate.text = quizzes[position].datumRada?.let { dajDatum(it) }
         holder.quizSubjectName.text = quizzes[position].nazivPredmeta
         holder.quizTime.text = quizzes[position].trajanje.toString() + " min"
-        val context: Context = holder.quizStatus.getContext()
-        val status: String = dajStatus(quizzes[position])
-        if(status == "plava") holder.quizPoints.text = quizzes[position].osvojeniBodovi.toString()
-        else holder.quizPoints.text = ""
-        var id: Int = context.getResources()
-            .getIdentifier(status, "drawable", context.getPackageName())
-        holder.quizStatus.setImageResource(id)
+
+        postaviStatus(quizzes[position], holder, position)
+                                           // while(status == null);
+
     }
 
     private fun dajDatum(datumRada: Date): String{
@@ -92,25 +101,8 @@ class KvizListAdapter(
     }
 
 
-    private fun dajStatus(kviz: Kviz): String {
-        // kviz nije uradjen
-        if(kviz.datumRada == null){
-            var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
-            var datumKraja = kviz.datumKraj?.let { uporediSaTrenutnimDatumom(it) }
-            // kviz nije otvoren
-            if(datumPocetka == 1){
-                return "zuta"
-            }
-            // kviz aktivan
-            else if(datumPocetka == 2 && (datumKraja == 1 || datumKraja == null)){
-                return "zelena"
-            }
-            // kviz nije uradjen i nije aktivan
-            else if(datumPocetka == 2 && datumKraja == 2){
-                return "crvena"
-            }
-        }
-        return "plava"
+    private fun postaviStatus(kviz: Kviz, holder: QuizViewHolder, position: Int) {
+        kvizViewModel.getZavrsenKviz(kviz, holder, position, onSuccess = ::onSuccess, onError = ::onError)
     }
 
 
@@ -140,6 +132,67 @@ class KvizListAdapter(
         val quizSubjectName: TextView = itemView.findViewById(R.id.nazivPredmeta)
         val quizTime: TextView = itemView.findViewById(R.id.trajanje)
         val quizStatus: ImageView = itemView.findViewById(R.id.status)
-        //val newAction: FloatingActionButton = itemView.findViewById(R.id.upisDugme)
+    }
+
+    fun onSuccess(kviz: Kviz, rezultat: Boolean, holder: KvizListAdapter.QuizViewHolder, position: Int){
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                if(rezultat){
+                    status = "plava"
+                }
+                else if(kviz.datumRada == null){
+                    var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
+                    var datumKraja = kviz.datumKraj?.let { uporediSaTrenutnimDatumom(it) }
+                    // kviz nije otvoren
+                    if(datumPocetka == 1){
+                        status = "zuta"
+                    }
+                    // kviz aktivan
+                    else if(datumPocetka == 2 && (datumKraja == 1 || datumKraja == null)){
+                        status = "zelena"
+                    }
+                    // kviz nije uradjen i nije aktivan
+                    else if(datumPocetka == 2 && datumKraja == 2){
+                        status = "crvena"
+                    }
+                }
+                else status = "plava"
+                val pitanjeKvizViewModel = PitanjeKvizViewModel()
+                if(status == "plava")
+                    pitanjeKvizViewModel.getRezultatZaKviz(kviz, holder , onSuccess = ::onSuccess1, onError = ::onError)
+                else{
+                    val context: Context = holder.quizStatus.getContext()
+                    holder.quizPoints.text = ""
+                    val id: Int = context.getResources()
+                        .getIdentifier(status, "drawable", context.getPackageName())
+                    holder.quizStatus.setImageResource(id)
+                    return@withContext
+                }
+            }
+        }
+    }
+
+    fun onSuccess1(rezultat: Int, holder: QuizViewHolder) {
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val context: Context = holder.quizStatus.getContext()
+                if(rezultat != -1){
+                    holder.quizPoints.text = rezultat.toString()
+                }
+                else holder.quizPoints.text = ""
+                var id: Int = context.getResources()
+                    .getIdentifier(status, "drawable", context.getPackageName())
+                holder.quizStatus.setImageResource(id)
+                return@withContext
+            }
+        }
+    }
+
+    fun onError() {
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+
+            }
+        }
     }
 }

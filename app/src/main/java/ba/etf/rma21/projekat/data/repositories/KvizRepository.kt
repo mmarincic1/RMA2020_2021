@@ -36,7 +36,6 @@ class KvizRepository {
 
         init {
             mojiKvizovi = mutableListOf()
-            //addMojiKvizovi("DONE", "G1")
         }
 
         fun getMyKvizes(): List<Kviz> {
@@ -183,6 +182,26 @@ class KvizRepository {
                         OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)
                 }
                 return@withContext
+            }
+        }
+
+        suspend fun getZavrsenKviz(kviz: Kviz): Boolean{
+            return withContext(Dispatchers.IO){
+                val acc = AccountRepository()
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                var imaGa = false
+                lateinit var pKvizi: KvizTaken
+                for(pKviz in pokrenutiKvizovi){
+                    if(pKviz.KvizId == kviz.id){
+                        pKvizi = pKviz
+                        imaGa = true
+                        break
+                    }
+                }
+                if(imaGa){
+                    return@withContext PitanjeKvizRepository.getZavrsenKviz(pKvizi)
+                }
+                return@withContext false
             }
         }
 

@@ -4,9 +4,11 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
+import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.FieldPosition
 import java.util.*
 
 class KvizListViewModel {
@@ -45,13 +47,10 @@ class KvizListViewModel {
         return KvizRepository.getNotTaken()
     }
 
-    fun zavrsiKviz(datum: Date, predmet: String, kvizz: String, bodovi: Int){
-        KvizRepository.zavrsiKviz(datum, predmet, kvizz, bodovi)
-    }
-
     fun getStatus(kviz: Kviz): String{
         return KvizRepository.getStatus(kviz)
     }
+
 
     fun getPocetiKvizovi(onSuccess: (quizzes: List<KvizTaken>) -> Unit,
                          onError: () -> Unit){
@@ -92,6 +91,16 @@ class KvizListViewModel {
         GlobalScope.launch{
             KvizRepository.zavrsiKviz(idKvizTaken)
             onSuccess?.invoke(rezultat)
+        }
+    }
+
+    fun getZavrsenKviz(idKviz: Kviz, holder: KvizListAdapter.QuizViewHolder, position: Int ,
+                       onSuccess: (kviz: Kviz,rezultat: Boolean, holder: KvizListAdapter.QuizViewHolder, position: Int) -> Unit, onError: () -> Unit){
+        GlobalScope.launch{
+            val rezultat = KvizRepository.getZavrsenKviz(idKviz)
+            when(rezultat){
+                is  Boolean-> onSuccess?.invoke(idKviz, rezultat, holder, position)
+            }
         }
     }
 }
