@@ -7,18 +7,6 @@ import kotlinx.coroutines.launch
 
 class PredmetViewModel {
 
-    fun addUpisani(godina: Int, naziv: String) {
-        PredmetRepository.addUpisani(godina, naziv)
-    }
-
-    fun getAll(): List<Predmet>{
-        return PredmetRepository.getAll()
-    }
-
-    fun getUpisani(): List<Predmet>{
-        return PredmetRepository.getUpisani()
-    }
-
     fun getPredmetsByGodina(godina: Int,
                             onSuccess: (predmeti: List<Predmet>) -> Unit,
                             onError: () -> Unit

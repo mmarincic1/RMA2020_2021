@@ -114,10 +114,6 @@ class PitanjeKvizViewModel {
         return PitanjeKvizRepository.odabranaGrupa
     }
 
-    fun getUradjeniKviz(): String{
-        return PitanjeKvizRepository.uradjeniKviz
-    }
-
     fun setIndexPitanja(indexPitanja: String){
         PitanjeKvizRepository.indexPitanja = indexPitanja
     }

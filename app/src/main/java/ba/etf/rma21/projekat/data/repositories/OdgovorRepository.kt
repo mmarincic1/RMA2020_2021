@@ -4,6 +4,7 @@ import ba.etf.rma21.projekat.data.models.OdgPitBod
 import ba.etf.rma21.projekat.data.models.Odgovor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class OdgovorRepository {
     companion object {
@@ -19,16 +20,15 @@ class OdgovorRepository {
         //    idKvizTaken. Funkcija vraća ukupne bodove na kvizu nakon odgovora ili -1 ukoliko ima neka greška u zahtjevu
         suspend fun postaviOdgovorKviz(idKvizTaken:Int, idPitanje:Int, odgovor:Int):Int{
             return withContext(Dispatchers.IO){
-                val bodovi = PitanjeKvizRepository.getRezultatSaNeta(idKvizTaken)
+                val bodovi = PitanjeKvizRepository.getRezultatSaKvizaZaOdgovor(idKvizTaken, idPitanje, odgovor)
                 val odgovor = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = bodovi)
                 val acc = AccountRepository()
-                val povratniOdg = ApiAdapter.retrofit.postaviOdgovorKviz(acc.getHash(), idKvizTaken, odgovor)
-                // NEMA LOGIKE NIKAKVE
-                var rezultat = 0
-                if(povratniOdg != null)
-                    rezultat = 1
-                // DOVDE
-                return@withContext rezultat
+                try {
+                    ApiAdapter.retrofit.postaviOdgovorKviz(acc.getHash(), idKvizTaken, odgovor)
+                    return@withContext bodovi
+                }catch(e: Exception){
+                    return@withContext -1
+                }
             }
         }
 

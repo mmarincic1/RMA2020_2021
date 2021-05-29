@@ -3,7 +3,6 @@ package ba.etf.rma21.projekat.data.repositories
 import ba.etf.rma21.projekat.Api
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
-import ba.etf.rma21.projekat.data.quizzes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -13,67 +12,26 @@ import kotlin.math.roundToInt
 class KvizRepository {
 
     companion object {
-        private var mojiKvizovi: MutableList<Kviz>
         lateinit var pokrenutiKviz: Kviz
         var radjeniKviz: KvizTaken? = null
 
-        // pomocna fija kako bi mogao sve testove odjednom pokrenuti
-        fun ispisiSve(): Unit{
-            mojiKvizovi = mutableListOf()
-            addMojiKvizovi("DONE", "G1")
-        }
-
-        // pomocna za dodavanje Kviza
-        fun getKvizSaImenomIGrupom(predmet: String, grupa: String): Kviz{
-            return getAll1().stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.nazivGrupe == grupa}.findFirst().get()
-        }
-
-        fun addMojiKvizovi(predmet: String, grupa: String): Unit{
-            var pom = getKvizSaImenomIGrupom(predmet, grupa)
-            pom.setStatus(dajStatus(pom))
-            mojiKvizovi.add(pom)
-        }
-
         init {
-            mojiKvizovi = mutableListOf()
-        }
 
-        fun getMyKvizes(): List<Kviz> {
-            if(mojiKvizovi.size == 0)
-                return emptyList()
-            updateStatuseZaSvakiSlucaj()
-            return mojiKvizovi
-        }
-
-       fun getAll1(): List<Kviz> {
-            return quizzes()
         }
 
         fun getDone(): List<Kviz> {
-            updateStatuseZaSvakiSlucaj()
-            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "plava" }.collect(
-                Collectors.toList())
-            if(pom.size == 0)
-                return emptyList()
-            return pom
+
+           return emptyList()
         }
 
         fun getFuture(): List<Kviz> {
-            updateStatuseZaSvakiSlucaj()
-            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "zuta" }.collect(
-                Collectors.toList())
-            if(pom.size == 0)
-                return emptyList()
-            return pom
-        }
+
+            return emptyList()
+         }
 
         fun getNotTaken(): List<Kviz> {
-            updateStatuseZaSvakiSlucaj()
-            val pom = mojiKvizovi.stream().filter { kviz -> kviz.getStatus() == "crvena" }.collect(
-                Collectors.toList())
-            if(pom.size == 0)
-                return emptyList()
-            return pom
+
+            return emptyList()
         }
 
         private fun dajStatus(kviz: Kviz): String {
@@ -110,20 +68,10 @@ class KvizRepository {
             return 0;
         }
 
-        fun zavrsiKviz(datum: Date, predmet: String, kvizz: String, bodovi: Int){
-            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().datumRada = datum
-            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().osvojeniBodovi = bodovi.toFloat()
-            mojiKvizovi.stream().filter{kviz -> kviz.nazivPredmeta == predmet && kviz.naziv == kvizz}.findFirst().get().setStatus("plava")
-        }
-
         fun getStatus(kviz: Kviz): String{
             return dajStatus(kviz)
         }
 
-
-        private fun updateStatuseZaSvakiSlucaj(){
-            mojiKvizovi.stream().forEach { kviz -> kviz.setStatus(dajStatus(kviz))}
-        }
 
         // nova
         suspend fun getAll():List<Kviz>{
@@ -135,7 +83,6 @@ class KvizRepository {
                     val kvizZaUbaciti = kviz
                     var listaNaziva = mutableListOf<String>()
                     for(kviz1 in pom1){
-                        //kvizZaUbaciti.nazivGrupe = kviz1.nazivGrupe
                         val naziv = ApiAdapter.retrofit.getPredmetId(kviz1.predmetId).naziv
                         if(!listaNaziva.contains(naziv)) {
                             if (kvizZaUbaciti.nazivPredmeta == null)
@@ -166,9 +113,30 @@ class KvizRepository {
                 for(grupa in grupe){
                     var pom = ApiAdapter.retrofit.getUpisani(grupa.id)
                     val nazivPredmeta = ApiAdapter.retrofit.getPredmetId(grupa.predmetId).naziv
-                    pom.stream().forEach { x -> x.nazivGrupe = grupa.naziv; x.nazivPredmeta = nazivPredmeta}
+                    pom.stream().forEach { x -> x.nazivGrupe = grupa.naziv;
+                        if(x.nazivPredmeta == null)
+                            x.nazivPredmeta = nazivPredmeta
+                    else x.nazivPredmeta+= nazivPredmeta
+                    }
                     rezultat.addAll(pom)
                 }
+                var izbacuj = mutableListOf<Int>()
+                var i = 0
+                var j = 0
+                while(i < rezultat.size){
+                    j = i + 1
+                    while(j < rezultat.size){
+                        if(rezultat[i].id == rezultat[j].id){
+                            rezultat[i].nazivPredmeta+= "," + rezultat[j].nazivPredmeta
+                            rezultat.removeAt(j)
+                            izbacuj.add(j)
+                        }
+                        j++
+                    }
+                    i++
+                }
+                for(izbaci in izbacuj)
+                    rezultat.removeAt(izbaci)
                 return@withContext rezultat
             }
         }

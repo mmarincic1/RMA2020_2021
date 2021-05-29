@@ -109,10 +109,10 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
 
         val predajKvizItemClickListener = MenuItem.OnMenuItemClickListener {
             // MOZE SAMO PREDATI KVIZ AKO JE KVIZ AKTIVAN
-            //if(kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) != "crvena") {
-                    KvizRepository.radjeniKviz?.id?.let { it1 -> pitanjeKvizViewModel.getRezultat(it1, onSuccess = ::onSuccess1, onError = ::onError) }
-                    MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isEnabled = false
-            //}
+            if(kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) != "crvena") {
+                KvizRepository.radjeniKviz?.id?.let { it1 -> pitanjeKvizViewModel.getRezultat(it1, onSuccess = ::onSuccess1, onError = ::onError) }
+                MainActivity.bottomNavigation.menu.findItem(R.id.predajKviz).isEnabled = false
+            }
             return@OnMenuItemClickListener true
         }
 
@@ -178,7 +178,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 val kvizoviFragments = FragmentPoruka.newInstance(
-                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
+                    "Završili ste kviz " + KvizRepository.pokrenutiKviz.naziv + " sa tačnosti " +
                             rezultat
                 )
                     openFragment(kvizoviFragments)
@@ -190,7 +190,7 @@ class FragmentPokusaj(private var listaPitanja: List<Pitanje>) : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 val kvizoviFragments = FragmentPoruka.newInstance(
-                    "Završili ste kviz " + pitanjeKvizViewModel.getUradjeniKviz() + " sa tačnosti " +
+                    "Završili ste kviz " + KvizRepository.pokrenutiKviz.naziv + " sa tačnosti " +
                             rezultat
                 )
                 navigationView.menu.clear()

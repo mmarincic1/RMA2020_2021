@@ -4,14 +4,20 @@ import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class TakeKvizRepository {
     companion object {
         // - kreira pokušaj za kviz, vraća kreirani pokušaj ili null u slučaju greške
-        suspend fun zapocniKviz(idKviza: Int): KvizTaken {
+        suspend fun zapocniKviz(idKviza: Int): KvizTaken? {
             return withContext(Dispatchers.IO) {
                 val acc = AccountRepository()
-                return@withContext ApiAdapter.retrofit.zapocniKviz(idKviza, acc.getHash())
+                try {
+                    val rezultat = ApiAdapter.retrofit.zapocniKviz(idKviza, acc.getHash())
+                    return@withContext rezultat
+                }catch (e: Exception){
+                    return@withContext null
+                }
             }
         }
 

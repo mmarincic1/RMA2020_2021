@@ -3,7 +3,6 @@ package ba.etf.rma21.projekat.data.repositories
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
-import ba.etf.rma21.projekat.data.models.PitanjeKviz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
@@ -13,52 +12,11 @@ import kotlin.math.roundToInt
 class PitanjeKvizRepository {
 
     companion object{
-
-        var listaSvihOdgovorenihPitanja = mutableListOf<PitanjeKviz>()
         var odabranaGodina: Int = -1
         var odabraniPredmet: Int = -1
         var odabranaGrupa: Int = -1
-        var uradjeniKviz = ""
-        var uradjeniPredmet = ""
-        var brojPitanja = 0
         var odgovor = -1
         var indexPitanja = ""
-
-
-        fun getOdgovorNaPitanje(nazivKviza: String, nazivPredmeta: String, nazivPitanja: String): Int{
-            if(listaSvihOdgovorenihPitanja.stream().filter {
-                pitanje ->
-                pitanje.naziv == nazivPitanja &&
-                        pitanje.kviz == nazivKviza &&
-                        pitanje.getNazivPredmeta() == nazivPredmeta
-            }.findFirst().isPresent) {
-                val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter { pitanje ->
-                    pitanje.naziv == nazivPitanja &&
-                            pitanje.kviz == nazivKviza &&
-                            pitanje.getNazivPredmeta() == nazivPredmeta
-                }.findFirst().get()
-                return pom.getOdgovorNaPitanje()
-            }
-            return -1
-        }
-
-
-        fun getRezultat(nazivKviza: String, nazivPredmeta: String): Int{
-            if(listaSvihOdgovorenihPitanja.stream().filter {
-                        pitanje ->
-                    pitanje.kviz == nazivKviza &&
-                            pitanje.getNazivPredmeta() == nazivPredmeta
-                }.findFirst().isPresent){
-            val pom: PitanjeKviz = listaSvihOdgovorenihPitanja.stream().filter {
-                    pitanje ->
-                        pitanje.kviz == nazivKviza &&
-                        pitanje.getNazivPredmeta() == nazivPredmeta
-            }.findFirst().get()
-            return pom.getRezultat()
-            }
-            return -1
-        }
-
 
 
         // - vraća sva pitanja na kvizu sa zadanim id-em
@@ -71,7 +29,13 @@ class PitanjeKvizRepository {
 
         suspend fun getRezultatSaNeta(idKviza: Int): Int{
             return withContext(Dispatchers.IO){
-                val pitanja = getPitanja(KvizRepository.pokrenutiKviz.id)
+                val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
+                var kvizId = -1
+                for(kviz in pocetiKvizovi){
+                    if(kviz.id == idKviza)
+                        kvizId = kviz.KvizId
+                }
+                val pitanja = getPitanja(kvizId)
                 val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza)
                 var rezultat = 0.0
                 for(pitanje in pitanja){
@@ -85,9 +49,40 @@ class PitanjeKvizRepository {
             }
         }
 
+        suspend fun getRezultatSaKvizaZaOdgovor(idKviza: Int, idPitanje: Int, odgovorInt: Int): Int{
+            return withContext(Dispatchers.IO){
+                val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
+                var kvizId = -1
+                for(kviz in pocetiKvizovi){
+                    if(kviz.id == idKviza)
+                        kvizId = kviz.KvizId
+                }
+                val pitanja = getPitanja(kvizId)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza)
+                var rezultat = 0.0
+                for(pitanje in pitanja){
+                    for(odgovor in odgovori){
+                        if(odgovor.pitanjeId == pitanje.id && odgovor.odgovoreno == pitanje.tacan){
+                            rezultat += (1/pitanja.size.toDouble())*100
+                        }
+                    }
+                    if(pitanje.id == idPitanje && pitanje.tacan == odgovorInt){
+                        rezultat += (1/pitanja.size.toDouble())*100
+                    }
+                }
+                return@withContext rezultat.roundToInt()
+            }
+        }
+
         suspend fun getZavrsenKviz(idKviza: KvizTaken): Boolean{
             return withContext(Dispatchers.IO){
-                val pitanja = ApiAdapter.retrofit.getPitanja(KvizRepository.pokrenutiKviz.id)
+                val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
+                var kvizId = -1
+                for(kviz in pocetiKvizovi){
+                    if(kviz.id == idKviza.id)
+                        kvizId = kviz.KvizId
+                }
+                val pitanja = ApiAdapter.retrofit.getPitanja(kvizId)
                 val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza.id)
                 return@withContext pitanja.size == odgovori.size
             }

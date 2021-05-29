@@ -14,14 +14,4 @@ data class Kviz(
     var nazivPredmeta: String?,
     var osvojeniBodovi: Float?
 ) {
-    private var status = ""
-
-    fun setStatus(status: String){
-        this.status = status
-    }
-
-    fun getStatus(): String{
-        return status
-    }
-
 }
