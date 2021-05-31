@@ -6,8 +6,12 @@ class AccountRepository {
     }
     // lokalno a ne na web
     fun postaviHash(accHash:String):Boolean{
-        acHash = accHash
-        return true
+        try {
+            acHash = accHash
+            return true
+        }catch (e: Exception){
+            return false
+        }
     }
 
     fun getHash():String{

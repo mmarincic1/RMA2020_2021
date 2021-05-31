@@ -27,7 +27,7 @@ class TakeKvizRepository {
                 val acc = AccountRepository()
                 try {
                     val rezultat = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
-                    if(rezultat.size == 0)
+                    if(rezultat.isEmpty())
                         return@withContext null
                     return@withContext rezultat
                 }catch(e: Exception){

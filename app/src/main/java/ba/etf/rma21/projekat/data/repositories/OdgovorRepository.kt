@@ -22,7 +22,15 @@ class OdgovorRepository {
                         break
                     }
                 }
-                return@withContext ApiAdapter.retrofit.getOdgovoriKviz(pKvizi, acc.getHash())
+                if(pKvizi == -1)
+                    return@withContext emptyList<Odgovor>()
+                try {
+                    val rezultat = ApiAdapter.retrofit.getOdgovoriKviz(pKvizi, acc.getHash())
+                    return@withContext rezultat
+                }
+                catch (e: Exception){
+                    return@withContext emptyList<Odgovor>()
+                }
             }
         }
 
