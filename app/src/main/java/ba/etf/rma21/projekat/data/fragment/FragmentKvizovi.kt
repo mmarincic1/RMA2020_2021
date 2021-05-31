@@ -83,10 +83,16 @@ class FragmentKvizovi : Fragment() {
                 onSuccess = ::onSuccess,
                 onError = ::onError)
         else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getDoneQuizzes())
+            quizListViewModel.getDoneQuizzes(
+                onSuccess = ::onSuccess,
+                onError = ::onError)
         else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")
-            quizzesAdapter.updateQuizes(quizListViewModel.getFutureQuizzes())
-        else quizzesAdapter.updateQuizes(quizListViewModel.getPastQuizzes())
+            quizListViewModel.getFutureQuizzes(
+                onSuccess = ::onSuccess,
+                onError = ::onError)
+        else  quizListViewModel.getPastQuizzes(
+            onSuccess = ::onSuccess,
+            onError = ::onError)
     }
 
     override fun onResume() {

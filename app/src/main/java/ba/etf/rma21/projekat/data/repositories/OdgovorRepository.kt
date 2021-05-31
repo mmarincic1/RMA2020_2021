@@ -1,5 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.OdgPitBod
 import ba.etf.rma21.projekat.data.models.Odgovor
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +14,15 @@ class OdgovorRepository {
         suspend fun getOdgovoriKviz(idKviza: Int): List<Odgovor> {
             return withContext(Dispatchers.IO) {
                 val acc = AccountRepository()
-                return@withContext ApiAdapter.retrofit.getOdgovoriKviz(idKviza, acc.getHash())
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                var pKvizi : Int = -1
+                for(pKviz in pokrenutiKvizovi){
+                    if(pKviz.KvizId == idKviza){
+                        pKvizi = pKviz.id
+                        break
+                    }
+                }
+                return@withContext ApiAdapter.retrofit.getOdgovoriKviz(pKvizi, acc.getHash())
             }
         }
 

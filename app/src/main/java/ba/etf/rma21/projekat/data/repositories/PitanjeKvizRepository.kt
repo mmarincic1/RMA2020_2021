@@ -31,12 +31,14 @@ class PitanjeKvizRepository {
             return withContext(Dispatchers.IO){
                 val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
                 var kvizId = -1
-                for(kviz in pocetiKvizovi){
-                    if(kviz.id == idKviza)
-                        kvizId = kviz.KvizId
+                if (pocetiKvizovi != null) {
+                    for(kviz in pocetiKvizovi){
+                        if(kviz.id == idKviza)
+                            kvizId = kviz.KvizId
+                    }
                 }
                 val pitanja = getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
                 var rezultat = 0.0
                 for(pitanje in pitanja){
                     for(odgovor in odgovori){
@@ -53,12 +55,14 @@ class PitanjeKvizRepository {
             return withContext(Dispatchers.IO){
                 val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
                 var kvizId = -1
-                for(kviz in pocetiKvizovi){
-                    if(kviz.id == idKviza)
-                        kvizId = kviz.KvizId
+                if (pocetiKvizovi != null) {
+                    for(kviz in pocetiKvizovi){
+                        if(kviz.id == idKviza)
+                            kvizId = kviz.KvizId
+                    }
                 }
                 val pitanja = getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
                 var rezultat = 0.0
                 for(pitanje in pitanja){
                     for(odgovor in odgovori){
@@ -78,12 +82,14 @@ class PitanjeKvizRepository {
             return withContext(Dispatchers.IO){
                 val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
                 var kvizId = -1
-                for(kviz in pocetiKvizovi){
-                    if(kviz.id == idKviza.id)
-                        kvizId = kviz.KvizId
+                if (pocetiKvizovi != null) {
+                    for(kviz in pocetiKvizovi){
+                        if(kviz.id == idKviza.id)
+                            kvizId = kviz.KvizId
+                    }
                 }
                 val pitanja = ApiAdapter.retrofit.getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza.id)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
                 return@withContext pitanja.size == odgovori.size
             }
         }
@@ -104,7 +110,7 @@ class PitanjeKvizRepository {
                 var rezultat = -1.0
                 if(imaGa) {
                     val pitanja = getPitanja(kviz.id)
-                    val odgovori = OdgovorRepository.getOdgovoriKviz(pKvizi.id)
+                    val odgovori = OdgovorRepository.getOdgovoriKviz(kviz.id)
                     rezultat = 0.0
                     for (pitanje in pitanja) {
                         for (odgovor in odgovori) {

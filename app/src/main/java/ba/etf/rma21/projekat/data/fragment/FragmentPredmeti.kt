@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.acl.Group
 
-// PROVJERI TREBA LI SE OPET PAMTITI STA JE PRITISNUO !!!
 class FragmentPredmeti: Fragment() {
     private lateinit var odabirGodine: Spinner
     private lateinit var odabirPredmeta: Spinner
@@ -28,8 +27,6 @@ class FragmentPredmeti: Fragment() {
     private var predmetViewModel = PredmetViewModel()
     private var grupaViewModel = GroupViewModel()
     private var pitanjeKvizListViewModel = PitanjeKvizViewModel()
-    private var groupViewModel = GroupViewModel()
-    private var quizListViewModel = KvizListViewModel()
 
     private var prviPutPredmet = true
     private var prviPutGrupa = true
@@ -59,14 +56,16 @@ class FragmentPredmeti: Fragment() {
                 if(odabirGodine.selectedItem.toString() != "") {
                     odabirPredmeta.isEnabled = true
                     updatePredmete()
+
                     if(!prviPutGrupa) {
                         updateGrupe()
                         pitanjeKvizListViewModel.setOdabranaGrupa(-1)
                     }
+
+                    if(!prviPutPredmet)
+                        pitanjeKvizListViewModel.setOdabraniPredmet(-1)
+
                     pitanjeKvizListViewModel.setOdabranaGodina(odabirGodine.selectedItemPosition)
-
-                    pitanjeKvizListViewModel.setOdabraniPredmet(-1)
-
                 }
                 else {
                     odabirPredmeta.isEnabled = false
@@ -87,9 +86,10 @@ class FragmentPredmeti: Fragment() {
                 if(odabirPredmeta.selectedItem.toString() != "") {
                     odabirGrupe.isEnabled = true
                     updateGrupe()
-                    pitanjeKvizListViewModel.setOdabraniPredmet(odabirPredmeta.selectedItemPosition)
+                    if(!prviPutGrupa)
+                        pitanjeKvizListViewModel.setOdabranaGrupa(-1)
 
-                    pitanjeKvizListViewModel.setOdabranaGrupa(-1)
+                    pitanjeKvizListViewModel.setOdabraniPredmet(odabirPredmeta.selectedItemPosition)
                 }
                 else {
                     updateGrupe()
@@ -128,7 +128,7 @@ class FragmentPredmeti: Fragment() {
         fun newInstance(): FragmentPredmeti = FragmentPredmeti()
     }
 
-    private fun updatePredmete(): Unit{
+    private fun updatePredmete(){
         predmetViewModel.getPredmetsByGodina(odabirGodine.selectedItem.toString().toInt(), onSuccess = ::onSuccess, onError = ::onError)
     }
 
@@ -160,7 +160,7 @@ class FragmentPredmeti: Fragment() {
     }
 
     private fun openFragment(fragment: Fragment) {
-        var fr = getFragmentManager()?.beginTransaction()
+        val fr = getFragmentManager()?.beginTransaction()
         fr?.replace(R.id.container, fragment)
         fr?.commit()
     }
@@ -177,6 +177,8 @@ class FragmentPredmeti: Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
                 odabirPredmeta.adapter = adapter
+                val pom = pitanjeKvizListViewModel.getOdabraniPredmet()
+
                 if(prviPutPredmet && pitanjeKvizListViewModel.getOdabraniPredmet() != -1){
                     odabirPredmeta.setSelection(pitanjeKvizListViewModel.getOdabraniPredmet())
                     prviPutPredmet = false
@@ -197,11 +199,13 @@ class FragmentPredmeti: Fragment() {
                 adapter1.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
                 odabirGrupe.adapter = adapter1
+
+                if (prviPutGrupa && pitanjeKvizListViewModel.getOdabranaGrupa() != -1) {
+                    odabirGrupe.setSelection(pitanjeKvizListViewModel.getOdabranaGrupa())
+                    prviPutGrupa = false
+                }
             }
-            if (prviPutGrupa && pitanjeKvizListViewModel.getOdabranaGrupa() != -1) {
-                odabirGrupe.setSelection(pitanjeKvizListViewModel.getOdabranaGrupa())
-                prviPutGrupa = false
-            }
+
         }
     }
 

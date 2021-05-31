@@ -72,7 +72,7 @@ class RepositoryUnitTest {
         var prije = TakeKvizRepository.getPocetiKvizovi()
         TakeKvizRepository.zapocniKviz(upisaniKvizovi!![0]?.id)
         var poslije = TakeKvizRepository.getPocetiKvizovi()
-        assertThat(prije!!.size,CoreMatchers.`is`(lessThan(poslije!!.size)))
+        assertThat(prije,CoreMatchers.`is`(CoreMatchers.nullValue()))
         assertThat(poslije!!.size,CoreMatchers.equalTo(1))
     }
 
@@ -85,7 +85,7 @@ class RepositoryUnitTest {
     @Test
     fun a7_provjeriBezOdgovora() = runBlocking {
         var poceti = TakeKvizRepository.getPocetiKvizovi()
-        assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.id)!!.size,CoreMatchers.equalTo(0))
+        assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.KvizId)!!.size,CoreMatchers.equalTo(0))
     }
     @Test
     fun a8_provjeriOdgovor() = runBlocking {
@@ -94,7 +94,7 @@ class RepositoryUnitTest {
         var result = OdgovorRepository.postaviOdgovorKviz(poceti!![poceti.size-1]?.id,pitanja!![0]?.id,pitanja!![0]?.tacan)
         assertThat(result,CoreMatchers.notNullValue())
         assertThat(result,CoreMatchers.equalTo(50))
-        assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.id)!!.size,CoreMatchers.equalTo(1))
+        assertThat(OdgovorRepository.getOdgovoriKviz(poceti!![poceti.size-1]?.KvizId)!!.size, CoreMatchers.equalTo(1))
     }
     @Test
     fun a9_provjeriKvizove() = runBlocking {

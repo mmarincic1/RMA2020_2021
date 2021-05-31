@@ -35,16 +35,37 @@ class KvizListViewModel {
         }
     }
 
-    fun getDoneQuizzes(): List<Kviz>{
-        return KvizRepository.getDone()
+    fun getDoneQuizzes(onSuccess: (quizzes: List<Kviz>) -> Unit,
+                     onError: () -> Unit){
+        GlobalScope.launch{
+            val quizzes = KvizRepository.getDone()
+            when(quizzes){
+                is List<Kviz> -> onSuccess?.invoke(quizzes)
+                else -> onError?.invoke()
+            }
+        }
     }
 
-    fun getFutureQuizzes(): List<Kviz>{
-        return KvizRepository.getFuture()
+    fun getFutureQuizzes(onSuccess: (quizzes: List<Kviz>) -> Unit,
+                       onError: () -> Unit){
+        GlobalScope.launch{
+            val quizzes = KvizRepository.getFuture()
+            when(quizzes){
+                is List<Kviz> -> onSuccess?.invoke(quizzes)
+                else -> onError?.invoke()
+            }
+        }
     }
 
-    fun getPastQuizzes(): List<Kviz>{
-        return KvizRepository.getNotTaken()
+    fun getPastQuizzes(onSuccess: (quizzes: List<Kviz>) -> Unit,
+                       onError: () -> Unit){
+        GlobalScope.launch{
+            val quizzes = KvizRepository.getNotTaken()
+            when(quizzes){
+                is List<Kviz> -> onSuccess?.invoke(quizzes)
+                else -> onError?.invoke()
+            }
+        }
     }
 
     fun getStatus(kviz: Kviz): String{

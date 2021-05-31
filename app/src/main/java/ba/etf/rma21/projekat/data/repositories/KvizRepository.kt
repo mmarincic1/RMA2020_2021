@@ -1,13 +1,10 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.Api
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.stream.Collectors
-import kotlin.math.roundToInt
 
 class KvizRepository {
 
@@ -19,19 +16,40 @@ class KvizRepository {
 
         }
 
-        fun getDone(): List<Kviz> {
-
-           return emptyList()
+        suspend fun getDone(): List<Kviz> {
+            return withContext(Dispatchers.IO){
+               val kvizovi = getUpisani()
+                var rezultat = mutableListOf<Kviz>()
+                for(kviz in kvizovi){
+                    if(getZavrsenKviz(kviz))
+                        rezultat.add(kviz)
+                }
+                return@withContext rezultat
+            }
         }
 
-        fun getFuture(): List<Kviz> {
-
-            return emptyList()
+        suspend fun getFuture(): List<Kviz> {
+            return withContext(Dispatchers.IO){
+                val kvizovi = getUpisani()
+                var rezultat = mutableListOf<Kviz>()
+                for(kviz in kvizovi){
+                    if(!getZavrsenKviz(kviz) && dajStatus(kviz) == "zuta")
+                        rezultat.add(kviz)
+                }
+                return@withContext rezultat
+            }
          }
 
-        fun getNotTaken(): List<Kviz> {
-
-            return emptyList()
+        suspend fun getNotTaken(): List<Kviz> {
+            return withContext(Dispatchers.IO){
+                val kvizovi = getUpisani()
+                var rezultat = mutableListOf<Kviz>()
+                for(kviz in kvizovi){
+                    if(!getZavrsenKviz(kviz) && dajStatus(kviz) == "crvena")
+                        rezultat.add(kviz)
+                }
+                return@withContext rezultat
+            }
         }
 
         private fun dajStatus(kviz: Kviz): String {
@@ -98,9 +116,14 @@ class KvizRepository {
             }
         }
 
-        suspend fun getById(id:Int): Kviz{
+        suspend fun getById(id:Int): Kviz? {
             return withContext(Dispatchers.IO){
-                return@withContext ApiAdapter.retrofit.getById(id)
+                try {
+                    val rezultat = ApiAdapter.retrofit.getById(id)
+                    return@withContext rezultat
+                }catch (e: Exception){
+                    return@withContext null
+                }
             }
         }
 
@@ -137,6 +160,15 @@ class KvizRepository {
                 }
                 for(izbaci in izbacuj)
                     rezultat.removeAt(izbaci)
+                val kvizTakenZaDatum = TakeKvizRepository.getPocetiKvizovi()
+                if (kvizTakenZaDatum != null) {
+                    for(kviz in kvizTakenZaDatum){
+                        rezultat.stream().forEach { x ->
+                            if(x.id == kviz.KvizId)
+                                x.datumRada = kviz.datumRada
+                        }
+                    }
+                }
                 return@withContext rezultat
             }
         }
@@ -144,7 +176,7 @@ class KvizRepository {
         suspend fun zavrsiKviz(idKviza: KvizTaken){
             return withContext(Dispatchers.IO){
                 val pitanja = ApiAdapter.retrofit.getPitanja(pokrenutiKviz.id)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(idKviza.id)
+                val odgovori = OdgovorRepository.getOdgovoriKviz(pokrenutiKviz.id)
                 for(pitanje in pitanja){
                     if(odgovori.stream().noneMatch{ x -> x.pitanjeId == pitanje.id })
                         OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)

@@ -22,10 +22,18 @@ class TakeKvizRepository {
         }
 
         //- vraća listu pokušaja ili null ukoliko student nema niti jedan započeti kviz
-        suspend fun getPocetiKvizovi(): List<KvizTaken> {
+        suspend fun getPocetiKvizovi(): List<KvizTaken>? {
             return withContext(Dispatchers.IO) {
                 val acc = AccountRepository()
-                return@withContext ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                try {
+                    val rezultat = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                    if(rezultat.size == 0)
+                        return@withContext null
+                    return@withContext rezultat
+                }catch(e: Exception){
+                    return@withContext null
+                }
+
             }
         }
 
