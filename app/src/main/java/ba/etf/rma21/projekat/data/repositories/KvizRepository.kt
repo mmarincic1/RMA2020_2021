@@ -1,9 +1,14 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.annotation.SuppressLint
+import android.os.Build
+import ba.etf.rma21.projekat.data.AppDatabase
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class KvizRepository {
@@ -127,6 +132,12 @@ class KvizRepository {
             }
         }
 
+        @SuppressLint("SimpleDateFormat")
+        private fun getDateFormat(date: Date): String {
+            val format = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
+            return format.format(date)
+        }
+
         // svi kvizovi za grupe u kojima je student upisan
         suspend fun getUpisani():List<Kviz>{
             return withContext(Dispatchers.IO){
@@ -164,11 +175,24 @@ class KvizRepository {
                 if (kvizTakenZaDatum != null) {
                     for(kviz in kvizTakenZaDatum){
                         rezultat.stream().forEach { x ->
-                            if(x.id == kviz.KvizId)
+                            if(x.id == kviz.KvizId){
                                 x.datumRada = kviz.datumRada
+                                x.datumRadaDb = getDateFormat(kviz.datumRada)
+                            }
                         }
                     }
                 }
+                // novo
+                for(kviz in rezultat){
+                    if(getZavrsenKviz(kviz)){
+                        kviz.osvojeniBodovi = PitanjeKvizRepository.getRezultatSaNeta(kviz.id)
+                    }
+                    kviz.datumPocetakDb = getDateFormat(kviz.datumPocetka)
+                    if(kviz.datumKraj != null)
+                        kviz.datumKrajDb = getDateFormat(kviz.datumKraj!!)
+                    else kviz.datumKrajDb = ""
+                }
+                // novo
                 return@withContext rezultat
             }
         }
@@ -202,6 +226,29 @@ class KvizRepository {
                     return@withContext PitanjeKvizRepository.getZavrsenKviz(pKvizi)
                 }
                 return@withContext false
+            }
+        }
+
+        private fun stringToDate(value: String?): Date {
+            val format = SimpleDateFormat("yyyy-MM-dd")
+            return format.parse(value)
+        }
+
+        suspend fun getUpisaniDb(): List<Kviz>{
+            return withContext(Dispatchers.IO){
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val rezultat = db.kvizDao().dajSveKvizoveDb()
+                rezultat.stream().forEach { x ->
+                    x.datumPocetka = stringToDate(x.datumPocetakDb)
+                    if(x.datumKrajDb == "")
+                        x.datumKraj = null
+                    else x.datumKraj = stringToDate(x.datumKrajDb)
+                    if(x.datumRadaDb == "")
+                        x.datumRada = null
+                    else x.datumRada = stringToDate(x.datumRadaDb)
+                }
+
+                return@withContext rezultat
             }
         }
 

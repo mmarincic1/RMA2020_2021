@@ -102,14 +102,6 @@ class MainActivity : AppCompatActivity() {
     fun onSuccess(){
         GlobalScope.launch(Dispatchers.IO){
             withContext(Dispatchers.Main){
-                groupViewModel.updateNow(onSuccess = ::onSuccess1, onError = ::onError)
-            }
-        }
-    }
-
-    fun onSuccess1(){
-        GlobalScope.launch(Dispatchers.IO){
-            withContext(Dispatchers.Main){
                 val toast = Toast.makeText(applicationContext, "Sve ok", Toast.LENGTH_SHORT)
                 toast.show()
             }

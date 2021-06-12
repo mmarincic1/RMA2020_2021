@@ -57,7 +57,6 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // KONAAAACNO HEHEHEHEHEHHE
         Handler().postDelayed({
-            //val odgovor = pitanjeKvizViewModel.getOdgovor()
             while(KvizRepository.radjeniKviz == null);
                 KvizRepository.radjeniKviz?.id?.let {
                     pitanjeKvizViewModel.getOdgovorApp(
@@ -67,35 +66,6 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment() {
                         onError = ::onError
                     )
                 }
-            // ovo sam uveo jer sam primijetio da je bio bug kada se pritisne back dugme
-//            if(odgovori.getChildAt(0) != null) {
-//                if (odgovor != -1) {
-//                    // ne moram kliktati mogu direktno bojiti
-//                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-//                    var odgovorPogresan = odgovori?.getChildAt(odgovor) as TextView
-//                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
-//                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
-//                    if (pitanje.tacan != odgovor){
-//                        odgovorPogresan.setTextColor(Color.parseColor("#000000"))
-//                        odgovori.getChildAt(odgovor).setBackgroundColor(Color.parseColor("#DB4F3D"))
-//                    }
-//                    for (odabir in odgovori.children) {
-//                        odabir.isEnabled = false
-//                        odabir.setOnClickListener(null)
-//                    }
-//                } // OVO ZNACI DA NIJE ODGOVORIO
-//                else if (pitanjeKvizViewModel.getZavrsenKviz(pitanjeKvizViewModel.getUradjeniKviz(), pitanjeKvizViewModel.getUradjeniPredmet())
-//                        || kvizViewModel.getStatus(KvizRepository.pokrenutiKviz) == "crvena") {
-//                    // moram pokazati i tacan odgovor
-//                    val odgovorTacan = odgovori?.getChildAt(pitanje.tacan) as TextView
-//                    odgovorTacan.setTextColor(Color.parseColor("#000000"))
-//                    odgovori.getChildAt(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
-//                    for (odabir in odgovori.children) {
-//                        odabir.isEnabled = false
-//                        odabir.setOnClickListener(null)
-//                    }
-//                }
-//            }
         }, 1)
 
     }

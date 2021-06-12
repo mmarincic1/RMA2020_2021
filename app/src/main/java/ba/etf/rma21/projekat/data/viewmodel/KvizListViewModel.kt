@@ -27,7 +27,7 @@ class KvizListViewModel {
     fun getMyQuizzes(onSuccess: (quizzes: List<Kviz>) -> Unit,
                      onError: () -> Unit){
         GlobalScope.launch{
-            val quizzes = KvizRepository.getUpisani()
+            val quizzes = KvizRepository.getUpisaniDb()
             when(quizzes){
                 is List<Kviz> -> onSuccess?.invoke(quizzes)
                 else -> onError?.invoke()

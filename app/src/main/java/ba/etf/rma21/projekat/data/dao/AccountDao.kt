@@ -15,4 +15,7 @@ interface AccountDao {
 
     @Insert
     suspend fun insertAcc(vararg acc: Account)
+
+    @Query("UPDATE account SET lastUpdate = :lastUpdate WHERE hashStudent = :hash")
+    suspend fun updateLastUpdate(lastUpdate: String, hash:String)
 }

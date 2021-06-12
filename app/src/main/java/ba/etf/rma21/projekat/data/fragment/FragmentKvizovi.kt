@@ -16,9 +16,11 @@ import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.GrupaRepository
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
+import ba.etf.rma21.projekat.data.viewmodel.GroupViewModel
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +33,7 @@ class FragmentKvizovi : Fragment() {
     private lateinit var quizzesAdapter: KvizListAdapter
     private var quizListViewModel = KvizListViewModel()
     private var pitanjaKvizViewModel = PitanjeKvizViewModel()
+    private var groupViewModel = GroupViewModel()
     private lateinit var filterKvizova: Spinner
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -78,21 +81,9 @@ class FragmentKvizovi : Fragment() {
             quizListViewModel.getQuizzes(
                 onSuccess = ::onSuccess,
                 onError = ::onError)
-        else if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
-            quizListViewModel.getMyQuizzes(
-                onSuccess = ::onSuccess,
-                onError = ::onError)
-        else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
-            quizListViewModel.getDoneQuizzes(
-                onSuccess = ::onSuccess,
-                onError = ::onError)
-        else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")
-            quizListViewModel.getFutureQuizzes(
-                onSuccess = ::onSuccess,
-                onError = ::onError)
-        else  quizListViewModel.getPastQuizzes(
-            onSuccess = ::onSuccess,
-            onError = ::onError)
+        else{
+            groupViewModel.updateNow(onSuccess = ::onUpdate, onError = ::onError)
+        }
     }
 
     override fun onResume() {
@@ -149,6 +140,28 @@ class FragmentKvizovi : Fragment() {
             withContext(Dispatchers.Main){
                 if(rezultat)
                     pitanjaKvizViewModel.getPitanja(kviz.id, onSuccess = ::onSuccess1, onError = ::onError)
+            }
+        }
+    }
+
+    fun onUpdate(){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                if(filterKvizova.selectedItem.toString() == "Svi moji kvizovi")
+                    quizListViewModel.getMyQuizzes(
+                        onSuccess = ::onSuccess,
+                        onError = ::onError)
+                else if(filterKvizova.selectedItem.toString() == "Urađeni kvizovi")
+                    quizListViewModel.getDoneQuizzes(
+                        onSuccess = ::onSuccess,
+                        onError = ::onError)
+                else if(filterKvizova.selectedItem.toString() == "Budući kvizovi")
+                    quizListViewModel.getFutureQuizzes(
+                        onSuccess = ::onSuccess,
+                        onError = ::onError)
+                else  quizListViewModel.getPastQuizzes(
+                    onSuccess = ::onSuccess,
+                    onError = ::onError)
             }
         }
     }

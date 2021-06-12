@@ -159,8 +159,19 @@ class KvizListAdapter(
                 }
                 else status = "plava"
                 val pitanjeKvizViewModel = PitanjeKvizViewModel()
-                if(status == "plava")
-                    pitanjeKvizViewModel.getRezultatZaKviz(kviz, holder , onSuccess = ::onSuccess1, onError = ::onError)
+                if(status == "plava"){
+                    val context: Context = holder.quizStatus.getContext()
+                    //pitanjeKvizViewModel.getRezultatZaKviz(kviz, holder , onSuccess = ::onSuccess1, onError = ::onError)
+                    val rezultat1 = kviz.osvojeniBodovi
+                    if(rezultat1 != -1){
+                        holder.quizPoints.text = rezultat.toString()
+                    }
+                    else holder.quizPoints.text = ""
+                    var id: Int = context.getResources()
+                        .getIdentifier(status, "drawable", context.getPackageName())
+                    holder.quizStatus.setImageResource(id)
+                    return@withContext
+                }
                 else{
                     val context: Context = holder.quizStatus.getContext()
                     holder.quizPoints.text = ""
