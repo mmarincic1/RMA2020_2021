@@ -54,4 +54,10 @@ interface Api {
 
     @POST("student/{id}/kviztaken/{ktid}/odgovor")
     suspend fun postaviOdgovorKviz(@Path("id") idKviza: String, @Path("ktid") idKvizTaken: Int, @Body odgovor: OdgPitBod) : PovratniOdgovor
+
+    @GET("https://rma21-etf.herokuapp.com/account/{id}/lastUpdate")
+    suspend fun validniPodaci(@Path("id") id: String, @Query("date") datum: String): Boolean
+
+    @GET("student/{id}")
+    suspend fun getAcc(@Path("id") id: String): Account
 }

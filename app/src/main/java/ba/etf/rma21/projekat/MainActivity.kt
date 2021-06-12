@@ -4,12 +4,20 @@ package ba.etf.rma21.projekat
 
 import android.os.Bundle
 import android.os.Handler
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.data.fragment.FragmentKvizovi
 import ba.etf.rma21.projekat.data.fragment.FragmentPredmeti
+import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.repositories.AccountRepository
+import ba.etf.rma21.projekat.data.viewmodel.GroupViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // probni commit za spiralu4
 // {"message":"Uspješno ste kreirali account!","link":"http://rma21-etf.herokuapp.com/account/0934422d-53e3-4817-b211-1964211c912d"}
@@ -35,6 +43,8 @@ class MainActivity : AppCompatActivity() {
                 false
             }
 
+    private val groupViewModel = GroupViewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -43,6 +53,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // NOVO
+//        val payload = intent?.getStringExtra("payload")
+//        val accRepo = AccountRepository()
+//        if (payload != null) {
+//            accRepo.postaviHash(payload) // PROMIJENI U SUSPEND
+//        }
         bottomNavigation= findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
@@ -51,6 +67,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId= R.id.kvizovi
         val kvizoviFragment = FragmentKvizovi.newInstance()
         openFragment(kvizoviFragment)
+
+        val acc = AccountRepository()
+        acc.setContext(applicationContext)
+        groupViewModel.promijeniHash("0934422d-53e3-4817-b211-1964211c912d", onSuccess = ::onSuccess, onError = ::onError)
+        // NOVO
     }
 
     //Funkcija za izmjenu fragmenta
@@ -76,6 +97,23 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.menu.findItem(R.id.predmeti).isVisible = true
         bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
         bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
+    }
+
+    fun onSuccess(){
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+
+            }
+        }
+    }
+
+    fun onError() {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val toast = Toast.makeText(applicationContext, "Neki error", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
     }
 }
 

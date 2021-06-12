@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 
 import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
+import ba.etf.rma21.projekat.data.repositories.AccountRepository
 import ba.etf.rma21.projekat.data.repositories.GrupaRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository
@@ -31,6 +32,19 @@ class GroupViewModel {
             val upisan = PredmetIGrupaRepository.upisiUGrupu(grupaId)
             when(upisan){
                 is Boolean  -> onSuccess?.invoke(upisan)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+    fun promijeniHash(hash: String,
+                      onSuccess: () -> Unit,
+                      onError: () -> Unit
+    ){
+        GlobalScope.launch{
+            val accUpisan = AccountRepository().postaviHash(hash)
+            when(accUpisan){
+                is Boolean-> onSuccess?.invoke()
                 else -> onError?.invoke()
             }
         }
