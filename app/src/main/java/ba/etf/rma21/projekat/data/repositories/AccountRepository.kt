@@ -10,15 +10,16 @@ class AccountRepository {
     companion object {
         var acHash: String = "0934422d-53e3-4817-b211-1964211c912d"
         private lateinit var context: Context
+        fun getContext(): Context{
+            return context
+        }
     }
 
     fun setContext(_context:Context){
         context=_context
     }
 
-    fun getContext(): Context{
-        return context
-    }
+
 
     // u bazu
     suspend fun postaviHash(accHash:String): Boolean{

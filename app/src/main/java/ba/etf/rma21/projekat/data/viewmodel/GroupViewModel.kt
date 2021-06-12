@@ -2,10 +2,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 
 import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
-import ba.etf.rma21.projekat.data.repositories.AccountRepository
-import ba.etf.rma21.projekat.data.repositories.GrupaRepository
-import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository
+import ba.etf.rma21.projekat.data.repositories.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -44,6 +41,18 @@ class GroupViewModel {
         GlobalScope.launch{
             val accUpisan = AccountRepository().postaviHash(hash)
             when(accUpisan){
+                is Boolean-> onSuccess?.invoke()
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+    fun updateNow(    onSuccess: () -> Unit,
+                      onError: () -> Unit
+    ){
+        GlobalScope.launch{
+            val updateovano = DBRepository().updateNow()
+            when(updateovano){
                 is Boolean-> onSuccess?.invoke()
                 else -> onError?.invoke()
             }
