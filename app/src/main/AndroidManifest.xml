@@ -11,15 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rma21projekat">
         <activity android:name=".MainActivity">
-            <intent-filter>
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:label="deeplink">
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="intent"/>
+            <intent-filter android:label="rma21projekat">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="intent" />
             </intent-filter>
         </activity>
     </application>

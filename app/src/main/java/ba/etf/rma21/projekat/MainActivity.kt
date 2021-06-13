@@ -53,12 +53,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // NOVO
-//        val payload = intent?.getStringExtra("payload")
-//        val accRepo = AccountRepository()
-//        if (payload != null) {
-//            accRepo.postaviHash(payload) // PROMIJENI U SUSPEND
-//        }
         bottomNavigation= findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
@@ -70,7 +64,12 @@ class MainActivity : AppCompatActivity() {
 
         val acc = AccountRepository()
         acc.setContext(applicationContext)
-        groupViewModel.promijeniHash("0934422d-53e3-4817-b211-1964211c912d", onSuccess = ::onSuccess, onError = ::onError)
+        // NOVO
+        val payload = intent?.getStringExtra("payload")
+        if (payload != null) {
+             groupViewModel.promijeniHash(payload, onSuccess = ::onSuccess, onError = ::onError)
+        }
+        else groupViewModel.promijeniHash("0934422d-53e3-4817-b211-1964211c912d", onSuccess = ::onSuccess, onError = ::onError)
         // NOVO
     }
 
