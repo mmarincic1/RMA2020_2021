@@ -15,7 +15,8 @@ import com.google.gson.annotations.SerializedName
 
 @Entity
 class Pitanje(
-    @PrimaryKey @SerializedName("id") var id: Int,
+    @PrimaryKey var idDb: Int,
+    @SerializedName("id") var id: Int,
     @ColumnInfo(name = "naziv") @SerializedName("naziv") var naziv: String,
     @ColumnInfo(name = "tekstPitanja") @SerializedName("tekstPitanja") var tekstPitanja: String,
     @Ignore @SerializedName("opcije") var opcije: List<String>,
@@ -24,6 +25,7 @@ class Pitanje(
     @ColumnInfo(name = "kvizId") var kvizId: Int
 ) {
     constructor(): this(
+        idDb = -1,
         id = -1,
         naziv = "",
         tekstPitanja = "",

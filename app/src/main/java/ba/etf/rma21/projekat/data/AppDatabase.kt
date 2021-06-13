@@ -8,13 +8,14 @@ import ba.etf.rma21.projekat.data.dao.*
 import ba.etf.rma21.projekat.data.models.*
 import kotlin.coroutines.CoroutineContext
 
-@Database(entities = arrayOf(Account::class, Grupa::class, Predmet::class, Kviz::class, Pitanje::class), version = 1)
+@Database(entities = arrayOf(Account::class, Grupa::class, Predmet::class, Kviz::class, Pitanje::class, Odgovor::class), version = 1)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun accountDao(): AccountDao
     abstract fun grupaDao(): GrupaDao
     abstract fun predmetDao(): PredmetDao
     abstract fun kvizDao(): KvizDao
     abstract fun pitanjeDao(): PitanjeDao
+    abstract fun odgovorDao(): OdgovorDao
 
     companion object{
         private var INSTANCE: AppDatabase? = null

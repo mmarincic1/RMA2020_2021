@@ -13,14 +13,15 @@ data class Kviz(
     @ColumnInfo(name = "naziv") @SerializedName("naziv") var naziv: String,
     @Ignore @SerializedName("datumPocetak") var datumPocetka: Date,
     @Ignore @SerializedName("datumKraj") var datumKraj: Date?,
-    @ColumnInfo(name = "datumPocetak") var datumPocetakDb: String,
+    @ColumnInfo(name = "datumPocetka") var datumPocetakDb: String,
     @ColumnInfo(name = "datumKraj") var datumKrajDb: String,
     @ColumnInfo(name = "datumRada") var datumRadaDb: String,
     @Ignore var datumRada: Date?,
     @ColumnInfo(name = "trajanje") @SerializedName("trajanje") var trajanje: Int,
     @ColumnInfo(name = "nazivGrupe") var nazivGrupe: String?,
     @ColumnInfo(name = "nazivPredmeta") var nazivPredmeta: String?,
-    @ColumnInfo(name = "osvojeniBodovi") var osvojeniBodovi: Int?
+    @ColumnInfo(name = "osvojeniBodovi") var osvojeniBodovi: Int?,
+    @ColumnInfo(name = "predan") var predan: Boolean
 ) {
     constructor(): this(
         id = -1,
@@ -34,5 +35,7 @@ data class Kviz(
         trajanje = 0,
         nazivGrupe = null,
         nazivPredmeta = null,
-        osvojeniBodovi = null)
+        osvojeniBodovi = null,
+        predan = false
+    )
 }

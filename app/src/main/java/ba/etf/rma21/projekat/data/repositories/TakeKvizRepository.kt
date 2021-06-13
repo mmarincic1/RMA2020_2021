@@ -11,9 +11,8 @@ class TakeKvizRepository {
         // - kreira pokušaj za kviz, vraća kreirani pokušaj ili null u slučaju greške
         suspend fun zapocniKviz(idKviza: Int): KvizTaken? {
             return withContext(Dispatchers.IO) {
-                val acc = AccountRepository()
                 try {
-                    val rezultat = ApiAdapter.retrofit.zapocniKviz(idKviza, acc.getHash())
+                    val rezultat = ApiAdapter.retrofit.zapocniKviz(idKviza, AccountRepository.getHash())
                     return@withContext rezultat
                 }catch (e: Exception){
                     return@withContext null
@@ -24,9 +23,8 @@ class TakeKvizRepository {
         //- vraća listu pokušaja ili null ukoliko student nema niti jedan započeti kviz
         suspend fun getPocetiKvizovi(): List<KvizTaken>? {
             return withContext(Dispatchers.IO) {
-                val acc = AccountRepository()
                 try {
-                    val rezultat = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                    val rezultat = ApiAdapter.retrofit.getPocetiKvizovi(AccountRepository.getHash())
                     if(rezultat.isEmpty())
                         return@withContext null
                     return@withContext rezultat
@@ -39,8 +37,7 @@ class TakeKvizRepository {
 
         suspend fun getPocetiKvizoviApp(): Boolean{
             return withContext(Dispatchers.IO) {
-                val acc = AccountRepository()
-                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(AccountRepository.getHash())
                 var imaGa = false
                 for(pKviz in pokrenutiKvizovi){
                     if(pKviz.KvizId == KvizRepository.pokrenutiKviz.id){
@@ -50,7 +47,7 @@ class TakeKvizRepository {
                     }
                 }
                 if(!imaGa){
-                    val kviz = ApiAdapter.retrofit.zapocniKviz(KvizRepository.pokrenutiKviz.id, acc.getHash())
+                    val kviz = ApiAdapter.retrofit.zapocniKviz(KvizRepository.pokrenutiKviz.id, AccountRepository.getHash())
                     KvizRepository.radjeniKviz = kviz
                 }
                 return@withContext true

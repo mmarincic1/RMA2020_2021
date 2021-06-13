@@ -16,6 +16,7 @@ import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
 import ba.etf.rma21.projekat.data.fragment.FragmentPoruka
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository.Companion.getRezultatZaKviz
 import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -141,7 +142,7 @@ class KvizListAdapter(
                 if(rezultat){
                     status = "plava"
                 }
-                else if(kviz.datumRada == null){
+                else{
                     var datumPocetka = uporediSaTrenutnimDatumom(kviz.datumPocetka)
                     var datumKraja = kviz.datumKraj?.let { uporediSaTrenutnimDatumom(it) }
                     // kviz nije otvoren
@@ -157,14 +158,12 @@ class KvizListAdapter(
                         status = "crvena"
                     }
                 }
-                else status = "plava"
-                val pitanjeKvizViewModel = PitanjeKvizViewModel()
+                //else status = "plava"
                 if(status == "plava"){
                     val context: Context = holder.quizStatus.getContext()
-                    //pitanjeKvizViewModel.getRezultatZaKviz(kviz, holder , onSuccess = ::onSuccess1, onError = ::onError)
                     val rezultat1 = kviz.osvojeniBodovi
                     if(rezultat1 != -1){
-                        holder.quizPoints.text = rezultat.toString()
+                        holder.quizPoints.text = rezultat1.toString()
                     }
                     else holder.quizPoints.text = ""
                     var id: Int = context.getResources()

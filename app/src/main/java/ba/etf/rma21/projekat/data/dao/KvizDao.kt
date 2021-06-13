@@ -16,4 +16,10 @@ interface KvizDao {
 
     @Query("SELECT * FROM kviz")
     suspend fun dajSveKvizoveDb(): List<Kviz>
+
+    @Query("UPDATE kviz SET predan = :predan WHERE id = :kvizId")
+    suspend fun zavrsiKviz(predan: Boolean, kvizId: Int)
+
+    @Query("UPDATE kviz SET osvojeniBodovi = :bodovi WHERE id = :kvizId")
+    suspend fun upisiBodove(bodovi: Int, kvizId: Int)
 }

@@ -39,7 +39,7 @@ class GroupViewModel {
                       onError: () -> Unit
     ){
         GlobalScope.launch{
-            val accUpisan = AccountRepository().postaviHash(hash)
+            val accUpisan = AccountRepository.postaviHash(hash)
             when(accUpisan){
                 is Boolean-> onSuccess?.invoke()
                 else -> onError?.invoke()
@@ -51,7 +51,7 @@ class GroupViewModel {
                       onError: () -> Unit
     ){
         GlobalScope.launch{
-            val updateovano = DBRepository().updateNow()
+            val updateovano = DBRepository.updateNow()
             when(updateovano){
                 is Boolean-> onSuccess?.invoke()
                 else -> onError?.invoke()

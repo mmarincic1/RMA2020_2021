@@ -71,18 +71,6 @@ class PitanjeKvizViewModel {
         }
     }
 
-    fun getRezultatZaKviz(kviz: Kviz, holder: KvizListAdapter.QuizViewHolder,
-                          onSuccess: (rezultat: Int, holder: KvizListAdapter.QuizViewHolder) -> Unit,
-                          onError: () -> Unit){
-        GlobalScope.launch {
-            val rezultat = PitanjeKvizRepository.getRezultatSaNetaZaKviz(kviz)
-            when(rezultat){
-                is Int -> onSuccess?.invoke(rezultat, holder)
-                else -> onError?.invoke()
-            }
-        }
-    }
-
     fun getZavrsenKviz(kvizTaken: KvizTaken,
                     onSuccess: (rezultat: Boolean) -> Unit,
                     onError: () -> Unit){

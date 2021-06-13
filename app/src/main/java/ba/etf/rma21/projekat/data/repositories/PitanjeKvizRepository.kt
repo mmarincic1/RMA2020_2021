@@ -44,6 +44,7 @@ class PitanjeKvizRepository {
             }
         }
 
+        // ovo nije fkt s neta nego samo iz baze !
         suspend fun getRezultatSaNeta(idKviza: Int): Int{
             return withContext(Dispatchers.IO){
                 val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
@@ -54,32 +55,15 @@ class PitanjeKvizRepository {
                             kvizId = kviz.KvizId
                     }
                 }
-                val pitanja = getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
-                var rezultat = 0.0
-                for(pitanje in pitanja){
-                    for(odgovor in odgovori){
-                        if(odgovor.pitanjeId == pitanje.id && odgovor.odgovoreno == pitanje.tacan){
-                            rezultat += (1/pitanja.size.toDouble())*100
-                        }
-                    }
-                }
-                return@withContext rezultat.roundToInt()
+                return@withContext getRezultatZaKviz(kvizId)
             }
         }
 
         suspend fun getRezultatSaKvizaZaOdgovor(idKviza: Int, idPitanje: Int, odgovorInt: Int): Int{
             return withContext(Dispatchers.IO){
-                val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
-                var kvizId = -1
-                if (pocetiKvizovi != null) {
-                    for(kviz in pocetiKvizovi){
-                        if(kviz.id == idKviza)
-                            kvizId = kviz.KvizId
-                    }
-                }
-                val pitanja = getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val pitanja = db.pitanjeDao().getPitanja(idKviza)
+                val odgovori = db.odgovorDao().getOdgovori(idKviza)
                 var rezultat = 0.0
                 for(pitanje in pitanja){
                     for(odgovor in odgovori){
@@ -95,7 +79,51 @@ class PitanjeKvizRepository {
             }
         }
 
+        suspend fun getRezultatZaKviz(idKviza: Int): Int{
+            return withContext(Dispatchers.IO){
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val pitanja = db.pitanjeDao().getPitanja(idKviza)
+                val odgovori = db.odgovorDao().getOdgovori(idKviza)
+                var rezultat = 0.0
+                for(pitanje in pitanja){
+                    for(odgovor in odgovori){
+                        if(odgovor.pitanjeId == pitanje.id && odgovor.odgovoreno == pitanje.tacan){
+                            rezultat += (1/pitanja.size.toDouble())*100
+                        }
+                    }
+                }
+                return@withContext rezultat.roundToInt()
+            }
+        }
+
         suspend fun getZavrsenKviz(idKviza: KvizTaken): Boolean{
+            return withContext(Dispatchers.IO){
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val odgovori = db.odgovorDao().postojiOdgovor(idKviza.id)
+                if(odgovori.isEmpty())
+                    return@withContext false
+                val pitanja = db.pitanjeDao().getPitanja(odgovori[0].kvizId)
+                return@withContext pitanja.size == odgovori.size
+            }
+        }
+
+        suspend fun getRezultatSaServisa(idKviza: Int): Int{
+            return withContext(Dispatchers.IO){
+                val pitanja = getPitanja(idKviza)
+                val odgovori = OdgovorRepository.getOdgovoriKvizApi(idKviza)
+                var rezultat = 0.0
+                for(pitanje in pitanja){
+                    for(odgovor in odgovori){
+                        if(odgovor.pitanjeId == pitanje.id && odgovor.odgovoreno == pitanje.tacan){
+                            rezultat += (1/pitanja.size.toDouble())*100
+                        }
+                    }
+                }
+                return@withContext rezultat.roundToInt()
+            }
+        }
+
+        suspend fun getZavrsenKvizApi(idKviza: KvizTaken): Boolean{
             return withContext(Dispatchers.IO){
                 val pocetiKvizovi = TakeKvizRepository.getPocetiKvizovi()
                 var kvizId = -1
@@ -106,40 +134,11 @@ class PitanjeKvizRepository {
                     }
                 }
                 val pitanja = ApiAdapter.retrofit.getPitanja(kvizId)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(kvizId)
+                val odgovori = OdgovorRepository.getOdgovoriKvizApi(kvizId)
                 return@withContext pitanja.size == odgovori.size
             }
         }
 
-        suspend fun getRezultatSaNetaZaKviz(kviz: Kviz): Int{
-            return withContext(Dispatchers.IO){
-                val acc = AccountRepository()
-                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
-                var imaGa = false
-                lateinit var pKvizi: KvizTaken
-                for(pKviz in pokrenutiKvizovi){
-                    if(pKviz.KvizId == kviz.id){
-                        pKvizi = pKviz
-                        imaGa = true
-                        break
-                    }
-                }
-                var rezultat = -1.0
-                if(imaGa) {
-                    val pitanja = getPitanja(kviz.id)
-                    val odgovori = OdgovorRepository.getOdgovoriKviz(kviz.id)
-                    rezultat = 0.0
-                    for (pitanje in pitanja) {
-                        for (odgovor in odgovori) {
-                            if (odgovor.pitanjeId == pitanje.id && odgovor.odgovoreno == pitanje.tacan) {
-                                rezultat += (1 / pitanja.size.toDouble()) * 100
-                            }
-                        }
-                    }
-                }
-                return@withContext rezultat.roundToInt()
-            }
-        }
 
     }
 

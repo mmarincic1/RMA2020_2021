@@ -36,7 +36,6 @@ class FragmentPitanje(private val pitanje: Pitanje): Fragment() {
     private lateinit var odgovori: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
-    private var kvizViewModel = KvizListViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

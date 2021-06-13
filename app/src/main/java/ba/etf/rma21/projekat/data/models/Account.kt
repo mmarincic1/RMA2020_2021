@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class Account(
     @PrimaryKey @SerializedName("id") var id: Int,
     @ColumnInfo (name = "student") @SerializedName("student") var studentEmail: String,
-    @ColumnInfo (name = "hashStudent") @SerializedName("acHash") var hashStudent: String,
+    @ColumnInfo (name = "acHash") @SerializedName("acHash") var hashStudent: String,
     @ColumnInfo (name = "lastUpdate") var lastUpdate: String
 ) {
 

@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ba.etf.rma21.projekat.data.models.Account
 
@@ -13,9 +14,9 @@ interface AccountDao {
     @Query("DELETE FROM account")
     suspend fun obrisiAcc()
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAcc(vararg acc: Account)
 
-    @Query("UPDATE account SET lastUpdate = :lastUpdate WHERE hashStudent = :hash")
+    @Query("UPDATE account SET lastUpdate = :lastUpdate WHERE acHash = :hash")
     suspend fun updateLastUpdate(lastUpdate: String, hash:String)
 }

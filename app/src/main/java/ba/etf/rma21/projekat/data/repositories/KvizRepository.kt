@@ -3,6 +3,7 @@ package ba.etf.rma21.projekat.data.repositories
 import android.annotation.SuppressLint
 import android.os.Build
 import ba.etf.rma21.projekat.data.AppDatabase
+import ba.etf.rma21.projekat.data.models.Account
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +17,6 @@ class KvizRepository {
     companion object {
         lateinit var pokrenutiKviz: Kviz
         var radjeniKviz: KvizTaken? = null
-
-        init {
-
-        }
 
         suspend fun getDone(): List<Kviz> {
             return withContext(Dispatchers.IO){
@@ -116,6 +113,16 @@ class KvizRepository {
                         }
                     }
                     rezultat.add(kvizZaUbaciti)
+                    for(kviz in rezultat){
+                        if(getZavrsenKvizApi(kviz)){
+                            kviz.osvojeniBodovi = PitanjeKvizRepository.getRezultatSaServisa(kviz.id)
+                            kviz.predan = true
+                        }
+                        kviz.datumPocetakDb = getDateFormat(kviz.datumPocetka)
+                        if(kviz.datumKraj != null)
+                            kviz.datumKrajDb = getDateFormat(kviz.datumKraj!!)
+                        else kviz.datumKrajDb = ""
+                    }
                 }
                 return@withContext rezultat
             }
@@ -141,8 +148,7 @@ class KvizRepository {
         // svi kvizovi za grupe u kojima je student upisan
         suspend fun getUpisani():List<Kviz>{
             return withContext(Dispatchers.IO){
-                val acc = AccountRepository()
-                var grupe = ApiAdapter.retrofit.getUpisaneGrupe(acc.getHash())
+                var grupe = ApiAdapter.retrofit.getUpisaneGrupe(AccountRepository.getHash())
                 var rezultat = mutableListOf<Kviz>()
                 for(grupa in grupe){
                     var pom = ApiAdapter.retrofit.getUpisani(grupa.id)
@@ -184,8 +190,9 @@ class KvizRepository {
                 }
                 // novo
                 for(kviz in rezultat){
-                    if(getZavrsenKviz(kviz)){
-                        kviz.osvojeniBodovi = PitanjeKvizRepository.getRezultatSaNeta(kviz.id)
+                    if(getZavrsenKvizApi(kviz)){
+                        kviz.osvojeniBodovi = PitanjeKvizRepository.getRezultatSaServisa(kviz.id)
+                        kviz.predan = true
                     }
                     kviz.datumPocetakDb = getDateFormat(kviz.datumPocetka)
                     if(kviz.datumKraj != null)
@@ -199,20 +206,46 @@ class KvizRepository {
 
         suspend fun zavrsiKviz(idKviza: KvizTaken){
             return withContext(Dispatchers.IO){
-                val pitanja = ApiAdapter.retrofit.getPitanja(pokrenutiKviz.id)
-                val odgovori = OdgovorRepository.getOdgovoriKviz(pokrenutiKviz.id)
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val pitanja = PitanjeKvizRepository.getPitanja(pokrenutiKviz.id)
+                val odgovori = db.odgovorDao().getOdgovori(pokrenutiKviz.id)
                 for(pitanje in pitanja){
-                    if(odgovori.stream().noneMatch{ x -> x.pitanjeId == pitanje.id })
+                    // nije odgovoreno pitanje
+                    if(odgovori.stream().noneMatch{ x -> x.pitanjeId == pitanje.id }) {
                         OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)
+                        OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, pitanje.opcije.size)
+                    } // jeste odgovoreno pitanje
+                    else OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, odgovori.stream().filter{
+                        x -> x.pitanjeId == pitanje.id}.findFirst().get().odgovoreno)
                 }
+                db.kvizDao().zavrsiKviz(true, pokrenutiKviz.id)
+                db.kvizDao().upisiBodove(PitanjeKvizRepository.getRezultatZaKviz(pokrenutiKviz.id), pokrenutiKviz.id)
                 return@withContext
+            }
+        }
+
+        suspend fun getZavrsenKvizApi(kviz: Kviz): Boolean{
+            return withContext(Dispatchers.IO){
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(AccountRepository.getHash())
+                var imaGa = false
+                lateinit var pKvizi: KvizTaken
+                for(pKviz in pokrenutiKvizovi){
+                    if(pKviz.KvizId == kviz.id){
+                        pKvizi = pKviz
+                        imaGa = true
+                        break
+                    }
+                }
+                if(imaGa){
+                    return@withContext PitanjeKvizRepository.getZavrsenKvizApi(pKvizi)
+                }
+                return@withContext false
             }
         }
 
         suspend fun getZavrsenKviz(kviz: Kviz): Boolean{
             return withContext(Dispatchers.IO){
-                val acc = AccountRepository()
-                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(acc.getHash())
+                val pokrenutiKvizovi = ApiAdapter.retrofit.getPocetiKvizovi(AccountRepository.getHash())
                 var imaGa = false
                 lateinit var pKvizi: KvizTaken
                 for(pKviz in pokrenutiKvizovi){

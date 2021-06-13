@@ -62,8 +62,7 @@ class MainActivity : AppCompatActivity() {
         val kvizoviFragment = FragmentKvizovi.newInstance()
         openFragment(kvizoviFragment)
 
-        val acc = AccountRepository()
-        acc.setContext(applicationContext)
+        AccountRepository.setContext(applicationContext)
         // NOVO
         val payload = intent?.getStringExtra("payload")
         if (payload != null) {

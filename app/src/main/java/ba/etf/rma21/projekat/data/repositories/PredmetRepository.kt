@@ -15,14 +15,13 @@ class PredmetRepository {
                 var pom = ApiAdapter.retrofit.getPredmetsByGodina()
                 var rezultat = mutableListOf<Predmet>()
                 rezultat.add(Predmet(-1, "", -1))
-                val acc = AccountRepository()
                 // ubaci sve predmete
                 for(predmet in pom) {
                     if(predmet.godina == godina)
                         rezultat.add(predmet)
                 }
                 // izbaci upisane predmete
-                var grupe = ApiAdapter.retrofit.getUpisaneGrupe(acc.getHash())
+                var grupe = ApiAdapter.retrofit.getUpisaneGrupe(AccountRepository.getHash())
                 for(grupa in grupe){
                     val naziv = ApiAdapter.retrofit.getPredmetId(grupa.predmetId).naziv
                     var brojac = 0;

@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.content.Context
 import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
 import kotlinx.coroutines.Dispatchers
@@ -7,6 +8,15 @@ import kotlinx.coroutines.withContext
 
 class PredmetIGrupaRepository {
     companion object {
+        private lateinit var context: Context
+        fun getContext(): Context {
+            return context
+        }
+
+
+        fun setContext(_context: Context) {
+            context = _context
+        }
         // - vraća sve predmete
         suspend fun getPredmeti(): List<Predmet> {
             return withContext(Dispatchers.IO) {
@@ -31,8 +41,7 @@ class PredmetIGrupaRepository {
     // - upisuje studenta u grupu sa id-em idGrupa i vraća true ili vraća false ako nije moguće upisati studenta
     suspend fun upisiUGrupu(idGrupa:Int):Boolean{
         return withContext(Dispatchers.IO) {
-            val acc = AccountRepository()
-            val odgovor = ApiAdapter.retrofit.upisiUGrupu(idGrupa, acc.getHash())
+            val odgovor = ApiAdapter.retrofit.upisiUGrupu(idGrupa, AccountRepository.getHash())
             var rezultat = true
             if(odgovor.message.contains("not found") ||
                 odgovor.message.contains("Ne postoji account"))
@@ -44,8 +53,7 @@ class PredmetIGrupaRepository {
         //- vraća grupe u kojima je student upisan
         suspend fun getUpisaneGrupe(): List<Grupa> {
             return withContext(Dispatchers.IO) {
-                val acc = AccountRepository()
-                return@withContext ApiAdapter.retrofit.getUpisaneGrupe(acc.getHash())
+                return@withContext ApiAdapter.retrofit.getUpisaneGrupe(AccountRepository.getHash())
             }
         }
     }
