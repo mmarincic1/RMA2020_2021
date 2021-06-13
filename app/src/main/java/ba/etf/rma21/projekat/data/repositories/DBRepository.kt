@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.repositories
 
 import android.annotation.SuppressLint
 import ba.etf.rma21.projekat.data.AppDatabase
+import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.models.Predmet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -68,6 +69,7 @@ class DBRepository {
             db.grupaDao().obrisiDb()
             db.predmetDao().obrisiDb()
             db.kvizDao().obrisiDb()
+            db.pitanjeDao().obrisiDb()
         }
     }
 
@@ -77,7 +79,7 @@ class DBRepository {
             val acc = AccountRepository()
             val grupe = ApiAdapter.retrofit.getUpisaneGrupe(acc.getHash())
             db.grupaDao().napraviDb(grupe)
-            var predmeti = mutableListOf<Predmet>()
+            val predmeti = mutableListOf<Predmet>()
             for(grupa in grupe){
                 predmeti.add(ApiAdapter.retrofit.getPredmetId(grupa.predmetId))
             }
@@ -85,6 +87,13 @@ class DBRepository {
 
             val kvizovi = KvizRepository.getUpisani()
             db.kvizDao().napraviDb(kvizovi)
+
+            val pitanja = mutableListOf<Pitanje>()
+            for(kviz in kvizovi){
+                val pomocnaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)
+                pitanja.addAll(pomocnaPitanja)
+            }
+            db.pitanjeDao().napraviDb(pitanja)
         }
     }
 }

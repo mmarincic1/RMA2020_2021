@@ -1,9 +1,11 @@
 package ba.etf.rma21.projekat.data.viewmodel
 
 
+import ba.etf.rma21.projekat.data.AppDatabase
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.AccountRepository
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
@@ -18,7 +20,8 @@ class PitanjeKvizViewModel {
                    onError: () -> Unit
     ){
         GlobalScope.launch{
-            val pitanja = PitanjeKvizRepository.getPitanja(idKviza)
+            //val pitanja = PitanjeKvizRepository.getPitanja(idKviza)
+            val pitanja = PitanjeKvizRepository.getPitanjaDb(idKviza)
             when(pitanja){
                 is List<Pitanje> -> onSuccess?.invoke(pitanja)
                 else -> onError?.invoke()

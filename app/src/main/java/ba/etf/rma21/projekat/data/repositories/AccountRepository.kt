@@ -22,6 +22,8 @@ class AccountRepository {
 
 
     // u bazu
+    // OVDJE CU MORATI OBRISATI I OSTALE TABELE U BAZI,
+    // TAKODJER VJEROVATNO CU MORATI PROMIJENITI DA NE DOHVACA ACC SA SERVERA!!!
     suspend fun postaviHash(accHash:String): Boolean{
         return withContext(Dispatchers.IO){
             try{
