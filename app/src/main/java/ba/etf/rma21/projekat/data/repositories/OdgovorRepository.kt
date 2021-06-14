@@ -62,10 +62,11 @@ class OdgovorRepository {
 
         suspend fun postaviOdgovorKvizApi(idKvizTaken:Int, idPitanje:Int, odgovor:Int):Int{
             return withContext(Dispatchers.IO){
-                val bodovi = PitanjeKvizRepository.getRezultatSaKvizaZaOdgovor(idKvizTaken, idPitanje, odgovor)
-                val odgovor = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = bodovi)
+                //val bodovi = PitanjeKvizRepository.getRezultatZaKviz(KvizRepository.pokrenutiKviz.id)
+                val bodovi = PitanjeKvizRepository.getRezultatSaKvizaZaOdgovor(KvizRepository.pokrenutiKviz.id, idPitanje, odgovor)
+                val odgovor1 = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = bodovi)
                 try {
-                    ApiAdapter.retrofit.postaviOdgovorKviz(AccountRepository.getHash(), idKvizTaken, odgovor)
+                    ApiAdapter.retrofit.postaviOdgovorKviz(AccountRepository.getHash(), idKvizTaken, odgovor1)
                     return@withContext bodovi
                 }catch(e: Exception){
                     return@withContext -1
@@ -118,6 +119,17 @@ class OdgovorRepository {
                         return@withContext odgovor.odgovoreno
                 }
                 return@withContext -1
+            }
+        }
+
+        // ovo jer je bilo u specifikaciji spirale
+        suspend fun predajOdgovore(kvizId: Int){
+            return withContext(Dispatchers.IO){
+                val db = AppDatabase.getInstance(AccountRepository.getContext())
+                val odgovori = db.odgovorDao().getOdgovori(kvizId)
+                for(odgovor in odgovori){
+                    postaviOdgovorKvizApi(odgovor.idKvizTaken, odgovor.pitanjeId, odgovor.odgovoreno)
+                }
             }
         }
     }

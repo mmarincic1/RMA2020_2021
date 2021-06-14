@@ -29,9 +29,13 @@ class PitanjeKvizViewModel {
         }
     }
 
-    fun postaviOdgovorKviz(idKvizTaken:Int, idPitanje:Int, odgovor:Int){
+    fun postaviOdgovorKviz(idKvizTaken:Int, idPitanje:Int, odgovor:Int, onSuccess: (Int) -> Unit, onError: () -> Unit){
         GlobalScope.launch{
-            OdgovorRepository.postaviOdgovorKviz(idKvizTaken, idPitanje, odgovor)
+            val rezultat = OdgovorRepository.postaviOdgovorKviz(idKvizTaken, idPitanje, odgovor)
+            when(rezultat){
+                is Int -> onSuccess?.invoke(rezultat)
+                else -> onError?.invoke()
+            }
         }
     }
 
@@ -78,6 +82,18 @@ class PitanjeKvizViewModel {
             val rezultat = PitanjeKvizRepository.getZavrsenKviz(kvizTaken)
             when(rezultat){
                 is Boolean -> onSuccess?.invoke(rezultat)
+                else -> onError?.invoke()
+            }
+        }
+    }
+
+    fun getZavrsenKvizZaSveOdgovorene(kvizTaken: KvizTaken, rez: Int,
+                       onSuccess: (rezultat: Boolean, rez: Int) -> Unit,
+                       onError: () -> Unit){
+        GlobalScope.launch {
+            val rezultat = PitanjeKvizRepository.getZavrsenKviz(kvizTaken)
+            when(rezultat){
+                is Boolean -> onSuccess?.invoke(rezultat, rez)
                 else -> onError?.invoke()
             }
         }

@@ -3,6 +3,7 @@ package ba.etf.rma21.projekat.data.viewmodel
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
+import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import ba.etf.rma21.projekat.data.view.KvizListAdapter
 import kotlinx.coroutines.Dispatchers
@@ -112,6 +113,13 @@ class KvizListViewModel {
         GlobalScope.launch{
             KvizRepository.zavrsiKviz(idKvizTaken)
             onSuccess?.invoke(rezultat)
+        }
+    }
+
+    fun popuniApiZaZavrsenKviz(idKvizTaken: KvizTaken, onSuccess: () -> Unit, onError: () -> Unit){
+        GlobalScope.launch{
+            OdgovorRepository.predajOdgovore(KvizRepository.pokrenutiKviz.id)
+            onSuccess?.invoke()
         }
     }
 

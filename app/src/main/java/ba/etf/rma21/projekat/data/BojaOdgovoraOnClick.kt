@@ -12,8 +12,10 @@ import android.widget.Toast
 import androidx.core.view.children
 import ba.etf.rma21.projekat.data.fragment.FragmentPokusaj
 import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.repositories.AccountRepository
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
+import ba.etf.rma21.projekat.data.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.data.viewmodel.PitanjeKvizViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,6 +28,8 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
     private var pitanjeKvizViewModel = PitanjeKvizViewModel()
     private val menu: Menu = FragmentPokusaj.navigationView.getMenu()
     private val indexPitanja = pitanjeKvizViewModel.getIndexPitanja()
+    private val kvizListViewModel = KvizListViewModel()
+
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if(position == pitanje.tacan){
@@ -78,7 +82,46 @@ class BojaOdgovoraOnClick(val pitanje: Pitanje): AdapterView.OnItemClickListener
             odabir.setOnClickListener(null)
         }
         // evidentiraj odgovor
-        KvizRepository.radjeniKviz?.id?.let { pitanjeKvizViewModel.postaviOdgovorKviz(it, pitanje.id, position) }
+        KvizRepository.radjeniKviz?.id?.let { pitanjeKvizViewModel.postaviOdgovorKviz(it, pitanje.id, position, onSuccess = ::onSuccess, onError = ::onError) }
     }
+
+    fun onSuccess(rez: Int) {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val rezic = rez + 100
+                KvizRepository.radjeniKviz?.let { pitanjeKvizViewModel.getZavrsenKvizZaSveOdgovorene(it, rez ,onSuccess = ::onSuccess1, onError = ::onError) }
+            }
+        }
+    }
+
+    fun onSuccess1(rez: Boolean, rezultat: Int) {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                if(rez){
+                    KvizRepository.radjeniKviz?.let { kvizListViewModel.popuniApiZaZavrsenKviz(it, onSuccess = ::onSuccess2, onError = ::onError) }
+                }
+            }
+        }
+    }
+
+
+    fun onSuccess2() {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val toast = Toast.makeText(AccountRepository.getContext(), "Kviz zavrsen", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
+    fun onError() {
+        GlobalScope.launch(Dispatchers.IO){
+            withContext(Dispatchers.Main){
+                val toast = Toast.makeText(AccountRepository.getContext(), "Neki error", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
 
 }

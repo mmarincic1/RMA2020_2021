@@ -205,22 +205,23 @@ class KvizRepository {
         }
 
         suspend fun zavrsiKviz(idKviza: KvizTaken){
-            return withContext(Dispatchers.IO){
-                val db = AppDatabase.getInstance(AccountRepository.getContext())
-                val pitanja = PitanjeKvizRepository.getPitanja(pokrenutiKviz.id)
-                val odgovori = db.odgovorDao().getOdgovori(pokrenutiKviz.id)
-                for(pitanje in pitanja){
-                    // nije odgovoreno pitanje
-                    if(odgovori.stream().noneMatch{ x -> x.pitanjeId == pitanje.id }) {
-                        OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)
-                        OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, pitanje.opcije.size)
-                    } // jeste odgovoreno pitanje
-                    else OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, odgovori.stream().filter{
-                        x -> x.pitanjeId == pitanje.id}.findFirst().get().odgovoreno)
+            return withContext(Dispatchers.IO) {
+                if (!getZavrsenKvizApi(pokrenutiKviz)) {
+                    val db = AppDatabase.getInstance(AccountRepository.getContext())
+                    val pitanja = PitanjeKvizRepository.getPitanja(pokrenutiKviz.id)
+                    val odgovori = db.odgovorDao().getOdgovori(pokrenutiKviz.id)
+                    for (pitanje in pitanja) {
+                        // nije odgovoreno pitanje
+                        if (odgovori.stream().noneMatch { x -> x.pitanjeId == pitanje.id }) {
+                            OdgovorRepository.postaviOdgovorKviz(idKviza.id, pitanje.id, pitanje.opcije.size)
+                            OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, pitanje.opcije.size)
+                        } // jeste odgovoreno pitanje
+                        else OdgovorRepository.postaviOdgovorKvizApi(idKviza.id, pitanje.id, odgovori.stream().filter { x -> x.pitanjeId == pitanje.id }.findFirst().get().odgovoreno)
+                    }
+                    db.kvizDao().zavrsiKviz(true, pokrenutiKviz.id)
+                    db.kvizDao().upisiBodove(PitanjeKvizRepository.getRezultatZaKviz(pokrenutiKviz.id), pokrenutiKviz.id)
+                    return@withContext
                 }
-                db.kvizDao().zavrsiKviz(true, pokrenutiKviz.id)
-                db.kvizDao().upisiBodove(PitanjeKvizRepository.getRezultatZaKviz(pokrenutiKviz.id), pokrenutiKviz.id)
-                return@withContext
             }
         }
 
@@ -284,6 +285,5 @@ class KvizRepository {
                 return@withContext rezultat
             }
         }
-
     }
 }
