@@ -62,8 +62,8 @@ class OdgovorRepository {
 
         suspend fun postaviOdgovorKvizApi(idKvizTaken:Int, idPitanje:Int, odgovor:Int):Int{
             return withContext(Dispatchers.IO){
-                //val bodovi = PitanjeKvizRepository.getRezultatZaKviz(KvizRepository.pokrenutiKviz.id)
-                val bodovi = PitanjeKvizRepository.getRezultatSaKvizaZaOdgovor(KvizRepository.pokrenutiKviz.id, idPitanje, odgovor)
+                val bodovi = PitanjeKvizRepository.getRezultatZaKviz(KvizRepository.pokrenutiKviz.id)
+                //val bodovi = PitanjeKvizRepository.getRezultatSaKvizaZaOdgovor(KvizRepository.pokrenutiKviz.id, idPitanje, odgovor)
                 val odgovor1 = OdgPitBod(odgovor = odgovor, pitanje = idPitanje, bodovi = bodovi)
                 try {
                     ApiAdapter.retrofit.postaviOdgovorKviz(AccountRepository.getHash(), idKvizTaken, odgovor1)
@@ -130,6 +130,9 @@ class OdgovorRepository {
                 for(odgovor in odgovori){
                     postaviOdgovorKvizApi(odgovor.idKvizTaken, odgovor.pitanjeId, odgovor.odgovoreno)
                 }
+                // jos postavidi bodove i predan odmah
+                db.kvizDao().zavrsiKviz(true, KvizRepository.pokrenutiKviz.id)
+                db.kvizDao().upisiBodove(PitanjeKvizRepository.getRezultatZaKviz(KvizRepository.pokrenutiKviz.id), KvizRepository.pokrenutiKviz.id)
             }
         }
     }
