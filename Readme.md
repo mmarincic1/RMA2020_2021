@@ -13,3 +13,5 @@ Ne mijenjajte naziv aplikacije niti početnih paketa.
 &nbsp;
 
 Vaš projekat postavite na privatni repozitorij na Bitbucket-u sa nazivom RMA21PNNNNN, gdje je _NNNNN_ broj indexa. Projekat podijelite sa asistentima.
+
+U ovom projektu se nalaze rješenja 4 spirale na predmetu Razvoj Mobilnih Aplikacija 2020/2021.
